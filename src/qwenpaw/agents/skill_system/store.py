@@ -653,15 +653,58 @@ def safe_skill_dir(base_dir: Path, name: str) -> Path:
     control characters, ``.``, ``..``, ``/`` and ``\\``; the resolve +
     ``is_relative_to`` check guards against future relaxations and
     platform-specific quirks.
+
+    Symlink allowance (local patch): QwenPaw officially supports external
+    skill roots via ``config.skill_paths``. Workspace skills may be symlinked
+    into ``<workspace>/skills`` pointing at one of those trusted external
+    roots. ``Path.resolve()`` dereferences the symlink, so such skills
+    legitimately end up outside ``base_dir``; we accept them when the resolved
+    target lives under a configured ``skill_paths`` root. This keeps the
+    workspace-directory jail while honoring the external-root contract.
     """
     normalized = normalize_skill_dir_name(name)
     candidate = (base_dir / normalized).resolve()
     base_resolved = base_dir.resolve()
     if not candidate.is_relative_to(base_resolved):
-        raise SkillsError(
-            message=f"Unsafe skill path outside root: {name}",
-        )
+        if not _is_trusted_external_symlink(
+            base_dir,
+            normalized,
+            candidate,
+        ):
+            raise SkillsError(
+                message=f"Unsafe skill path outside root: {name}",
+            )
     return candidate
+
+
+def _is_trusted_external_symlink(
+    base_dir: Path,
+    normalized: str,
+    resolved_target: Path,
+) -> bool:
+    """Allow a workspace symlink whose resolved target is under a configured
+    external skill root (``config.skill_paths``).
+
+    On Windows, shared-skill links are often created with ``mklink /J``
+    (directory junctions). ``Path.is_symlink()`` returns ``False`` for
+    junctions (different reparse tag), so we must also accept junctions
+    (``Path.is_junction()``) here; otherwise every junction-based shared
+    skill gets rejected as an "unsafe skill path".
+    """
+    link = base_dir / normalized
+    if not link.is_symlink() and not link.is_junction():
+        return False
+    try:
+        extras = get_extra_skill_dirs()
+    except Exception:
+        return False
+    for root in extras:
+        try:
+            if resolved_target.is_relative_to(root.resolve()):
+                return True
+        except Exception:
+            continue
+    return False
 
 
 def _create_files_from_tree(base_dir: Path, tree: dict[str, Any]) -> None:

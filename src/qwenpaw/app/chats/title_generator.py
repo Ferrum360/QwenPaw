@@ -136,6 +136,11 @@ async def generate_and_update_title(
             )
             title = _clean_title(raw_title)
             if not title:
+                # Empty model output: fall back to the cleaned user message
+                # (or the placeholder name) so the chat still gets a readable
+                # title instead of staying on the truncated placeholder.
+                title = _clean_title(message) or _clean_title(placeholder_name)
+            if not title:
                 logger.debug(
                     "Title generation produced empty output for %s",
                     chat_id,
