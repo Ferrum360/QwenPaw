@@ -21,7 +21,11 @@ import logging
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
+<<<<<<< HEAD
 from typing import Any
+=======
+from typing import Any, Dict, List
+>>>>>>> main
 
 logger = logging.getLogger(__name__)
 
@@ -80,7 +84,7 @@ class AutoUnloadResult:
 _loaded_skills_cache: dict[str, str] = {}
 
 # Phase 2C: 使用历史跟踪
-_skill_usage_history: dict[str, dict] = {}  # {skill_name: {"last_used": timestamp, "use_count": int}}
+_skill_usage_history: Dict[str, Dict[str, Any]] = {}
 
 
 def get_loaded_skills_cache() -> dict[str, str]:
@@ -267,14 +271,22 @@ def auto_unload_stale_skills(
     return result
 
 
+<<<<<<< HEAD
 def smart_unload_recommendation() -> dict:
+=======
+def smart_unload_recommendation() -> Dict[str, Any]:
+>>>>>>> main
     """智能卸载建议（Phase 2C）
 
     Returns:
         dict with recommendation details
     """
     usage = get_context_usage()
+<<<<<<< HEAD
     recommendation = {
+=======
+    recommendation: Dict[str, Any] = {
+>>>>>>> main
         "context_usage": {
             "total_bytes": usage.total_bytes,
             "total_tokens_estimated": usage.total_tokens_estimated,
@@ -543,3 +555,10 @@ def ensure_skill_tools_initialized(workspace_dir: Path) -> None:
     if not _skill_tools_initialized:
         _skill_tools_initialized = True
         logger.info("Skill tools initialized")
+<<<<<<< HEAD
+=======
+
+
+
+>>>>>>> main
+
