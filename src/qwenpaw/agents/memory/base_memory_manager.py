@@ -9,7 +9,7 @@ from abc import ABC, abstractmethod
 from collections.abc import Callable
 from copy import deepcopy
 from datetime import datetime, timezone
-from typing import Any
+from typing import Any, Awaitable
 
 from agentscope.message import AssistantMsg, Msg, TextBlock, ThinkingBlock
 from agentscope.message import ToolCallBlock, ToolCallState
@@ -30,9 +30,6 @@ logger = logging.getLogger(__name__)
 MAX_QUERY_CHARS = 50
 SUMMARY_WORKER_CLOSE_TIMEOUT_SECONDS = 5.0
 MAX_SUMMARY_TASK_HISTORY = 100
-MAX_RUNTIME_TASK_HISTORY = 20
-MAX_RUNTIME_RESULT_CHARS = 4000
-MAX_RUNTIME_ERROR_CHARS = 240
 SUMMARY_TERMINAL_STATUSES = {"completed", "failed", "cancelled"}
 
 
@@ -52,9 +49,15 @@ class BaseMemoryManager(ABC):
 
     enabled = True
 
-    def __init__(self, working_dir: str, agent_id: str):
+    def __init__(
+        self,
+        working_dir: str,
+        agent_id: str,
+        title_refresh_callback: Callable[..., Awaitable[None]] | None = None,
+    ):
         self.working_dir: str = working_dir
         self.agent_id: str = agent_id
+        self.title_refresh_callback = title_refresh_callback
         self._summary_task_info: dict[str, dict[str, Any]] = {}
         self._task_counter: int = 0
         self._task_queue: asyncio.Queue[
@@ -104,7 +107,12 @@ class BaseMemoryManager(ABC):
         """
         from ..middlewares import MemoryMiddleware
 
-        return [MemoryMiddleware(memory_manager=self)]
+        return [
+            MemoryMiddleware(
+                memory_manager=self,
+                title_refresh_callback=self.title_refresh_callback,
+            ),
+        ]
 
     def get_memory_config(self) -> Any:
         """Return backend-specific memory configuration.
@@ -462,7 +470,6 @@ class BaseMemoryManager(ABC):
             "task_id": task_id,
             "start_time": datetime.now(timezone.utc),
             "status": "pending",
-            "message_count": len(messages),
             "result": None,
             "error": None,
             "finished_at": None,
@@ -542,12 +549,8 @@ class BaseMemoryManager(ABC):
     ) -> dict[str, Any]:
         """Return a sanitized operational snapshot for status UIs.
 
-        Memory-capture history includes the same bounded result text used for
-        inbox notifications. The shared summarize queue contains periodic
-        auto-memory work as well as user-triggered ``/new`` and ``/compact``
-        captures, so callers must not present every record as auto-memory.
-        It deliberately excludes messages, session identifiers, and task
-        kwargs.
+        This deliberately exposes aggregate counters rather than task results,
+        message markers, session identifiers, or other implementation details.
         """
         self._update_task_statuses()
 
@@ -577,6 +580,14 @@ class BaseMemoryManager(ABC):
                 else "idle"
             )
 
+        last_completed = next(
+            (
+                info
+                for info in reversed(task_infos)
+                if info.get("status") == "completed"
+            ),
+            None,
+        )
         last_failed = next(
             (
                 info
@@ -601,41 +612,8 @@ class BaseMemoryManager(ABC):
             value = info.get(key)
             return value.isoformat() if isinstance(value, datetime) else None
 
-        def _bounded_text(
-            value: Any,
-            limit: int,
-            *,
-            single_line: bool = False,
-        ) -> str | None:
-            text = str(value or "").strip()
-            if not text:
-                return None
-            if single_line:
-                text = " ".join(text.split())
-            return text[:limit]
-
-        tasks = []
-        for info in reversed(task_infos[-MAX_RUNTIME_TASK_HISTORY:]):
-            tasks.append(
-                {
-                    "task_id": str(info.get("task_id") or ""),
-                    "status": str(info.get("status") or "pending"),
-                    "queued_at": _iso_time(info, "start_time"),
-                    "finished_at": _iso_time(info, "finished_at"),
-                    "message_count": max(
-                        0,
-                        int(info.get("message_count") or 0),
-                    ),
-                    "result": _bounded_text(
-                        info.get("result"),
-                        MAX_RUNTIME_RESULT_CHARS,
-                    ),
-                    "error": _bounded_text(
-                        info.get("error"),
-                        MAX_RUNTIME_ERROR_CHARS,
-                    ),
-                },
-            )
+        error = str(last_failed.get("error") or "") if last_failed else ""
+        error = " ".join(error.split())[:240] or None
 
         return {
             "worker": {
@@ -646,14 +624,20 @@ class BaseMemoryManager(ABC):
             "auto_memory": {
                 "enabled": interval > 0,
                 "interval": interval,
+                # Turn lifecycle state is session-owned and persisted in
+                # AgentState, so the process-level memory manager no longer
+                # aggregates session or pending-marker counters.
+                "active_sessions": 0,
+                "sessions_with_pending": 0,
+                "pending_turns": 0,
             },
-            "tasks": tasks,
             "recent": {
-                "last_error": _bounded_text(
-                    last_failed.get("error") if last_failed else None,
-                    MAX_RUNTIME_ERROR_CHARS,
-                    single_line=True,
+                "last_completed_at": _iso_time(
+                    last_completed,
+                    "finished_at",
                 ),
+                "last_failed_at": _iso_time(last_failed, "finished_at"),
+                "last_error": error,
             },
             "reindexing": bool(getattr(self, "is_reindexing", False)),
         }
