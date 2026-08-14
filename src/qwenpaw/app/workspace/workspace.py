@@ -439,7 +439,7 @@ class Workspace:
                     "working_dir": str(ws.workspace_dir),
                     "agent_id": ws.agent_id,
                     "title_refresh_callback": make_auto_title_refresh_callback(
-                        ws
+                        ws,
                     ),
                 },
                 start_method="start",
