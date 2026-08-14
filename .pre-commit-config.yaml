@@ -63,7 +63,7 @@ repos:
     rev: 6.1.0
     hooks:
       - id: flake8
-        args: [ "--extend-ignore=E203,E501"]
+        args: [ "--extend-ignore=E203,E501,E704,E226"]
         exclude: '(?x)(.*/skills/.*|^scripts/pack/|^e2e/)'
   - repo: https://github.com/pylint-dev/pylint
     rev: v3.0.2
