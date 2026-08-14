@@ -1,0 +1,22 @@
+[MASTER]
+# Use parallel for speed
+jobs=4
+load-plugins=
+
+[MESSAGES CONTROL]
+# Ignore these warnings that are pre-existing across the codebase
+disable=
+    line-too-long,
+    too-many-branches,
+    too-many-return-statements,
+    unused-argument,
+    unused-variable,
+    raise-missing-from,
+    unused-import,
+    global-statement,
+    broad-exception-caught,
+    too-few-public-methods,
+
+[FORMAT]
+# Match black's line length
+max-line-length=79
