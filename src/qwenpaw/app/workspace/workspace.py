@@ -31,7 +31,7 @@ from ..task_tracker import TaskTracker
 from ..chats.session import SafeJSONSession
 from ..crons.manager import CronManager
 from ..crons.repo.json_repo import JsonJobRepository
-from ...config.config import load_agent_config
+from ...config.config import load_agent_config, AgentProfileConfig
 
 logger = logging.getLogger(__name__)
 
@@ -125,7 +125,7 @@ class Workspace:
         self._service_manager = ServiceManager(self)
 
         # Non-service state
-        self._config = None  # Loaded before start()
+        self._config: Optional["AgentProfileConfig"] = None  # Loaded before start()
         self._started = False
         self._manager = None  # Reference to MultiAgentManager
         self._task_tracker = TaskTracker()
@@ -398,7 +398,7 @@ class Workspace:
         def _init_local_workspace(
             ws: "Workspace",
             _service: Any,
-        ) -> "QwenPawLocalWorkspace":
+        ):
             return ws._local_workspace  # pylint: disable=protected-access
 
         sm.register(
@@ -431,7 +431,7 @@ class Workspace:
             ServiceDescriptor(
                 name="memory_manager",
                 service_class=lambda ws: get_memory_manager_backend(
-                    ws._config.running.memory_manager_backend,
+                    ws._config.running.memory_manager_backend  # type: ignore[union-attr]
                 ),
                 init_args=lambda ws: {
                     "working_dir": str(ws.workspace_dir),
@@ -706,3 +706,10 @@ class Workspace:
             f"workspace={self.workspace_dir}, "
             f"status={status})"
         )
+
+
+
+
+
+
+

@@ -89,6 +89,9 @@ class WorkspaceBootstrapFactory:
                 CheckpointAutoSnapshotHook,
                 CheckpointQueryGateHook,
             )
+            from ...runtime.auto_unload import (
+                AutoUnloadHook,
+            )
 
             hook_clses: list[type] = [
                 CronContextHook,
@@ -106,6 +109,7 @@ class WorkspaceBootstrapFactory:
                 CancelCleanupHook,
                 CheckpointQueryGateHook,
                 CheckpointAutoSnapshotHook,
+                AutoUnloadHook,
             ]
             if extra_hook_clses:
                 hook_clses.extend(extra_hook_clses)
