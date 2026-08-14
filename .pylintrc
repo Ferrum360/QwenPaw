@@ -16,6 +16,7 @@ disable=
     global-statement,
     broad-exception-caught,
     too-few-public-methods,
+    not-callable,
 
 [FORMAT]
 # Match black's line length
