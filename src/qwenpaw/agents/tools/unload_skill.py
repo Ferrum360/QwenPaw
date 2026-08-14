@@ -3,9 +3,6 @@
 
 Phase 2B: Agent self-management — unload lazy skill when no longer needed.
 """
-
-from pathlib import Path
-
 from agentscope.message import TextBlock
 from agentscope.tool import ToolChunk
 from agentscope.message import ToolResultState
