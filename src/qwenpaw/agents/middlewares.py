@@ -368,7 +368,7 @@ class MemoryMiddleware(MiddlewareBase):
         callback = self._title_refresh_callback
         if callback is not None:
             try:
-                asyncio.create_task(
+                asyncio.create_task(  # type: ignore[arg-type]
                     callback(
                         agent,
                         messages,
@@ -542,7 +542,7 @@ class MemoryMiddleware(MiddlewareBase):
         messages[insert_at:insert_at] = injected
         return messages
 
-        
+
 
     @staticmethod
     def _agent_session_id(agent: "Agent") -> str:

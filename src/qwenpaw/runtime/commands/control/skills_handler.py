@@ -7,11 +7,10 @@ and lazy (on-demand) categories. Supports dynamic skill loading (Phase 1).
 
 from __future__ import annotations
 
+import logging
 from pathlib import Path
 
 import frontmatter as fm
-
-import logging
 
 from ....agents.skill_system import (
     detect_lazy_skill_trigger,
@@ -20,14 +19,13 @@ from ....agents.skill_system import (
     reconcile_workspace_manifest,
     resolve_core_and_lazy_skills,
 )
-
-logger = logging.getLogger(__name__)
 from ....agents.utils.file_handling import (
     read_text_file_with_encoding_fallback,
 )
 from ....exceptions import SkillsError
-
 from .base import BaseControlCommandHandler, ControlContext
+
+logger = logging.getLogger(__name__)
 
 
 class SkillsCommandHandler(BaseControlCommandHandler):
@@ -82,7 +80,6 @@ class SkillsCommandHandler(BaseControlCommandHandler):
         channel_id: str,
     ) -> str:
         """List all enabled skills, separated into core and lazy categories."""
-        manifest = reconcile_workspace_manifest(workspace_dir)
         skills_dir = get_workspace_skills_dir(workspace_dir)
 
         # Use new core/lazy separation

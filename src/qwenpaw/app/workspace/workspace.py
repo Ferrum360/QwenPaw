@@ -398,7 +398,7 @@ class Workspace:
         def _init_local_workspace(
             ws: "Workspace",
             _service: Any,
-        ) -> None:
+        ):
             return ws._local_workspace  # pylint: disable=protected-access
 
         sm.register(
@@ -431,7 +431,7 @@ class Workspace:
             ServiceDescriptor(
                 name="memory_manager",
                 service_class=lambda ws: get_memory_manager_backend(
-                    ws._config.running.memory_manager_backend  # type: ignore[union-attr]
+                    ws._config.running.memory_manager_backend,  # type: ignore[union-attr]
                 ),
                 init_args=lambda ws: {
                     "working_dir": str(ws.workspace_dir),
