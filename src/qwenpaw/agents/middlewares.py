@@ -364,6 +364,24 @@ class MemoryMiddleware(MiddlewareBase):
         snapshots = turn_state["snapshots"]
         for marker in submitted:
             snapshots.pop(marker, None)
+        # Best-effort chat title refresh: after a successful auto-memory
+        # flush the conversation has moved on, so regenerate the session
+        # title from this recent slice. Spawned as a background task so it
+        # can never block or break the reply path.
+        callback = self._title_refresh_callback
+        if callback is not None:
+            try:
+                asyncio.create_task(
+                    callback(
+                        agent,
+                        messages,
+                        session_id=self._agent_session_id(agent),
+                    ),
+                )
+            except Exception:
+                logger.exception(
+                    "MemoryMiddleware title refresh scheduling failed",
+                )
 
     def _discard_unresolved_pending_markers(
         self,
@@ -527,24 +545,7 @@ class MemoryMiddleware(MiddlewareBase):
         messages[insert_at:insert_at] = injected
         return messages
 
-        # Best-effort chat title refresh: after a successful auto-memory
-        # flush the conversation has moved on, so regenerate the session
-        # title from this recent slice. Spawned as a background task so it
-        # can never block or break the reply path.
-        callback = self._title_refresh_callback
-        if callback is not None:
-            try:
-                asyncio.create_task(
-                    callback(
-                        agent,
-                        messages,
-                        session_id=self._agent_session_id(agent),
-                    ),
-                )
-            except Exception:
-                logger.exception(
-                    "MemoryMiddleware title refresh scheduling failed",
-                )
+        
 
     @staticmethod
     def _agent_session_id(agent: "Agent") -> str:
