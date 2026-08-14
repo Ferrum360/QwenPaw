@@ -6,6 +6,7 @@ backup archives or restored from the secrets subsystem.  A valid signature
 covers canonical ``meta.json`` data (excluding the signature field itself) and
 all non-directory zip entries except ``meta.json``.
 """
+
 from .digest import (
     SCHEME,
     compute_signature,

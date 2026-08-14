@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """Skills hub client and install helpers."""
+
 from __future__ import annotations
 
 import asyncio
@@ -82,9 +83,7 @@ def _build_hub_conflict(name: str) -> dict[str, Any]:
     return {
         **conflict,
         "conflicts": [conflict],
-        "message": (
-            f"Failed to create skill '{name}'. " "This skill already exists."
-        ),
+        "message": (f"Failed to create skill '{name}'. " "This skill already exists."),
     }
 
 
@@ -138,9 +137,9 @@ _drain_event.set()
 
 # Cancel checker (callable returning bool), propagated by contextvar so
 # nested install tasks each carry their own checker without interference.
-_cancel_checker_ctx: contextvars.ContextVar[
-    Any | None
-] = contextvars.ContextVar("skills_hub_cancel_checker", default=None)
+_cancel_checker_ctx: contextvars.ContextVar[Any | None] = contextvars.ContextVar(
+    "skills_hub_cancel_checker", default=None
+)
 
 
 # ---------- Env-driven config ----------------------------------------------
@@ -575,10 +574,7 @@ async def _http_fetch(
                     body_text = e.response.text
                 except Exception:
                     body_text = ""
-                if (
-                    "rate limit" in body_text.lower()
-                    or "rate limit" in str(e).lower()
-                ):
+                if "rate limit" in body_text.lower() or "rate limit" in str(e).lower():
                     raise SkillsError(
                         message="GitHub API rate limit exceeded"
                         ". Set GITHUB_TOKEN "
@@ -596,8 +592,7 @@ async def _http_fetch(
                 hint = ""
                 if "api.github.com" in host or "github" in url.lower():
                     hint = (
-                        " For GitHub sources, set GITHUB_TOKEN to avoid "
-                        "rate limits."
+                        " For GitHub sources, set GITHUB_TOKEN to avoid " "rate limits."
                     )
                 raise SkillsError(
                     message=(
@@ -783,9 +778,7 @@ def _bundle_has_content(payload: Any) -> bool:
     if not isinstance(payload, dict):
         return False
     content = (
-        payload.get("content")
-        or payload.get("skill_md")
-        or payload.get("skillMd")
+        payload.get("content") or payload.get("skill_md") or payload.get("skillMd")
     )
     if isinstance(content, str) and content.strip():
         return True
@@ -1658,9 +1651,7 @@ async def _fetch_bundle_from_lobehub_url(
             message="Invalid LobeHub skill URL format",
         )
     params = (
-        {"version": requested_version.strip()}
-        if requested_version.strip()
-        else None
+        {"version": requested_version.strip()} if requested_version.strip() else None
     )
     try:
         payload = await _http_bytes_get(
@@ -1671,8 +1662,7 @@ async def _fetch_bundle_from_lobehub_url(
         )
     except httpx.HTTPStatusError as e:
         raise SkillsError(
-            message="LobeHub skill download failed: "
-            f"{_format_http_error_body(e)}",
+            message="LobeHub skill download failed: " f"{_format_http_error_body(e)}",
         ) from e
     except ValueError as e:
         raise SkillsError(message=f"LobeHub skill download failed: {e}") from e
@@ -1828,14 +1818,11 @@ async def _fetch_bundle_from_qwenpaw_url(
     except httpx.HTTPStatusError as e:
         raise SkillsError(
             message=(
-                "QwenPaw archive download failed: "
-                f"{_format_http_error_body(e)}."
+                "QwenPaw archive download failed: " f"{_format_http_error_body(e)}."
             ),
         ) from e
     converter = (
-        _modelscope_archive_to_bundle
-        if owner
-        else _qwenpaw_detail_archive_to_bundle
+        _modelscope_archive_to_bundle if owner else _qwenpaw_detail_archive_to_bundle
     )
     bundle = await asyncio.to_thread(
         converter,
@@ -2001,9 +1988,7 @@ async def _hydrate_clawhub_payload(
         )
         version_data = await _http_json_get(version_url)
         version_obj = (
-            version_data.get("version")
-            if isinstance(version_data, dict)
-            else None
+            version_data.get("version") if isinstance(version_data, dict) else None
         )
 
     if not isinstance(version_obj, dict):
@@ -2037,8 +2022,7 @@ async def _hydrate_clawhub_payload(
     if not files.get("SKILL.md"):
         if last_fetch_error is not None:
             raise SkillsError(
-                message="Failed to fetch SKILL.md from hub: "
-                + str(last_fetch_error),
+                message="Failed to fetch SKILL.md from hub: " + str(last_fetch_error),
             ) from last_fetch_error
         return data
 

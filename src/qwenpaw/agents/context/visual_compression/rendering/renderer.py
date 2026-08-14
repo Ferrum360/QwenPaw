@@ -80,15 +80,10 @@ _DENSE_ATLAS_PROFILES = {
     "high": (_ASSET_ROOT / "atlas-gray-high.ts", 3, 6),
 }
 _INVERT_BYTES = bytes.maketrans(bytes(range(256)), bytes(reversed(range(256))))
-_COVERAGE_TO_ROLE_1 = bytes(
-    0 if coverage == 0 else 1 for coverage in range(256)
-)
-_COVERAGE_TO_ROLE_2 = bytes(
-    0 if coverage == 0 else 2 for coverage in range(256)
-)
+_COVERAGE_TO_ROLE_1 = bytes(0 if coverage == 0 else 1 for coverage in range(256))
+_COVERAGE_TO_ROLE_2 = bytes(0 if coverage == 0 else 2 for coverage in range(256))
 _ROLE_TO_MASK = {
-    slot: bytes(255 if value == slot else 0 for value in range(256))
-    for slot in (1, 2)
+    slot: bytes(255 if value == slot else 0 for value in range(256)) for slot in (1, 2)
 }
 _ROLE_PALETTE = ((20, 120, 50), (30, 70, 180))
 
@@ -180,9 +175,7 @@ def _dense_glyph_role_scanlines(
     role_table = _COVERAGE_TO_ROLE_1 if role_slot == 1 else _COVERAGE_TO_ROLE_2
     return tuple(
         atlas.pixels[
-            src_offset
-            + glyph_y * src_width : src_offset
-            + (glyph_y + 1) * src_width
+            src_offset + glyph_y * src_width : src_offset + (glyph_y + 1) * src_width
         ].translate(role_table)
         for glyph_y in range(atlas.cell_height)
     )
@@ -362,8 +355,7 @@ def _split_visual_pages(
     for line in lines:
         line_chars = len(line) + int(bool(current))
         if current and (
-            len(current) >= line_limit
-            or current_chars + line_chars > char_limit
+            len(current) >= line_limit or current_chars + line_chars > char_limit
         ):
             pages.append(current)
             current = []
@@ -404,9 +396,7 @@ def _page_render_lines(
 def reflow_for_render(text: str) -> str:
     """Compact text and preserve hard breaks with a visible glyph."""
     normalized = _minify_for_render(text).replace("↵", "⏎")
-    return "↵".join(
-        _expand_tabs_visible(line) for line in normalized.split("\n")
-    )
+    return "↵".join(_expand_tabs_visible(line) for line in normalized.split("\n"))
 
 
 def prepare_render_text(text: str) -> str:
@@ -496,8 +486,7 @@ def _encode_png(
         raise ValueError("invalid framebuffer length")
     stride = width * channels
     raw = b"".join(
-        b"\x00" + pixels[row * stride : (row + 1) * stride]
-        for row in range(height)
+        b"\x00" + pixels[row * stride : (row + 1) * stride] for row in range(height)
     )
     color_type = 0 if channels == 1 else 2
     ihdr = struct.pack(">IIBBBBB", width, height, 8, color_type, 0, 0, 0)
@@ -523,8 +512,7 @@ def _encode_rgb_png(pixels: bytes, width: int, height: int) -> bytes:
 def _role_blend_lut(channel: int) -> bytes:
     """Map grayscale coverage to one role-color channel."""
     return bytes(
-        255 - ((255 - gray) * (255 - channel) + 127) // 255
-        for gray in range(256)
+        255 - ((255 - gray) * (255 - channel) + 127) // 255 for gray in range(256)
     )
 
 
@@ -568,16 +556,12 @@ def _render_dense_atlas_page(  # pylint: disable=R0912,R0915,R1702
         profile.padding * 2 + len(lines) * profile.line_height,
     )
     framebuffer = bytearray(b"\xff") * (profile.width * height)
-    role_mask = (
-        bytearray(profile.width * height) if slot_lines is not None else None
-    )
+    role_mask = bytearray(profile.width * height) if slot_lines is not None else None
     dropped = 0
     dropped_codepoints: dict[str, int] = {}
     scanline_blit_safe = True
     for row, line in enumerate(lines):
-        slot_line = (
-            slot_lines[row] if slot_lines and row < len(slot_lines) else ""
-        )
+        slot_line = slot_lines[row] if slot_lines and row < len(slot_lines) else ""
         col = 0
         base_y = profile.padding + row * profile.line_height
         for char_index, char in enumerate(line):
@@ -755,8 +739,7 @@ def _render_text_pages_uncached(  # pylint: disable=R0912
         if dropped_chars:
             missing = ", ".join(sorted(dropped_codepoints))
             raise RuntimeError(
-                "frozen atlas dropped characters after preprocessing: "
-                f"{missing}",
+                "frozen atlas dropped characters after preprocessing: " f"{missing}",
             )
         png = (
             _encode_rgb_png(image.tobytes(), profile.width, height)

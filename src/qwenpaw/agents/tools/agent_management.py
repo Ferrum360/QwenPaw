@@ -420,8 +420,7 @@ def format_background_submission_text(
             f"[SESSION: {session_id}]",
             "",
             "Task submitted successfully.",
-            "The subagent is working autonomously"
-            " \u2014 do NOT poll immediately.",
+            "The subagent is working autonomously" " \u2014 do NOT poll immediately.",
             "Wait at least 30 seconds, then check with:",
             f"  check_agent_task(task_id='{task_id}')",
         ],
@@ -503,8 +502,7 @@ async def list_agents(
     target_param="to_agent",
     policy_name="ChatWithAgent",
     ui_description=(
-        "Send a message to another configured agent and wait for "
-        "the response"
+        "Send a message to another configured agent and wait for " "the response"
     ),
     ui_icon="💬",
 )
@@ -929,8 +927,7 @@ def _coerce_bool(
         if text in ("false", "0", "no", "off"):
             return False
     raise ValueError(
-        f"'{field_name}' must be a boolean "
-        f"(or 0/1 / true/false / yes/no / on/off)",
+        f"'{field_name}' must be a boolean " f"(or 0/1 / true/false / yes/no / on/off)",
     )
 
 
@@ -1248,8 +1245,7 @@ async def _spawn_batch(
             ).strip()
         ):
             return _tool_text_response(
-                f"ERROR: batch[{i}] must be a dict with a "
-                f"non-empty 'task' field",
+                f"ERROR: batch[{i}] must be a dict with a " f"non-empty 'task' field",
             )
         try:
             normalized.append(
@@ -1362,10 +1358,7 @@ async def _call_fork_api(
     base_url: Optional[str] = None,
 ) -> Optional[Dict[str, Any]]:
     """Call POST /api/fork/agent to prepare fork session + worktree."""
-    url = (
-        _normalize_api_base_url(base_url).removesuffix("/api")
-        + "/api/fork/agent"
-    )
+    url = _normalize_api_base_url(base_url).removesuffix("/api") + "/api/fork/agent"
     payload = {
         "agent_id": agent_id,
         "parent_session_id": parent_session_id,

@@ -16,7 +16,6 @@ from ...agents.skill_system.hub import http_json_get
 from ..schema import MarketResult
 from .base import MARKET_SEARCH_TIMEOUT_S
 
-
 _BASE_URL = "https://platform.agentscope.io"
 _SEARCH_PATH = "/openapi/v1/skills"
 # Upstream hard limit: page_size must be 1..100 (400 otherwise).

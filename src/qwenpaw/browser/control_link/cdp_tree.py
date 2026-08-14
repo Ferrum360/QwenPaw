@@ -71,9 +71,7 @@ def _text_by_backend(snap: Mapping[str, Any]) -> dict[int, str]:
         ]
         while stack:
             index, owner, excluded = stack.pop()
-            backend_id = (
-                backend_ids[index] if index < len(backend_ids) else None
-            )
+            backend_id = backend_ids[index] if index < len(backend_ids) else None
             if isinstance(backend_id, int) and backend_id > 0:
                 owner = backend_id
             node_name = _s(
@@ -91,9 +89,7 @@ def _text_by_backend(snap: Mapping[str, Any]) -> dict[int, str]:
                 text = " ".join(
                     _s(
                         strings,
-                        node_values[index]
-                        if index < len(node_values)
-                        else None,
+                        node_values[index] if index < len(node_values) else None,
                     ).split(),
                 )
                 if text:
@@ -103,8 +99,7 @@ def _text_by_backend(snap: Mapping[str, Any]) -> dict[int, str]:
             )
 
     return {
-        backend_id: " ".join(texts)
-        for backend_id, texts in text_by_backend.items()
+        backend_id: " ".join(texts) for backend_id, texts in text_by_backend.items()
     }
 
 
@@ -154,9 +149,7 @@ def merge_ax_dom(
     attrs_by_backend = dom_attrs_by_backend(snapshot)
     text_by_backend = _text_by_backend(snapshot)
     by_id = {str(node["nodeId"]): node for node in nodes if "nodeId" in node}
-    children = {
-        str(child) for node in nodes for child in node.get("childIds") or []
-    }
+    children = {str(child) for node in nodes for child in node.get("childIds") or []}
     root_id = next(
         (node_id for node_id in by_id if node_id not in children),
         "",
@@ -244,14 +237,10 @@ def resolve_spec(
                 node
                 for node in candidates
                 if node.role == str(args[0])
-                and (
-                    not kwargs.get("name") or str(kwargs["name"]) in node.name
-                )
+                and (not kwargs.get("name") or str(kwargs["name"]) in node.name)
             ]
         elif method in {"get_by_text", "get_by_label"}:
-            candidates = [
-                node for node in candidates if str(args[0]) in node.name
-            ]
+            candidates = [node for node in candidates if str(args[0]) in node.name]
         elif method == "get_by_placeholder":
             candidates = [
                 node
@@ -260,9 +249,7 @@ def resolve_spec(
             ]
         elif method == "filter":
             text = str(kwargs.get("has_text", ""))
-            candidates = [
-                node for node in candidates if not text or text in node.name
-            ]
+            candidates = [node for node in candidates if not text or text in node.name]
         elif method == "nth":
             candidates = candidates[int(args[0]) : int(args[0]) + 1]
         elif method == "first":
@@ -379,9 +366,9 @@ def _candidate_aka(
             f"name={json.dumps(candidate.name, ensure_ascii=False)})"
             f".nth({index})"
         )
-    role_index = [
-        node for node in candidates if node.role == candidate.role
-    ].index(candidate)
+    role_index = [node for node in candidates if node.role == candidate.role].index(
+        candidate
+    )
     return (
         "get_by_role("
         f"{json.dumps(candidate.role, ensure_ascii=False)}).nth({role_index})"

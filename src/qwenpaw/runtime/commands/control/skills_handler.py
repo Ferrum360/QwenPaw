@@ -37,9 +37,7 @@ class SkillsCommandHandler(BaseControlCommandHandler):
     """
 
     command_name = "/skills"
-    description = (
-        "List chat-available skills and expose explicit skill commands"
-    )
+    description = "List chat-available skills and expose explicit skill commands"
 
     @staticmethod
     def _truncate_description(
@@ -67,7 +65,12 @@ class SkillsCommandHandler(BaseControlCommandHandler):
         # Check if this is a /load <skill> command
         input_text = (context.input or "").strip()
         if input_text.startswith("/load ") or input_text.startswith("/["):
-            skill_name = input_text.replace("/load ", "").replace("/[", "").replace("]", "").strip()
+            skill_name = (
+                input_text.replace("/load ", "")
+                .replace("/[", "")
+                .replace("]", "")
+                .strip()
+            )
             return await self._handle_load_skill(context, workspace_dir, skill_name)
 
         # Normal /skills listing
@@ -84,7 +87,8 @@ class SkillsCommandHandler(BaseControlCommandHandler):
 
         # Use new core/lazy separation
         core_skills, lazy_skills_meta = resolve_core_and_lazy_skills(
-            workspace_dir, channel_id,
+            workspace_dir,
+            channel_id,
         )
 
         lines = []
@@ -108,7 +112,9 @@ class SkillsCommandHandler(BaseControlCommandHandler):
                 except Exception:
                     description = ""
 
-                lines.append(f"✅ `{skill_name}` — {self._truncate_description(description, 50)}")
+                lines.append(
+                    f"✅ `{skill_name}` — {self._truncate_description(description, 50)}"
+                )
         else:
             lines.append("*No core skills enabled.*")
 
@@ -211,7 +217,8 @@ class AutoLoadSkillHandler(BaseControlCommandHandler):
                 - skill_name: Name of the matched skill (or None)
         """
         _, lazy_skills_meta = resolve_core_and_lazy_skills(
-            workspace_dir, channel_id,
+            workspace_dir,
+            channel_id,
         )
 
         # Use enhanced detection with optional semantic matching

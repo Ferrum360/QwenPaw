@@ -156,9 +156,7 @@ def _get_httpx_retryable() -> tuple[type[Exception], ...]:
 def _is_retryable(exc: Exception) -> bool:
     """Return *True* if *exc* should trigger a retry."""
     retryable = (
-        _get_openai_retryable()
-        + _get_anthropic_retryable()
-        + _get_httpx_retryable()
+        _get_openai_retryable() + _get_anthropic_retryable() + _get_httpx_retryable()
     )
     if retryable and isinstance(exc, retryable):
         return True
@@ -374,8 +372,7 @@ class RetryChatModel(ChatModelBase):
         super().__init__(
             credential=getattr(inner, "credential", None),
             model=getattr(inner, "model", "unknown"),
-            parameters=getattr(inner, "parameters", None)
-            or ChatModelBase.Parameters(),
+            parameters=getattr(inner, "parameters", None) or ChatModelBase.Parameters(),
             stream=getattr(inner, "stream", True),
             context_size=getattr(inner, "context_size", 32768),
         )
@@ -495,9 +492,7 @@ class RetryChatModel(ChatModelBase):
             jitter_range=self._rate_limit_config.jitter_range,
         )
 
-        retries = (
-            self._retry_config.max_retries if self._retry_config.enabled else 0
-        )
+        retries = self._retry_config.max_retries if self._retry_config.enabled else 0
         attempts = retries + 1
         last_exc: Exception | None = None
 
@@ -580,8 +575,7 @@ class RetryChatModel(ChatModelBase):
 
                 delay = _compute_backoff(attempt, self._retry_config)
                 logger.warning(
-                    "LLM call failed (attempt %d/%d): %s. "
-                    "Retrying in %.1fs ...",
+                    "LLM call failed (attempt %d/%d): %s. " "Retrying in %.1fs ...",
                     attempt,
                     attempts,
                     exc,
@@ -648,9 +642,7 @@ class RetryChatModel(ChatModelBase):
                                 self._rate_limit_config.acquire_timeout,
                             ),
                             details={
-                                "reason": (
-                                    "Timed out waiting for execution slot"
-                                ),
+                                "reason": ("Timed out waiting for execution slot"),
                             },
                         ) from exc
 
@@ -702,8 +694,7 @@ class RetryChatModel(ChatModelBase):
 
                 retry_delay = _compute_backoff(attempt, self._retry_config)
                 logger.warning(
-                    "LLM stream failed (attempt %d/%d): %s. "
-                    "Retrying in %.1fs ...",
+                    "LLM stream failed (attempt %d/%d): %s. " "Retrying in %.1fs ...",
                     attempt,
                     max_attempts,
                     retry_exc,

@@ -252,9 +252,7 @@ async def get_channel_health(
     "/channels/{channel_name}/restart",
     response_model=ChannelRestartResponse,
     summary="Restart a channel",
-    description=(
-        "Stop and re-start a specific channel without restarting the agent"
-    ),
+    description=("Stop and re-start a specific channel without restarting the agent"),
 )
 async def restart_channel(
     channel_name: str = Path(
@@ -1067,9 +1065,7 @@ async def put_file_guard(
 
         fg.sensitive_files = ensure_file_guard_paths(body.paths)
     if body.allow_preview_outside_workspace is not None:
-        fg.allow_preview_outside_workspace = (
-            body.allow_preview_outside_workspace
-        )
+        fg.allow_preview_outside_workspace = body.allow_preview_outside_workspace
 
     save_config(config)
 

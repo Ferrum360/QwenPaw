@@ -8,11 +8,11 @@ kinds are added (e.g. poll, form), put their builders + parsers here.
 Kept separate from :mod:`card_handler` so the templates are easy to
 unit-test and reuse without pulling in any channel-level dependency.
 """
+
 from __future__ import annotations
 
 import json
 from typing import Any, Dict, Optional
-
 
 # =====================================================================
 # Shared utilities

@@ -216,9 +216,7 @@ class LLMRateLimiter:
                          for minutes.  Callers that receive a Retry-After
                          above the cap are raised immediately (no retry).
         """
-        raw_pause = (
-            retry_after if retry_after is not None else self._default_pause
-        )
+        raw_pause = retry_after if retry_after is not None else self._default_pause
         pause = min(raw_pause, self.MAX_PAUSE_SECONDS)
         if pause < raw_pause:
             logger.debug(
@@ -322,9 +320,7 @@ async def get_rate_limiter(
         )
 
         resolved_max = (
-            max_concurrent
-            if max_concurrent is not None
-            else LLM_MAX_CONCURRENT
+            max_concurrent if max_concurrent is not None else LLM_MAX_CONCURRENT
         )
         resolved_qpm = max_qpm if max_qpm is not None else LLM_MAX_QPM
         resolved_pause = (

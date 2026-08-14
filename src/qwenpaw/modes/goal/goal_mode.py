@@ -9,6 +9,7 @@ Inherits ``AgentMode`` so it plugs into the standard
 ``builtin_mode_clses`` bootstrap — all registration
 stays inside this file and ``modes/goal/``.
 """
+
 from __future__ import annotations
 
 import logging
@@ -183,17 +184,13 @@ class GoalMode(AgentMode):
                 name="get_goal",
                 func=make_get_goal(self),
                 requires_modes=("goal",),
-                description=(
-                    "Get the current goal status, " "budgets, and usage."
-                ),
+                description=("Get the current goal status, " "budgets, and usage."),
             ),
             ToolDescriptor(
                 name="create_goal",
                 func=make_create_goal(self),
                 requires_modes=("goal",),
-                description=(
-                    "Create a goal only when " "explicitly requested."
-                ),
+                description=("Create a goal only when " "explicitly requested."),
             ),
             ToolDescriptor(
                 name="update_goal",
@@ -302,8 +299,7 @@ class GoalMode(AgentMode):
                     TextBlock(
                         type="text",
                         text=(
-                            f"End the active {conflict} mode before "
-                            f"starting /goal."
+                            f"End the active {conflict} mode before " f"starting /goal."
                         ),
                     ),
                 ],

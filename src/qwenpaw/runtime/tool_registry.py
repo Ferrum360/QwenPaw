@@ -96,8 +96,7 @@ class ToolRegistry:
     def register(self, desc: ToolDescriptor) -> None:
         if not isinstance(desc, ToolDescriptor):
             raise TypeError(
-                "register() requires a ToolDescriptor,"
-                f" got {type(desc).__name__}",
+                "register() requires a ToolDescriptor," f" got {type(desc).__name__}",
             )
         if desc.name in self._descs:
             raise ValueError(f"tool {desc.name!r} already registered")

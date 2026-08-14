@@ -9,6 +9,7 @@ Extracted from the three tool-guard Guardians as pure functions:
 These functions are stateless and receive all configuration via parameters
 rather than reading global config — configuration lives in policy.yaml.
 """
+
 from __future__ import annotations
 
 import logging
@@ -168,11 +169,7 @@ def _looks_like_path_token(token: str) -> bool:
     lowered = token.lower()
     if lowered.startswith(("http://", "https://", "ftp://", "data:")):
         return False
-    return (
-        token.startswith(("~", "/", "./", "../"))
-        or "/" in token
-        or "\\" in token
-    )
+    return token.startswith(("~", "/", "./", "../")) or "/" in token or "\\" in token
 
 
 def _extract_paths_from_shell_command(command: str) -> list[str]:
@@ -378,9 +375,7 @@ def detect_dangerous_patterns(  # noqa: E501  pylint: disable=too-many-locals,to
         DEFAULT_REGISTRY,
     )  # pylint: disable=import-outside-toplevel
 
-    target_param_name = (
-        DEFAULT_REGISTRY.get_target_param(tool_name) or "target"
-    )
+    target_param_name = DEFAULT_REGISTRY.get_target_param(tool_name) or "target"
 
     # Collect all scannable (param_name, value) pairs from raw_params.
     # The target value is represented under its real param name.
@@ -581,16 +576,14 @@ def _check_obfuscated_flags(command: str) -> GuardFinding | None:
         return _make_evasion_finding(
             "SHELL_EVASION_OBFUSCATED_FLAGS",
             "HIGH",
-            "Command contains ANSI-C quoting ($'...') "
-            "which can hide characters",
+            "Command contains ANSI-C quoting ($'...') " "which can hide characters",
             command,
         )
     if _LOCALE_QUOTE_RE.search(command):
         return _make_evasion_finding(
             "SHELL_EVASION_OBFUSCATED_FLAGS",
             "HIGH",
-            'Command contains locale quoting ($"...") '
-            "which can hide characters",
+            'Command contains locale quoting ($"...") ' "which can hide characters",
             command,
         )
     if _EMPTY_SPECIAL_QUOTE_DASH_RE.search(command):
@@ -644,8 +637,7 @@ def _check_backslash_escaped_operators(command: str) -> GuardFinding | None:
                 return _make_evasion_finding(
                     "SHELL_EVASION_BACKSLASH_OPERATOR",
                     "HIGH",
-                    f"Command contains backslash before shell operator"
-                    f" (\\{ch})",
+                    f"Command contains backslash before shell operator" f" (\\{ch})",
                     command,
                     matched=command[max(0, i - 1) : i + 1],
                 )
@@ -729,9 +721,7 @@ def _check_comment_quote_desync(command: str) -> GuardFinding | None:
                     "HIGH",
                     "Command contains quote characters inside a # comment",
                     command,
-                    matched=command[
-                        i : (line_end if line_end != -1 else i + 40)
-                    ],
+                    matched=command[i : (line_end if line_end != -1 else i + 40)],
                 )
             if line_end == -1:
                 break

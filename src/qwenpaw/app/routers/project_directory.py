@@ -7,6 +7,7 @@ used by every agent mode.
 
 All endpoints are mounted under ``/workspace/project-directory/``.
 """
+
 from __future__ import annotations
 
 import asyncio
@@ -240,9 +241,7 @@ async def clone_project(
 
     base = _projects_base(workspace.workspace_dir)
     # Derive repo name from URL when not explicitly provided
-    repo_name = (
-        body.name.strip() if body.name else url.rstrip("/").split("/")[-1]
-    )
+    repo_name = body.name.strip() if body.name else url.rstrip("/").split("/")[-1]
     if repo_name.endswith(".git"):
         repo_name = repo_name[:-4]
     if not repo_name:
@@ -454,8 +453,7 @@ def _validate_import_source(source: Path) -> None:
             raise HTTPException(
                 status_code=403,
                 detail=(
-                    f"Path contains sensitive directory "
-                    f"sequence: {'/'.join(seq)}"
+                    f"Path contains sensitive directory " f"sequence: {'/'.join(seq)}"
                 ),
             )
 

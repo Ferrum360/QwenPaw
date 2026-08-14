@@ -14,6 +14,7 @@ Adding a new card kind: drop a module exposing ``NAME`` /
 ``MESSAGE_TYPE`` / ``ACTION_TYPE`` plus ``render`` / ``handle``,
 then register it in :meth:`_register_kinds`.
 """
+
 from __future__ import annotations
 
 import logging

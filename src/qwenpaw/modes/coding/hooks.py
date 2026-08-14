@@ -26,9 +26,7 @@ class ProjectDirInjectionHook(ModeGatedHook):
                 return HookResult()
         project_dir = getattr(cfg, "project_dir", None)
         if project_dir:
-            ctx.mode_state.setdefault("coding", {})[
-                "project_dir"
-            ] = project_dir
+            ctx.mode_state.setdefault("coding", {})["project_dir"] = project_dir
         return HookResult()
 
 

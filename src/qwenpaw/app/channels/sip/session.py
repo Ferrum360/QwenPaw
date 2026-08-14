@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """Call session management for the SIP channel."""
+
 from __future__ import annotations
 
 import asyncio
@@ -77,15 +78,9 @@ class SIPCallSessionManager:
             )
 
     def active_sessions(self) -> list[SIPCallSession]:
-        return [
-            s
-            for s in self._sessions.values()
-            if s.status in ("ringing", "active")
-        ]
+        return [s for s in self._sessions.values() if s.status in ("ringing", "active")]
 
     def active_count(self) -> int:
         return sum(
-            1
-            for s in self._sessions.values()
-            if s.status in ("ringing", "active")
+            1 for s in self._sessions.values() if s.status in ("ringing", "active")
         )

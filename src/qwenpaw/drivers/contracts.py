@@ -51,8 +51,7 @@ def validate_card_name(name: str) -> None:
         raise DriverCardError("DriverCard.name must be a non-empty string")
     if "\x00" in name or "/" in name or "\\" in name or ".." in name:
         raise DriverCardError(
-            "DriverCard.name must not contain path separators, null bytes, "
-            "or '..'",
+            "DriverCard.name must not contain path separators, null bytes, " "or '..'",
         )
     if name in {".", ".."}:
         raise DriverCardError("DriverCard.name must be a safe file name")
@@ -170,8 +169,7 @@ def _validate_card_credentials(card: DriverCard) -> None:
             )
         if not credential_ref.kind or not isinstance(credential_ref.kind, str):
             raise DriverCardError(
-                f"DriverCard {card.name} credentials.{alias}.kind must be "
-                "non-empty",
+                f"DriverCard {card.name} credentials.{alias}.kind must be " "non-empty",
             )
 
 
@@ -185,8 +183,7 @@ def _validate_driver_policy(card: DriverCard) -> None:
     for rule in card.policy.rules:
         if rule.effect not in ALLOWED_POLICY_EFFECTS:
             raise DriverCardError(
-                f"DriverCard {card.name} has invalid policy effect: "
-                f"{rule.effect}",
+                f"DriverCard {card.name} has invalid policy effect: " f"{rule.effect}",
             )
         if not rule.target.kind or not isinstance(rule.target.kind, str):
             raise DriverCardError(
@@ -214,8 +211,7 @@ def _validate_driver_policy(card: DriverCard) -> None:
                     f"{field_name} must be a string",
                 )
         if (
-            rule.principal.subject_type.strip().lower()
-            == PRINCIPAL_SUBJECT_USER
+            rule.principal.subject_type.strip().lower() == PRINCIPAL_SUBJECT_USER
             and not rule.principal.subject_value.strip()
         ):
             raise DriverCardError(
@@ -233,8 +229,7 @@ def _validate_endpoint_bindings(card: DriverCard) -> None:
             continue
         if not isinstance(section, dict):
             raise DriverCardError(
-                f"DriverCard {card.name} endpoint.{section_name} "
-                "must be a mapping",
+                f"DriverCard {card.name} endpoint.{section_name} " "must be a mapping",
             )
         if "public" not in section and "secret_refs" not in section:
             _validate_value_source_bindings(card, section_name, section)

@@ -31,8 +31,7 @@ def _fit_truncation_notice(notice: str, info: dict[str, Any]) -> str:
         return notice
 
     compact = (
-        TRUNCATION_NOTICE_MARKER
-        + "\nOutput truncated; recovery details are in "
+        TRUNCATION_NOTICE_MARKER + "\nOutput truncated; recovery details are in "
         "qwenpaw_truncation metadata."
         f"\nTotal lines: {info['total_lines']}; "
         f"excerpt starts at line {info['start_line']} and contains "

@@ -88,9 +88,7 @@ async def post_auto_update_inbox(
     """
     if not result:
         return
-    synced = [
-        item for item in (result.get("synced") or []) if item.get("agents")
-    ]
+    synced = [item for item in (result.get("synced") or []) if item.get("agents")]
     failed = result.get("failed") or []
     if not synced and not failed:
         return
@@ -109,8 +107,7 @@ async def post_auto_update_inbox(
 
     if has_failure:
         title = (
-            f"Auto-update: {len(synced_names)} updated, "
-            f"{len(failed_names)} failed"
+            f"Auto-update: {len(synced_names)} updated, " f"{len(failed_names)} failed"
         )
     else:
         title = f"Auto-update: {len(synced_names)} skill(s) updated"
@@ -536,10 +533,7 @@ async def _read_validated_zip_upload(file: UploadFile) -> bytes:
     if file.content_type and file.content_type not in _ALLOWED_ZIP_TYPES:
         raise HTTPException(
             status_code=400,
-            detail=(
-                "Expected a zip file, "
-                f"got content-type: {file.content_type}"
-            ),
+            detail=("Expected a zip file, " f"got content-type: {file.content_type}"),
         )
 
     data = await file.read()
@@ -971,9 +965,7 @@ async def refresh_pool_skills() -> list[PoolSkillSpec]:
 
 @router.get("/pool/builtin-sources")
 async def list_pool_builtin_sources() -> list[BuiltinImportSpec]:
-    return [
-        BuiltinImportSpec(**item) for item in list_builtin_import_candidates()
-    ]
+    return [BuiltinImportSpec(**item) for item in list_builtin_import_candidates()]
 
 
 @router.get("/pool/builtin-notice")
@@ -984,20 +976,12 @@ async def get_pool_builtin_notice() -> BuiltinUpdateNotice:
         has_updates=bool(notice.get("has_updates", False)),
         total_changes=int(notice.get("total_changes", 0) or 0),
         actionable_skill_names=[
-            str(name)
-            for name in notice.get("actionable_skill_names", [])
-            if str(name)
+            str(name) for name in notice.get("actionable_skill_names", []) if str(name)
         ],
         added=[BuiltinImportSpec(**item) for item in notice.get("added", [])],
-        missing=[
-            BuiltinImportSpec(**item) for item in notice.get("missing", [])
-        ],
-        updated=[
-            BuiltinImportSpec(**item) for item in notice.get("updated", [])
-        ],
-        removed=[
-            BuiltinRemovedSpec(**item) for item in notice.get("removed", [])
-        ],
+        missing=[BuiltinImportSpec(**item) for item in notice.get("missing", [])],
+        updated=[BuiltinImportSpec(**item) for item in notice.get("updated", [])],
+        removed=[BuiltinRemovedSpec(**item) for item in notice.get("removed", [])],
     )
 
 

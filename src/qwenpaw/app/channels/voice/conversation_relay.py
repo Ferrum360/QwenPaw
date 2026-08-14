@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """ConversationRelay WebSocket handler for a single call."""
+
 from __future__ import annotations
 
 import json

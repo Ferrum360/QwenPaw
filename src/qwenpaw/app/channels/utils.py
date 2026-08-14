@@ -4,6 +4,7 @@
 Bridge between channels and agent processing: factory to build
 ProcessHandler from runner. Shared helpers for channels (e.g. file URL).
 """
+
 from __future__ import annotations
 
 import os
@@ -233,13 +234,9 @@ def file_url_to_local_path(url: str) -> Optional[str]:
         path = url2pathname(parsed.path)
         if not path and parsed.netloc:
             path = url2pathname(parsed.netloc.replace("\\", "/"))
-        elif (
-            path and parsed.netloc and _is_windows_drive(netloc=parsed.netloc)
-        ):
+        elif path and parsed.netloc and _is_windows_drive(netloc=parsed.netloc):
             # netloc may be "C:" (new format) or "C" (legacy format)
-            drive = (
-                parsed.netloc if ":" in parsed.netloc else f"{parsed.netloc}:"
-            )
+            drive = parsed.netloc if ":" in parsed.netloc else f"{parsed.netloc}:"
             path = f"{drive}{path}"
         elif path and parsed.netloc and os.name == "nt":
             # UNC: file://server/share/… → \\server\share\…
@@ -249,10 +246,6 @@ def file_url_to_local_path(url: str) -> Optional[str]:
         return None
     if not parsed.scheme:
         return s
-    if (
-        os.name == "nt"
-        and len(parsed.scheme) == 1
-        and parsed.path.startswith("\\")
-    ):
+    if os.name == "nt" and len(parsed.scheme) == 1 and parsed.path.startswith("\\"):
         return s
     return None

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """WeCom channel utilities."""
+
 from __future__ import annotations
 
 import io
@@ -101,8 +102,7 @@ def _format_table(lines: List[str]) -> List[str]:
     formatted: List[str] = []
     for idx, row in enumerate(rows):
         padded = [
-            (row[j] if j < len(row) else "").ljust(widths[j])
-            for j in range(col_count)
+            (row[j] if j < len(row) else "").ljust(widths[j]) for j in range(col_count)
         ]
         formatted.append("| " + " | ".join(padded) + " |")
         if idx == 0:

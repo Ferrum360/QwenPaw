@@ -280,9 +280,7 @@ class ReMeLightMemoryManager(BaseMemoryManager):
     def get_auto_memory_interval(self) -> int:
         """Return ReMe light auto-memory cadence from agent config."""
         agent_config = load_agent_config(self.agent_id)
-        interval = (
-            agent_config.running.reme_light_memory_config.auto_memory_interval
-        )
+        interval = agent_config.running.reme_light_memory_config.auto_memory_interval
         if interval is None:
             return 0
         return int(interval)
@@ -645,9 +643,7 @@ class ReMeLightMemoryManager(BaseMemoryManager):
         # Over-fetch when reranker is enabled: take N * multiplier
         # candidates, rerank, then return top-N.
         effective_limit = (
-            cap * reranker_config.candidate_multiplier
-            if reranker_config
-            else cap
+            cap * reranker_config.candidate_multiplier if reranker_config else cap
         )
 
         response = await self._run_reme_job(
@@ -688,9 +684,7 @@ class ReMeLightMemoryManager(BaseMemoryManager):
         results are empty or already short enough (no truncation).
         """
         metadata = getattr(response, "metadata", None)
-        results = (
-            metadata.get("results") if response.success and metadata else None
-        )
+        results = metadata.get("results") if response.success and metadata else None
         if not results:
             return
 
@@ -703,9 +697,7 @@ class ReMeLightMemoryManager(BaseMemoryManager):
         # link expansions and hybrid score details.
         original_answer = str(response.answer or "")
         answer_sections = (
-            self._parse_answer_into_sections(original_answer)
-            if original_answer
-            else {}
+            self._parse_answer_into_sections(original_answer) if original_answer else {}
         )
 
         # Rerank (only reorders results, answer sections are reordered
@@ -1027,8 +1019,7 @@ class ReMeLightMemoryManager(BaseMemoryManager):
 
             # Sort by score descending, return indices
             scored = [
-                (r["index"], r.get("relevance_score", 0.0))
-                for r in data["results"]
+                (r["index"], r.get("relevance_score", 0.0)) for r in data["results"]
             ]
             scored.sort(key=lambda x: x[1], reverse=True)
             ordered = [idx for idx, _ in scored]
@@ -1109,9 +1100,7 @@ class ReMeLightMemoryManager(BaseMemoryManager):
         # Over-fetch when reranker is enabled: take N * multiplier
         # candidates, rerank, then return top-N.
         effective_limit = (
-            cap * reranker_config.candidate_multiplier
-            if reranker_config
-            else cap
+            cap * reranker_config.candidate_multiplier if reranker_config else cap
         )
         response = await self._run_reme_job(
             "search",
@@ -1233,9 +1222,7 @@ class ReMeLightMemoryManager(BaseMemoryManager):
                 def clear_requirement(
                     agent_config: AgentProfileConfig,
                 ) -> None:
-                    memory_config = (
-                        agent_config.running.reme_light_memory_config
-                    )
+                    memory_config = agent_config.running.reme_light_memory_config
                     persisted_fingerprint = embedding_vector_space_fingerprint(
                         memory_config.embedding_model_config,
                     )

@@ -194,9 +194,7 @@ def build_scroll_components(
             # Legacy dialog archive is opt-in; only hand the manager an
             # offloader when configured, so by default scroll writes nothing
             # to dialog/.
-            offloader=(
-                offloader if getattr(sc, "offload_dialog", False) else None
-            ),
+            offloader=(offloader if getattr(sc, "offload_dialog", False) else None),
             recall_loop_guard=recall_loop_guard,
         )
         tool = make_recall_history_python(

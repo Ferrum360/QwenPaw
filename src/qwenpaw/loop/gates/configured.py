@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """Order adapter for gates in declarative loop modes."""
+
 from __future__ import annotations
 
 from typing import Any

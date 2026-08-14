@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """ContextVar for tool-internal access to ToolCallContext."""
+
 from __future__ import annotations
 
 from contextvars import ContextVar

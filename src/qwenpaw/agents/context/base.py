@@ -13,6 +13,7 @@ AgentScope hooks and provider-overflow recovery to it:
 When no manager is injected, the agent keeps its native AgentScope behavior —
 so a strategy is purely additive and fully opt-in.
 """
+
 from __future__ import annotations
 
 from typing import Any, Protocol, Sequence, runtime_checkable

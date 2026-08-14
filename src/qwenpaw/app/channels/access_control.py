@@ -4,6 +4,7 @@
 Persists per-channel whitelist, blacklist, and pending approval entries
 to a JSON file under the working directory.
 """
+
 from __future__ import annotations
 
 import json
@@ -148,9 +149,7 @@ class ChannelACL:
         return cls(
             whitelist=cls._parse_user_map(data.get("whitelist", {})),
             blacklist=cls._parse_user_map(data.get("blacklist", {})),
-            pending=[
-                PendingEntry.from_dict(p) for p in data.get("pending", [])
-            ],
+            pending=[PendingEntry.from_dict(p) for p in data.get("pending", [])],
         )
 
 
@@ -268,9 +267,7 @@ class AccessControlStore:
     def set_whitelist(self, channel: str, user_ids: List[str]) -> None:
         with self._lock:
             acl = self._acl(channel)
-            new_wl = {
-                uid: acl.whitelist.get(uid, UserInfo()) for uid in user_ids
-            }
+            new_wl = {uid: acl.whitelist.get(uid, UserInfo()) for uid in user_ids}
             acl.whitelist = new_wl
             self._save()
 
@@ -350,9 +347,7 @@ class AccessControlStore:
     def set_blacklist(self, channel: str, user_ids: List[str]) -> None:
         with self._lock:
             acl = self._acl(channel)
-            new_bl = {
-                uid: acl.blacklist.get(uid, UserInfo()) for uid in user_ids
-            }
+            new_bl = {uid: acl.blacklist.get(uid, UserInfo()) for uid in user_ids}
             acl.blacklist = new_bl
             self._save()
 

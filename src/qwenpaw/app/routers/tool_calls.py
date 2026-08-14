@@ -133,9 +133,7 @@ def _entry_to_info(entry: Any, coordinator: Any = None) -> ToolCallInfo:
         force_cancelled=entry.force_cancelled,
         max_internal_timeout_secs=max_internal,
         offload_reason=(
-            ctx.offload_reason.value
-            if ctx.offload_reason is not None
-            else None
+            ctx.offload_reason.value if ctx.offload_reason is not None else None
         ),
     )
 
@@ -152,9 +150,7 @@ def _remaining_snapshot(entry: Any) -> dict[str, float | None]:
             else None
         ),
         "kill_remaining": (
-            max(0.0, ctx.kill_deadline - now)
-            if ctx.kill_deadline is not None
-            else None
+            max(0.0, ctx.kill_deadline - now) if ctx.kill_deadline is not None else None
         ),
     }
 

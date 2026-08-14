@@ -34,9 +34,7 @@ def _matches(commands: list[SlashCommand], query: str) -> list[SlashCommand]:
     q = query.lower()
     if " " not in q:
         return [
-            c
-            for c in commands
-            if " " not in c.name and c.name.lower().startswith(q)
+            c for c in commands if " " not in c.name and c.name.lower().startswith(q)
         ]
     return [c for c in commands if c.name.lower().startswith(q)]
 
@@ -252,9 +250,7 @@ class PromptInput(TextArea):
             return False
         character = getattr(event, "character", None)
         if character and self._suppress_paste_tail.startswith(character):
-            self._suppress_paste_tail = self._suppress_paste_tail[
-                len(character) :
-            ]
+            self._suppress_paste_tail = self._suppress_paste_tail[len(character) :]
             event.stop()
             event.prevent_default()
             return True

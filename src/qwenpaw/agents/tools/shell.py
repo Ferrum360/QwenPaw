@@ -455,9 +455,7 @@ def _execute_subprocess_sync(
 
         timed_out = False
         stopped = False
-        deadline = (
-            None if timeout is None else time.monotonic() + max(0.0, timeout)
-        )
+        deadline = None if timeout is None else time.monotonic() + max(0.0, timeout)
         poll_secs = 0.2
         while True:
             if stop_event is not None and stop_event.is_set():
@@ -676,9 +674,7 @@ async def _execute_in_sandbox(
     # cancel_event. Do not freeze sandbox wait_for to the original timeout or
     # ``extend_kill_deadline`` cannot actually prolong execution.
     sandbox_timeout = (
-        COORDINATOR_OWNED_EXEC_TIMEOUT_SECS
-        if ctx is not None
-        else int(timeout)
+        COORDINATOR_OWNED_EXEC_TIMEOUT_SECS if ctx is not None else int(timeout)
     )
     effective_config = replace(
         sandbox_config,
@@ -998,9 +994,7 @@ async def execute_shell_command(
     """
 
     shell_executable = (
-        get_current_shell_command_executable()
-        or os.environ.get("SHELL")
-        or None
+        get_current_shell_command_executable() or os.environ.get("SHELL") or None
     )
     cmd = _collapse_embedded_newlines(
         (command or "").strip(),
@@ -1040,9 +1034,7 @@ async def execute_shell_command(
         working_dir = cwd
     else:
         working_dir = (
-            get_current_project_dir()
-            or get_current_workspace_dir()
-            or WORKING_DIR
+            get_current_project_dir() or get_current_workspace_dir() or WORKING_DIR
         )
 
     # Ensure the venv Python is on PATH for subprocesses

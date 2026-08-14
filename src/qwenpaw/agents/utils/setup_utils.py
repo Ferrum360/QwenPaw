@@ -4,6 +4,7 @@
 This module handles copying markdown configuration files to
 the working directory.
 """
+
 import logging
 import shutil
 from pathlib import Path
@@ -238,9 +239,7 @@ def copy_workspace_md_files(
         language,
         skip_existing=only_if_missing,
         workspace_dir=workspace_dir,
-        exclude_filenames=(
-            _TEMPLATE_OVERRIDE_FILENAMES if md_template_id else None
-        ),
+        exclude_filenames=(_TEMPLATE_OVERRIDE_FILENAMES if md_template_id else None),
     )
 
     if not md_template_id:

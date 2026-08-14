@@ -241,9 +241,7 @@ def desktop_cmd(
 
     is_windows = sys.platform == "win32"
     proc = None
-    manually_terminated = (
-        False  # Track if we intentionally terminated the process
-    )
+    manually_terminated = False  # Track if we intentionally terminated the process
     try:
         # Release the held socket just before spawning the subprocess so
         # the child can bind the same port.  This keeps the TOCTOU window
@@ -313,8 +311,7 @@ def desktop_cmd(
             else:
                 logger.error("Server did not become ready in time.")
                 click.echo(
-                    "Server did not become ready in time; open manually: "
-                    + url,
+                    "Server did not become ready in time; open manually: " + url,
                     err=True,
                 )
                 try:
@@ -329,9 +326,7 @@ def desktop_cmd(
             # - We must not let cleanup exceptions mask the original error
             if proc and proc.poll() is None:  # process still running
                 logger.info("Terminating backend server...")
-                manually_terminated = (
-                    True  # Mark that we're intentionally terminating
-                )
+                manually_terminated = True  # Mark that we're intentionally terminating
                 try:
                     proc.terminate()
                     try:
@@ -370,8 +365,7 @@ def desktop_cmd(
         # Using a flag is more reliable than checking specific exit codes
         if proc and proc.returncode != 0 and not manually_terminated:
             logger.error(
-                f"Backend process exited unexpectedly with code "
-                f"{proc.returncode}",
+                f"Backend process exited unexpectedly with code " f"{proc.returncode}",
             )
             # Follow POSIX convention for exit codes:
             # - Negative (signal): 128 + signal_number

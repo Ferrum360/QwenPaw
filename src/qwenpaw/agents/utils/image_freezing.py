@@ -83,9 +83,7 @@ def freeze_local_image(
             elif normalized_format in _PNG_CONVERTIBLE_IMAGE_FORMATS:
                 image.seek(0)
                 image.load()
-                has_alpha = (
-                    "A" in image.getbands() or "transparency" in image.info
-                )
+                has_alpha = "A" in image.getbands() or "transparency" in image.info
                 target_mode = "RGBA" if has_alpha else "RGB"
                 with image.convert(target_mode) as converted:
                     output = BytesIO()

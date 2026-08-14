@@ -1,13 +1,11 @@
 # -*- coding: utf-8 -*-
-"""Provider protocol and shared constants for market providers.
-"""
+"""Provider protocol and shared constants for market providers."""
 
 from __future__ import annotations
 
 from typing import Awaitable, Protocol, runtime_checkable
 
 from ..schema import MarketResult
-
 
 # Single source of truth for the budget any market provider has to answer a
 # search call.

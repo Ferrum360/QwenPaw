@@ -15,6 +15,7 @@ Usage::
 Custom guardians can be registered at construction time or later via
 :meth:`register_guardian`.
 """
+
 from __future__ import annotations
 
 import logging
@@ -187,15 +188,10 @@ class ToolGuardEngine:
 
     def should_auto_deny_result(self, result: ToolGuardResult | None) -> bool:
         """``True`` when guard findings hit any configured auto-deny rule."""
-        if (
-            result is None
-            or not result.findings
-            or not self._auto_denied_rules
-        ):
+        if result is None or not result.findings or not self._auto_denied_rules:
             return False
         return any(
-            finding.rule_id in self._auto_denied_rules
-            for finding in result.findings
+            finding.rule_id in self._auto_denied_rules for finding in result.findings
         )
 
     def is_guarded(self, tool_name: str) -> bool:

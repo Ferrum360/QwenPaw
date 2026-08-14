@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """CLI skill: list, inspect, and interactively configure workspace skills."""
+
 from __future__ import annotations
 
 import asyncio
@@ -247,9 +248,7 @@ def configure_skills_interactive(
 
     enabled = {
         name
-        for name, entry in read_skill_manifest(working_dir)
-        .get("skills", {})
-        .items()
+        for name, entry in read_skill_manifest(working_dir).get("skills", {}).items()
         if entry.get("enabled", False)
     }
     installed_names = set(installed_by_name)
@@ -331,9 +330,7 @@ def list_cmd(agent_id: str) -> None:
     all_skills = skill_service.list_all_skills()
     enabled = {
         name
-        for name, entry in read_skill_manifest(working_dir)
-        .get("skills", {})
-        .items()
+        for name, entry in read_skill_manifest(working_dir).get("skills", {}).items()
         if entry.get("enabled", False)
     }
 
@@ -390,9 +387,7 @@ def info_cmd(
 
     skill_service = SkillService(working_dir)
     manifest = read_skill_manifest(working_dir).get("skills", {})
-    skill_map = {
-        skill.name: skill for skill in skill_service.list_all_skills()
-    }
+    skill_map = {skill.name: skill for skill in skill_service.list_all_skills()}
     skill = skill_map.get(skill_name)
     if skill is None:
         raise click.ClickException(
@@ -439,9 +434,7 @@ def install_cmd(
     """
     normalized_agent_id = str(agent_id or "").strip()
     workspace_dir = (
-        _require_agent_workspace(normalized_agent_id)
-        if normalized_agent_id
-        else None
+        _require_agent_workspace(normalized_agent_id) if normalized_agent_id else None
     )
 
     async def _run_install() -> object:
@@ -535,8 +528,7 @@ def uninstall_cmd(
         manifest = read_skill_pool_manifest().get("skills", {})
         if normalized_skill_name not in manifest:
             raise click.ClickException(
-                f"Skill '{normalized_skill_name}' was not found "
-                "in the skill pool.",
+                f"Skill '{normalized_skill_name}' was not found " "in the skill pool.",
             )
 
         deleted = SkillPoolService().delete_skill(normalized_skill_name)
@@ -547,8 +539,7 @@ def uninstall_cmd(
             )
 
         click.echo(
-            f"✓ Uninstalled skill '{normalized_skill_name}' "
-            "from the skill pool.",
+            f"✓ Uninstalled skill '{normalized_skill_name}' " "from the skill pool.",
         )
     except click.ClickException:
         raise

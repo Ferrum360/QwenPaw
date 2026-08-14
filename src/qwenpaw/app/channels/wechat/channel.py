@@ -111,9 +111,7 @@ class WeChatChannel(BaseChannel):
         self.bot_prefix = bot_prefix
         self._base_url = base_url or _DEFAULT_BASE_URL
         self._bot_token_file = (
-            Path(bot_token_file).expanduser()
-            if bot_token_file
-            else _DEFAULT_TOKEN_FILE
+            Path(bot_token_file).expanduser() if bot_token_file else _DEFAULT_TOKEN_FILE
         )
         self._context_tokens_file = (
             self._bot_token_file.parent / "wechat_context_tokens.json"
@@ -262,8 +260,7 @@ class WeChatChannel(BaseChannel):
             media_dir=getattr(config, "media_dir", None) or "",
             workspace_dir=workspace_dir,
             on_reply_sent=on_reply_sent,
-            display_config=display_config
-            or ChannelDisplayConfig.from_config(config),
+            display_config=display_config or ChannelDisplayConfig.from_config(config),
             no_text_debounce=no_text_debounce,
             dm_policy=getattr(config, "dm_policy", "open") or "open",
             group_policy=getattr(config, "group_policy", "open") or "open",
@@ -638,9 +635,7 @@ class WeChatChannel(BaseChannel):
                 return
 
             # Dedup: use context_token as unique id
-            dedup_key = (
-                context_token or f"{from_user_id}_{msg.get('msg_id', '')}"
-            )
+            dedup_key = context_token or f"{from_user_id}_{msg.get('msg_id', '')}"
             if dedup_key and self._is_duplicate(dedup_key):
                 logger.debug(
                     "wechat: duplicate message skipped: %s",
@@ -657,8 +652,7 @@ class WeChatChannel(BaseChannel):
             ).strip()
             if raw_text and self._is_text_duplicate(from_user_id, raw_text):
                 logger.debug(
-                    "wechat: content-duplicate message skipped: "
-                    "user=%s text_len=%d",
+                    "wechat: content-duplicate message skipped: " "user=%s text_len=%d",
                     from_user_id[:12],
                     len(raw_text),
                 )
@@ -673,9 +667,7 @@ class WeChatChannel(BaseChannel):
 
                 if item_type == 1:
                     # Text
-                    text = (
-                        (item.get("text_item") or {}).get("text", "").strip()
-                    )
+                    text = (item.get("text_item") or {}).get("text", "").strip()
                     # Filter out empty text or text that looks like a filename
                     # (e.g., "document.pdf", "image.jpg") to avoid triggering
                     # immediate agent replies for file-only messages.
@@ -706,8 +698,7 @@ class WeChatChannel(BaseChannel):
                             ".pptx",
                         )
                         is_filename = any(
-                            text.lower().endswith(ext)
-                            for ext in filename_extensions
+                            text.lower().endswith(ext) for ext in filename_extensions
                         )
                         # Only add text if it's not just a filename
                         if not is_filename:
@@ -763,9 +754,7 @@ class WeChatChannel(BaseChannel):
                 elif item_type == 4:
                     # File attachment
                     file_item = item.get("file_item") or {}
-                    filename = (
-                        file_item.get("file_name", "file.bin") or "file.bin"
-                    )
+                    filename = file_item.get("file_name", "file.bin") or "file.bin"
                     media = file_item.get("media") or {}
                     encrypt_query_param = media.get("encrypt_query_param", "")
                     aes_key = media.get(
@@ -927,9 +916,7 @@ class WeChatChannel(BaseChannel):
 
         if quoted_type == 1:
             # Quoted text
-            quoted_text = (
-                (quoted_item.get("text_item") or {}).get("text", "").strip()
-            )
+            quoted_text = (quoted_item.get("text_item") or {}).get("text", "").strip()
             if quoted_text:
                 text_parts.insert(0, f"[quoted message: {quoted_text}]")
 
@@ -1112,8 +1099,7 @@ class WeChatChannel(BaseChannel):
             errcode = resp.get("errcode", 0)
             if ret != 0 or errcode != 0:
                 logger.warning(
-                    "wechat send_text rejected: "
-                    "ret=%s errcode=%s to_user_id=%s",
+                    "wechat send_text rejected: " "ret=%s errcode=%s to_user_id=%s",
                     ret,
                     errcode,
                     to_user_id,
@@ -1638,8 +1624,7 @@ class WeChatChannel(BaseChannel):
                 client = self._client
                 if client is None:
                     logger.debug(
-                        "wechat refresh_typing: client gone, exiting "
-                        "for %s",
+                        "wechat refresh_typing: client gone, exiting " "for %s",
                         user_id,
                     )
                     break

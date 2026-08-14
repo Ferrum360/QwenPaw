@@ -82,9 +82,7 @@ def resolve_launch_env(config: Any) -> dict[str, Any]:
     )
 
     in_container = is_running_in_container()
-    prefer_desktop_bundle = (
-        os.environ.get("QWENPAW_DESKTOP_MANAGED_PLAYWRIGHT") == "1"
-    )
+    prefer_desktop_bundle = os.environ.get("QWENPAW_DESKTOP_MANAGED_PLAYWRIGHT") == "1"
     return resolve_launch(
         config,
         in_container=in_container,

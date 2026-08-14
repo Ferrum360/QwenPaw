@@ -32,10 +32,7 @@ def _fetch_json(url: str) -> Any:
     )
     with urllib.request.urlopen(req, timeout=_FETCH_TIMEOUT) as resp:
         data = resp.read()
-        if (
-            resp.headers.get("Content-Encoding") == "gzip"
-            or data[:2] == b"\x1f\x8b"
-        ):
+        if resp.headers.get("Content-Encoding") == "gzip" or data[:2] == b"\x1f\x8b":
             data = gzip.decompress(data)
         return json.loads(data)
 
@@ -61,9 +58,7 @@ def _plugin_id_from_file_entry(entry: dict[str, Any]) -> str:
     idx = file_id.rfind(marker)
     if idx > 0:
         tail = file_id[idx + len(marker) :]
-        if len(tail) == 8 and all(
-            c in "0123456789abcdef" for c in tail.lower()
-        ):
+        if len(tail) == 8 and all(c in "0123456789abcdef" for c in tail.lower()):
             return file_id[:idx]
 
     return file_id
@@ -187,8 +182,7 @@ def _is_entry_compatible(entry: dict[str, Any]) -> bool:
         return compatible
     except Exception as exc:
         logger.warning(
-            "Plugin catalog: skipping %s due to manifest"
-            " validation error: %s",
+            "Plugin catalog: skipping %s due to manifest" " validation error: %s",
             plugin_id,
             exc,
         )

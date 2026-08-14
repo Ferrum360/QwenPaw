@@ -92,17 +92,11 @@ async def list_events(
     async with _LOCK:
         events = await run_sync_io(_load_events)
     if source_type:
-        events = [
-            event
-            for event in events
-            if event.get("source_type") == source_type
-        ]
+        events = [event for event in events if event.get("source_type") == source_type]
     if status:
         events = [event for event in events if event.get("status") == status]
     if agent_id:
-        events = [
-            event for event in events if event.get("agent_id") == agent_id
-        ]
+        events = [event for event in events if event.get("agent_id") == agent_id]
     if unread_only:
         events = [event for event in events if not bool(event.get("read"))]
     return events[offset : offset + max(limit, 0)]
@@ -121,17 +115,11 @@ async def query_events(
     async with _LOCK:
         events = await run_sync_io(_load_events)
     if source_types:
-        events = [
-            event
-            for event in events
-            if event.get("source_type") in source_types
-        ]
+        events = [event for event in events if event.get("source_type") in source_types]
     if status:
         events = [event for event in events if event.get("status") == status]
     if agent_id:
-        events = [
-            event for event in events if event.get("agent_id") == agent_id
-        ]
+        events = [event for event in events if event.get("agent_id") == agent_id]
     unread_count = sum(not bool(event.get("read")) for event in events)
     if unread_only:
         events = [event for event in events if not bool(event.get("read"))]

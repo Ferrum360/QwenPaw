@@ -149,9 +149,7 @@ class HarnessCapabilityResolver:
         )
         headers.update(implicit_auth_headers(credentials, headers))
         tools = card.config.get("tools")
-        tool_names = (
-            [str(item) for item in tools] if isinstance(tools, list) else None
-        )
+        tool_names = [str(item) for item in tools] if isinstance(tools, list) else None
         return HarnessMCPServerDefinition(
             name=card.name,
             display_name=str(
@@ -161,9 +159,7 @@ class HarnessCapabilityResolver:
             command=str(endpoint.get("command") or ""),
             args=[str(item) for item in endpoint.get("args") or []],
             cwd=(
-                Path(str(endpoint["cwd"])).expanduser()
-                if endpoint.get("cwd")
-                else None
+                Path(str(endpoint["cwd"])).expanduser() if endpoint.get("cwd") else None
             ),
             url=str(endpoint.get("url") or ""),
             env=env,

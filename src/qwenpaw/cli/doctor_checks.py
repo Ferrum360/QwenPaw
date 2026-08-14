@@ -113,8 +113,7 @@ def check_app_log_writable() -> tuple[bool, str]:
         )
     return (
         False,
-        f"log file does not exist and parent directory is not writable: "
-        f"{parent}",
+        f"log file does not exist and parent directory is not writable: " f"{parent}",
     )
 
 
@@ -226,8 +225,7 @@ def environment_summary_lines(
         )
     else:
         lines.append(
-            "qwenpaw_python_environment: "
-            + (server_python_note or "(unknown)"),
+            "qwenpaw_python_environment: " + (server_python_note or "(unknown)"),
         )
     lines.append(f"working_dir: {WORKING_DIR}")
     wd_qp = os.getenv("QWENPAW_WORKING_DIR")
@@ -562,8 +560,7 @@ def security_baseline_notes(cfg: Config) -> list[str]:
         )
     if not cfg.security.file_guard.enabled:
         notes.append(
-            "security.file_guard.enabled is false — sensitive path blocking "
-            "is off.",
+            "security.file_guard.enabled is false — sensitive path blocking " "is off.",
         )
     return notes
 
@@ -804,10 +801,7 @@ def enabled_channel_notes(cfg: Config) -> list[str]:
                         "client_id/client_secret incomplete",
                     )
             elif name == "feishu":
-                if (
-                    not (sub.app_id or "").strip()
-                    or not (sub.app_secret or "").strip()
-                ):
+                if not (sub.app_id or "").strip() or not (sub.app_secret or "").strip():
                     notes.append(
                         f"{agent_id}: feishu enabled but "
                         "app_id/app_secret incomplete",
@@ -826,10 +820,7 @@ def enabled_channel_notes(cfg: Config) -> list[str]:
                     f"{agent_id}: telegram enabled but bot_token is empty",
                 )
             elif name == "mattermost":
-                if (
-                    not (sub.url or "").strip()
-                    or not (sub.bot_token or "").strip()
-                ):
+                if not (sub.url or "").strip() or not (sub.bot_token or "").strip():
                     notes.append(
                         f"{agent_id}: mattermost enabled but "
                         "url/bot_token incomplete",
@@ -853,17 +844,12 @@ def enabled_channel_notes(cfg: Config) -> list[str]:
                     or not (sub.phone_number or "").strip()
                 ):
                     notes.append(
-                        f"{agent_id}: voice enabled but Twilio fields "
-                        "incomplete",
+                        f"{agent_id}: voice enabled but Twilio fields " "incomplete",
                     )
             elif name == "wecom":
-                if (
-                    not (sub.bot_id or "").strip()
-                    or not (sub.secret or "").strip()
-                ):
+                if not (sub.bot_id or "").strip() or not (sub.secret or "").strip():
                     notes.append(
-                        f"{agent_id}: wecom enabled but "
-                        "bot_id/secret incomplete",
+                        f"{agent_id}: wecom enabled but " "bot_id/secret incomplete",
                     )
             elif name == "xiaoyi":
                 if (
@@ -872,8 +858,7 @@ def enabled_channel_notes(cfg: Config) -> list[str]:
                     or not (sub.agent_id or "").strip()
                 ):
                     notes.append(
-                        f"{agent_id}: xiaoyi enabled but "
-                        "ak/sk/agent_id incomplete",
+                        f"{agent_id}: xiaoyi enabled but " "ak/sk/agent_id incomplete",
                     )
             elif name == "wechat":
                 tok = (sub.bot_token or "").strip()
@@ -945,8 +930,7 @@ def _mcp_client_problems(mcp: MCPConfig | None, label: str) -> list[str]:
                 )
             elif not _url_looks_httpish(u):
                 problems.append(
-                    f"{label} MCP {cid!r}: url does not look like "
-                    "http(s)://…",
+                    f"{label} MCP {cid!r}: url does not look like " "http(s)://…",
                 )
     return problems
 
@@ -1021,9 +1005,7 @@ def active_llm_local_failure_hint(provider: Provider, provider_id: str) -> str:
     if provider_id == "ollama":
         base = (getattr(provider, "base_url", None) or "").strip()
         if not base:
-            base = (
-                os.environ.get("OLLAMA_HOST") or "http://127.0.0.1:11434"
-            ).strip()
+            base = (os.environ.get("OLLAMA_HOST") or "http://127.0.0.1:11434").strip()
         return (
             "Hint: start Ollama (e.g. `ollama serve`) and ensure the model "
             "is available (`ollama pull …`). OpenAI-compatible API is "
@@ -1264,8 +1246,7 @@ def console_static_diagnostic_notes() -> list[str]:
         except OSError:
             mtime = "(unknown)"
         notes.append(
-            f"resolved static dir: {static} — index.html present "
-            f"(mtime {mtime})",
+            f"resolved static dir: {static} — index.html present " f"(mtime {mtime})",
         )
     else:
         notes.append(
@@ -1274,8 +1255,7 @@ def console_static_diagnostic_notes() -> list[str]:
 
     npm = shutil.which("npm")
     notes.append(
-        "npm on PATH: "
-        + (npm if npm else "not found (install Node.js or fix PATH)"),
+        "npm on PATH: " + (npm if npm else "not found (install Node.js or fix PATH)"),
     )
 
     repo = find_qwenpaw_source_repo_root()

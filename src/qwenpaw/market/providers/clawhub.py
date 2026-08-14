@@ -15,7 +15,6 @@ from ...agents.skill_system.hub import http_json_get, search_hub_skills
 from ..schema import MarketResult
 from .base import MARKET_SEARCH_TIMEOUT_S
 
-
 _HOMEPAGE = "https://clawhub.ai"
 _BROWSE_PATH = "/api/v1/skills"
 _BROWSE_SORT = "recommended"
@@ -107,9 +106,7 @@ class ClawHubProvider:
                 if isinstance(items, list)
                 else []
             )
-            raw_cursor = (
-                body.get("nextCursor") if isinstance(body, dict) else None
-            )
+            raw_cursor = body.get("nextCursor") if isinstance(body, dict) else None
             next_cursor = raw_cursor if isinstance(raw_cursor, str) else None
             if current_page == target_page:
                 break
@@ -145,9 +142,7 @@ def _browse_to_result(item: dict[str, object]) -> MarketResult | None:
         source="clawhub",
         slug=slug,
         name=_str(item.get("displayName")) or slug,
-        description=_str(item.get("summary"))
-        or _str(item.get("description"))
-        or None,
+        description=_str(item.get("summary")) or _str(item.get("description")) or None,
         source_url=f"{_HOMEPAGE}/{slug}",
         version=version or None,
         # /skills carries no owner or logo, so both stay null; the search

@@ -67,8 +67,7 @@ def _estimate_image_tokens_from_dimensions(
 ) -> int:
     """Estimate provider image tokens from width/height pairs."""
     patch_sum = sum(
-        math.ceil(width / IMAGE_PATCH_SIZE)
-        * math.ceil(height / IMAGE_PATCH_SIZE)
+        math.ceil(width / IMAGE_PATCH_SIZE) * math.ceil(height / IMAGE_PATCH_SIZE)
         for width, height in dimensions
     )
     return math.ceil(patch_sum * IMAGE_COST_SAFETY_MARGIN)

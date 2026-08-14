@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """Helpers for creating backups: agents, global config, secrets, skill pool."""
+
 from __future__ import annotations
 
 import logging
@@ -116,9 +117,7 @@ def add_secrets(zf: zipfile.ZipFile, stop_event=None) -> bool:
         if stop_event and stop_event.is_set():
             return False
         if entry.is_file():
-            arcname = (
-                f"{PREFIX_SECRETS}{entry.relative_to(SECRET_DIR).as_posix()}"
-            )
+            arcname = f"{PREFIX_SECRETS}{entry.relative_to(SECRET_DIR).as_posix()}"
             zf.write(entry, arcname)
             file_count += 1
     logger.info(

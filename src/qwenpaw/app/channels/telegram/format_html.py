@@ -9,6 +9,7 @@ Standard Markdown (as produced by LLMs) uses **bold**, *italic*, `code`,
 
 This module bridges the gap.
 """
+
 from __future__ import annotations
 
 import re

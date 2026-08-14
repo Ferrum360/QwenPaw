@@ -83,9 +83,7 @@ class CronExecutor:
                 "task_type": "text",
                 "run_id": None,
                 "final_text": job.text.strip(),
-                "delivery_status": (
-                    "failed" if text_delivery_error else "success"
-                ),
+                "delivery_status": ("failed" if text_delivery_error else "success"),
                 "delivery_error": text_delivery_error,
             }
         # agent: run request as the dispatch target user so context matches
@@ -100,9 +98,7 @@ class CronExecutor:
         req["channel"] = target_channel
         req["user_id"] = target_user_id or "cron"
         raw_context = req.get("request_context")
-        request_context = (
-            dict(raw_context) if isinstance(raw_context, dict) else {}
-        )
+        request_context = dict(raw_context) if isinstance(raw_context, dict) else {}
         request_context["source"] = "cron"
         request_context["cron_job_id"] = job.id or ""
         request_context["approval_level"] = (
@@ -201,8 +197,7 @@ class CronExecutor:
                 if job.dispatch.mode == "final":
                     if (
                         getattr(event, "object", None) == "message"
-                        and getattr(event, "status", None)
-                        == RunStatus.Completed
+                        and getattr(event, "status", None) == RunStatus.Completed
                     ):
                         final_event = event
                     continue

@@ -92,9 +92,7 @@ class ContextVarsSetupHook(LifecycleHook):
 
             cfg = load_agent_config(ctx.agent_id)
             running = cfg.running
-            pruning_cfg = (
-                running.light_context_config.tool_result_pruning_config
-            )
+            pruning_cfg = running.light_context_config.tool_result_pruning_config
             set_current_recent_max_bytes(
                 pruning_cfg.pruning_recent_msg_max_bytes,
             )

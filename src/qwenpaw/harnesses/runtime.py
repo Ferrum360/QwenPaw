@@ -98,9 +98,7 @@ class HarnessRuntime:
         async with self._adapter_lock:
             adapter = self._adapters.get(provider_id)
             current_key = self._adapter_keys.get(provider_id)
-            if adapter is not None and (
-                current_key is None or current_key == next_key
-            ):
+            if adapter is not None and (current_key is None or current_key == next_key):
                 return adapter
             if adapter is not None:
                 await adapter.stop()
@@ -120,9 +118,9 @@ class HarnessRuntime:
         """Run a harness turn and emit the established QwenPaw protocol."""
         settings = dict(settings or {})
         request_context = dict(settings.get("_request_context") or {})
-        settings[
-            "_runtime_capabilities"
-        ] = await self._capability_resolver.resolve(request_context)
+        settings["_runtime_capabilities"] = await self._capability_resolver.resolve(
+            request_context
+        )
         adapter = await self.adapter(backend, settings)
         session_id = str(getattr(request, "session_id", "") or "default")
         prompt, attachments = self._content_from_request(request)
@@ -170,9 +168,7 @@ class HarnessRuntime:
                 event_stream = self._iter_events(events)
             elif command:
                 provider = get_provider(backend)
-                supported = {
-                    item.name for item in provider.capabilities.commands
-                }
+                supported = {item.name for item in provider.capabilities.commands}
                 if command not in supported:
                     raise ValueError(
                         f"Unsupported {provider.name} command: /{command}",
@@ -349,9 +345,7 @@ class HarnessRuntime:
                     path_field = "data"
                 elif content_type == ContentType.VIDEO:
                     path_field = "video_url"
-                raw_path = (
-                    getattr(content, path_field, None) if path_field else None
-                )
+                raw_path = getattr(content, path_field, None) if path_field else None
                 if raw_path:
                     attachments.append(
                         HarnessAttachment(

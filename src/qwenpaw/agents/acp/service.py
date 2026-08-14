@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """High-level ACP service built on the official Python SDK."""
+
 from __future__ import annotations
 
 import asyncio
@@ -241,8 +242,7 @@ class ACPService:
                 )
         elif require_existing:
             raise ACPSessionError(
-                "no bound ACP session found for runner "
-                f"'{agent}' in current chat",
+                "no bound ACP session found for runner " f"'{agent}' in current chat",
             )
 
         session_cwd = cwd or "."
@@ -368,9 +368,7 @@ class ACPService:
                 finished_event = await conversation.client.finish_prompt()
                 return {
                     "status": "permission_required",
-                    "suspended_permission": (
-                        conversation.client.pending_permission
-                    ),
+                    "suspended_permission": (conversation.client.pending_permission),
                     "event": finished_event,
                 }
 

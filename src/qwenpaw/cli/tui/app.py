@@ -480,9 +480,7 @@ class PawApp(App):
         await self._submit(text)
 
     def _permission_active(self) -> bool:
-        return (
-            self._permission.display and self._permission.request is not None
-        )
+        return self._permission.display and self._permission.request is not None
 
     async def _handle_permission_key(self, key: str) -> None:
         if key == "down":
@@ -1400,9 +1398,7 @@ def _data_url_attachment(value: str) -> _PasteAttachment | None:
     except binascii.Error as exc:
         raise ValueError(f"invalid base64 data URL: {exc}") from exc
     extension = mimetypes.guess_extension(media_type) or ".bin"
-    prefix = (
-        "pasted-image" if media_type.startswith("image/") else "pasted-file"
-    )
+    prefix = "pasted-image" if media_type.startswith("image/") else "pasted-file"
     return _PasteAttachment(name=f"{prefix}{extension}", data=data)
 
 

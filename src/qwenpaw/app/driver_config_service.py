@@ -23,9 +23,7 @@ from ..drivers.storage import (
 )
 
 logger = logging.getLogger(__name__)
-_MANAGER_NOT_READY_DETAIL = (
-    "Driver manager is not ready yet, please try again later"
-)
+_MANAGER_NOT_READY_DETAIL = "Driver manager is not ready yet, please try again later"
 
 
 class DriverConfigService:

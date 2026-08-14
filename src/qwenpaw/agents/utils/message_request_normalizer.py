@@ -52,9 +52,7 @@ def _clean_provider_specific_fields(
     * ``raw_input`` – AgentScope stream-parsing artefact.
       Stripped unconditionally; some providers reject unknown fields.
     """
-    preserve = (
-        _GEMINI_NATIVE_FIELDS if target_family == "gemini" else frozenset()
-    )
+    preserve = _GEMINI_NATIVE_FIELDS if target_family == "gemini" else frozenset()
     strip_fields = _PROVIDER_ONLY_TOOL_USE_FIELDS - preserve
 
     if not strip_fields:
@@ -168,9 +166,7 @@ def _strip_media_blocks_in_place(msgs: list[Msg]) -> int:
             )
             if btype == "tool_result" and isinstance(output, list):
                 original_len = len(output)
-                filtered = [
-                    item for item in output if not _is_media_block(item)
-                ]
+                filtered = [item for item in output if not _is_media_block(item)]
                 stripped_count = original_len - len(filtered)
                 total_stripped += stripped_count
                 stripped_this_message += stripped_count
@@ -225,12 +221,8 @@ def _collapse_consecutive_user_messages(msgs: list[Msg]) -> list[Msg]:
     for msg in msgs:
         if collapsed and msg.role == "user" and collapsed[-1].role == "user":
             prev = collapsed[-1]
-            prev_content = (
-                list(prev.content) if isinstance(prev.content, list) else []
-            )
-            this_content = (
-                list(msg.content) if isinstance(msg.content, list) else []
-            )
+            prev_content = list(prev.content) if isinstance(prev.content, list) else []
+            this_content = list(msg.content) if isinstance(msg.content, list) else []
             prev.content = prev_content + this_content
         else:
             collapsed.append(msg)

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """Compile declarative custom loop modes into stop handlers."""
+
 from __future__ import annotations
 
 from ..config.config import CustomLoopModeConfig

@@ -95,9 +95,7 @@ class OpenRouterProvider(Provider):
             return {}
 
         return {
-            str(key): str(value)
-            for key, value in pricing.items()
-            if value is not None
+            str(key): str(value) for key, value in pricing.items() if value is not None
         }
 
     @staticmethod
@@ -113,9 +111,7 @@ class OpenRouterProvider(Provider):
             except InvalidOperation:
                 continue
 
-        return bool(numeric_values) and all(
-            value == 0 for value in numeric_values
-        )
+        return bool(numeric_values) and all(value == 0 for value in numeric_values)
 
     @staticmethod
     def _normalize_models_payload(
@@ -184,9 +180,7 @@ class OpenRouterProvider(Provider):
                     arch_input = architecture.get("input_modalities", [])
                     arch_output = architecture.get("output_modalities", [])
                     input_modalities = list(arch_input) if arch_input else []
-                    output_modalities = (
-                        list(arch_output) if arch_output else []
-                    )
+                    output_modalities = list(arch_output) if arch_output else []
                     supports_image = "image" in input_modalities
                     supports_video = "video" in input_modalities
                     supports_multimodal = any(
@@ -361,9 +355,7 @@ class OpenRouterProvider(Provider):
         # Filter by providers
         if providers:
             providers_lower = [p.lower() for p in providers]
-            result = [
-                m for m in result if m.provider.lower() in providers_lower
-            ]
+            result = [m for m in result if m.provider.lower() in providers_lower]
 
         # Filter by input modalities
         if input_modalities:

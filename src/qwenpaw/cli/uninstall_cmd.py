@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """qwenpaw uninstall — remove the QwenPaw environment and CLI wrapper."""
+
 from __future__ import annotations
 
 import shutil
@@ -9,7 +10,6 @@ from pathlib import Path
 import click
 
 from ..constant import WORKING_DIR
-
 
 # Directories created by the installer (relative to WORKING_DIR).
 _INSTALLER_DIRS = ("venv", "bin")

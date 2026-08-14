@@ -130,8 +130,7 @@ async def _download_chromium() -> None:
     if process.returncode:
         detail = _trim_output(output)
         raise RuntimeError(
-            "Playwright Chromium download failed"
-            + (f": {detail}" if detail else ""),
+            "Playwright Chromium download failed" + (f": {detail}" if detail else ""),
         )
     if not managed_chromium_ready():
         raise RuntimeError(

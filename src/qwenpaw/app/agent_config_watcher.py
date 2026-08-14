@@ -149,8 +149,7 @@ class AgentConfigWatcher:
                 await self._check()
             except Exception:
                 logger.exception(
-                    f"AgentConfigWatcher ({self._agent_id}): "
-                    f"poll iteration failed",
+                    f"AgentConfigWatcher ({self._agent_id}): " f"poll iteration failed",
                 )
 
     async def _check(self) -> None:
@@ -213,6 +212,5 @@ class AgentConfigWatcher:
             await manager.reload_agent(self._agent_id)
         except Exception:
             logger.exception(
-                f"AgentConfigWatcher ({self._agent_id}): "
-                f"reload_agent failed",
+                f"AgentConfigWatcher ({self._agent_id}): " f"reload_agent failed",
             )

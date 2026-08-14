@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """Backup storage operations: list, detail, delete, export, import."""
+
 from __future__ import annotations
 
 import asyncio
@@ -88,10 +89,7 @@ def _detail_sync(backup_id: str) -> BackupDetail | None:
             stats: dict[str, dict] = {}
             agent_json_paths: dict[str, str] = {}
             for info in zf.infolist():
-                if (
-                    info.filename.startswith(PREFIX_WORKSPACES)
-                    and not info.is_dir()
-                ):
+                if info.filename.startswith(PREFIX_WORKSPACES) and not info.is_dir():
                     parts = info.filename.split("/", 3)
                     if len(parts) >= 4:
                         aid = parts[2]
@@ -115,8 +113,7 @@ def _detail_sync(backup_id: str) -> BackupDetail | None:
                         stats[aid]["name"] = name
                 except Exception as exc:
                     logger.debug(
-                        "Failed to read agent name from %s"
-                        " in backup %s: %s: %s",
+                        "Failed to read agent name from %s" " in backup %s: %s: %s",
                         json_path,
                         backup_id,
                         type(exc).__name__,

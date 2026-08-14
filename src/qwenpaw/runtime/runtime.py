@@ -327,9 +327,7 @@ class Runtime:
             if partial:
                 agent_state = getattr(agent, "state", None)
                 ctx_list = (
-                    getattr(agent_state, "context", None)
-                    if agent_state
-                    else None
+                    getattr(agent_state, "context", None) if agent_state else None
                 )
                 existing_texts: set[str] = set()
                 if ctx_list and len(ctx_list) > 0:

@@ -264,8 +264,7 @@ class _TuiClient:
                 options=[
                     PermissionOption(
                         option_id=getattr(o, "option_id", ""),
-                        name=getattr(o, "name", "")
-                        or getattr(o, "option_id", ""),
+                        name=getattr(o, "name", "") or getattr(o, "option_id", ""),
                         kind=getattr(o, "kind", "allow_once"),
                     )
                     for o in options

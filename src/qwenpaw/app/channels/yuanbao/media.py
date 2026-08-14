@@ -79,13 +79,11 @@ def _guess_mime(filename: str) -> str:
         ".pdf": "application/pdf",
         ".doc": "application/msword",
         ".docx": (
-            "application/vnd.openxmlformats-"
-            "officedocument.wordprocessingml.document"
+            "application/vnd.openxmlformats-" "officedocument.wordprocessingml.document"
         ),
         ".xls": "application/vnd.ms-excel",
         ".xlsx": (
-            "application/vnd.openxmlformats-"
-            "officedocument.spreadsheetml.sheet"
+            "application/vnd.openxmlformats-" "officedocument.spreadsheetml.sheet"
         ),
         ".txt": "text/plain",
         ".zip": "application/zip",
@@ -226,9 +224,7 @@ async def upload_to_cos(
     Returns resourceUrl.
     """
     pathname = (
-        config.location
-        if config.location.startswith("/")
-        else f"/{config.location}"
+        config.location if config.location.startswith("/") else f"/{config.location}"
     )
     host = f"{config.bucket_name}.cos.{config.region}.myqcloud.com"
 

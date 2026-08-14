@@ -3,6 +3,7 @@
 
 Blocks tool calls that target files explicitly listed in a sensitive-file set.
 """
+
 from __future__ import annotations
 
 import ntpath
@@ -79,9 +80,7 @@ _REDIRECT_OPS_BY_LEN = tuple(
 def _workspace_root() -> Path:
     """Return the effective project root for resolving relative paths."""
     return Path(
-        get_current_project_dir()
-        or get_current_workspace_dir()
-        or WORKING_DIR,
+        get_current_project_dir() or get_current_workspace_dir() or WORKING_DIR,
     )
 
 

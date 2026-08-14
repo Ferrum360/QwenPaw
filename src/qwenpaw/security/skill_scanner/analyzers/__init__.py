@@ -6,6 +6,7 @@ Every analyzer must subclass :class:`BaseAnalyzer` and implement
 new detection engines (e.g. LLM-based, behavioural dataflow) can be
 added as drop-in plugins without touching the scanner orchestrator.
 """
+
 from __future__ import annotations
 
 from abc import ABC, abstractmethod

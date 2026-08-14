@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """API router for channel access control (whitelist / blacklist / pending)."""
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -101,11 +102,7 @@ async def get_all_acls(request: Request):
     # Only return channels that are non-empty OR have access control on
     result = {}
     for key, data in raw_acls.items():
-        has_data = (
-            data.get("whitelist")
-            or data.get("blacklist")
-            or data.get("pending")
-        )
+        has_data = data.get("whitelist") or data.get("blacklist") or data.get("pending")
         if has_data or key in enabled_channels:
             result[key] = data
 

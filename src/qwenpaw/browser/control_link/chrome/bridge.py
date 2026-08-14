@@ -273,8 +273,7 @@ class NMBridge:
         reason: str,
         *,
         message: str = "Native Messaging bridge disconnected",
-        error_code: str
-        | BrowserErrorCode = BrowserErrorCode.BRIDGE_DISCONNECTED,
+        error_code: str | BrowserErrorCode = BrowserErrorCode.BRIDGE_DISCONNECTED,
     ) -> None:
         """Commit a disconnection and fail requests waiting on this bridge."""
         self._ready = False
@@ -359,9 +358,7 @@ class NMBridge:
     def _mark_request_timeout(self, method: str, timeout: float) -> None:
         """Record a request timeout in the bridge-owned lifecycle snapshot."""
         self._last_error_code = BrowserErrorCode.BRIDGE_REQUEST_TIMEOUT.value
-        self._last_error_message = (
-            f"request '{method}' timed out after {timeout}s"
-        )
+        self._last_error_message = f"request '{method}' timed out after {timeout}s"
         self._last_request_timeout_at = datetime.now(UTC)
         _record_lifecycle_trace(
             "request_timeout",
@@ -414,9 +411,7 @@ class NMBridge:
         params: dict[str, Any] | None = None,
         timeout: float | None = None,
     ) -> dict[str, Any] | list[dict[str, Any]]:
-        timeout = (
-            DEFAULT_REQUEST_TIMEOUT_SECONDS if timeout is None else timeout
-        )
+        timeout = DEFAULT_REQUEST_TIMEOUT_SECONDS if timeout is None else timeout
         if self._closed:
             raise NMBridgeDisconnectedError("NM bridge is closed")
         if not self._ready:
@@ -453,16 +448,8 @@ class NMBridge:
                 error = response["error"]
                 raise NMBridgeWireError(
                     _wire_error_message(error),
-                    code=(
-                        error.get("code")
-                        if isinstance(error, Mapping)
-                        else None
-                    ),
-                    data=(
-                        error.get("data")
-                        if isinstance(error, Mapping)
-                        else None
-                    ),
+                    code=(error.get("code") if isinstance(error, Mapping) else None),
+                    data=(error.get("data") if isinstance(error, Mapping) else None),
                 )
             result = response.get("result")
             if isinstance(result, Mapping):
@@ -572,9 +559,7 @@ class NMBridge:
         except (NMBridgeTimeoutError, NMBridgeDisconnectedError) as exc:
             raise CommandTransportUncertainError(
                 "status response was not observed",
-                reconcile_keys=(
-                    (normalized_target, normalized_target_fingerprint),
-                ),
+                reconcile_keys=((normalized_target, normalized_target_fingerprint),),
             ) from exc
         if not isinstance(response, Mapping):
             raise NMBridgeError("command.status returned an invalid result")
@@ -808,9 +793,7 @@ def _parse_command_receipt(value: object) -> CommandReceipt:
 
 def _parse_command_fact(value: object) -> CommandFactProjection:
     observed = (
-        str(value.get("observedState") or "")
-        if isinstance(value, Mapping)
-        else ""
+        str(value.get("observedState") or "") if isinstance(value, Mapping) else ""
     )
     if observed not in COMMAND_OBSERVED_STATES:
         raise NMBridgeError(

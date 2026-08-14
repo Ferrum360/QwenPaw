@@ -29,6 +29,7 @@ logger = logging.getLogger(__name__)
 @dataclass
 class SkillLoadResult:
     """load_skill 工具的返回结果"""
+
     status: str  # "success" | "error" | "already_loaded"
     skill_name: str
     content_size: int = 0  # bytes
@@ -39,6 +40,7 @@ class SkillLoadResult:
 @dataclass
 class SkillStatusInfo:
     """单个技能的详细信息"""
+
     name: str
     loaded: bool = False
     triggers: list[str] = field(default_factory=list)
@@ -51,6 +53,7 @@ class SkillStatusInfo:
 @dataclass
 class SkillStatusResult:
     """check_skill_status 工具的返回结果"""
+
     core_skills: list[str] = field(default_factory=list)
     lazy_skills: list[SkillStatusInfo] = field(default_factory=list)
 
@@ -58,6 +61,7 @@ class SkillStatusResult:
 @dataclass
 class ContextUsageInfo:
     """Context 使用情况"""
+
     total_bytes: int = 0
     total_tokens_estimated: int = 0
     skill_breakdown: dict[str, int] = field(default_factory=dict)
@@ -68,6 +72,7 @@ class ContextUsageInfo:
 @dataclass
 class AutoUnloadResult:
     """auto_unload 工具的返回结果"""
+
     unloaded_skills: list[str] = field(default_factory=list)
     freed_tokens: int = 0
     reason: str = ""
@@ -98,6 +103,7 @@ def clear_loaded_skills_cache() -> None:
 
 
 # ========== Phase 2C: 使用历史管理 ==========
+
 
 def record_skill_usage(skill_name: str, content_size: int) -> None:
     """记录技能使用历史（Phase 2C）"""
@@ -134,6 +140,7 @@ def get_all_usage_info() -> dict[str, dict]:
 
 # ========== Phase 2C: Context 监控 ==========
 
+
 def estimate_tokens_from_bytes(byte_size: int) -> int:
     """从字节数估算 token 数（粗略估计）"""
     # 英文：1 token ≈ 4 chars
@@ -152,7 +159,9 @@ def get_context_usage() -> ContextUsageInfo:
         info.skill_breakdown[skill_name] = size
 
     info.total_tokens_estimated = estimate_tokens_from_bytes(info.total_bytes)
-    info.percentage_of_limit = (info.total_bytes / info.limit_bytes) * 100 if info.limit_bytes > 0 else 0
+    info.percentage_of_limit = (
+        (info.total_bytes / info.limit_bytes) * 100 if info.limit_bytes > 0 else 0
+    )
 
     return info
 
@@ -171,7 +180,10 @@ def should_auto_unload() -> tuple[bool, str]:
 
     # 规则 2: Token 占用超过 60% 且有多个技能加载
     if usage.percentage_of_limit > 60 and len(_loaded_skills_cache) > 2:
-        return True, f"Context 占用较高 ({usage.percentage_of_limit:.1f}%)，建议释放部分技能"
+        return (
+            True,
+            f"Context 占用较高 ({usage.percentage_of_limit:.1f}%)，建议释放部分技能",
+        )
 
     return False, ""
 
@@ -183,7 +195,7 @@ def get_least_used_skill() -> str | None:
 
     # Find skill with lowest use_count, then oldest last_used
     least_used = None
-    min_count = float('inf')
+    min_count = float("inf")
     oldest_time = 0
 
     for skill_name, history in _skill_usage_history.items():
@@ -200,6 +212,7 @@ def get_least_used_skill() -> str | None:
 
 
 # ========== Phase 2C: 自动卸载策略 ==========
+
 
 def auto_unload_stale_skills(
     workspace_dir: Path,
@@ -259,7 +272,9 @@ def auto_unload_stale_skills(
             )
 
     if result.unloaded_skills:
-        result.reason = "Idle timeout" if not should_auto_unload()[0] else "High context usage"
+        result.reason = (
+            "Idle timeout" if not should_auto_unload()[0] else "High context usage"
+        )
         result.message = f"✅ Auto-unloaded {len(result.unloaded_skills)} skill(s), freed ~{result.freed_tokens} tokens"
     else:
         result.message = "ℹ️ No skills met auto-unload criteria"
@@ -303,23 +318,30 @@ def smart_unload_recommendation() -> Dict[str, Any]:
 
         # Generate recommendations
         if idle_seconds > 300 and count <= 2:  # Idle > 5 min, used <= 2 times
-            recommendation["recommendations"].append({
-                "action": "unload",
-                "skill": skill_name,
-                "reason": f"Low usage ({count} times), idle {idle_seconds/60:.1f} min",
-                "estimated_freed_tokens": estimate_tokens_from_bytes(history.get("content_size", 0)),
-            })
+            recommendation["recommendations"].append(
+                {
+                    "action": "unload",
+                    "skill": skill_name,
+                    "reason": f"Low usage ({count} times), idle {idle_seconds/60:.1f} min",
+                    "estimated_freed_tokens": estimate_tokens_from_bytes(
+                        history.get("content_size", 0)
+                    ),
+                }
+            )
         elif idle_seconds < 60:  # Used within last minute
-            recommendation["recommendations"].append({
-                "action": "keep",
-                "skill": skill_name,
-                "reason": "Recently active",
-            })
+            recommendation["recommendations"].append(
+                {
+                    "action": "keep",
+                    "skill": skill_name,
+                    "reason": "Recently active",
+                }
+            )
 
     # Context usage recommendation
     if usage.percentage_of_limit > 80:
         recommendation["recommendations"].insert(
-            0, {
+            0,
+            {
                 "action": "urgent_unload",
                 "skill": get_least_used_skill(),
                 "reason": f"Context usage critical ({usage.percentage_of_limit:.1f}%)",
@@ -328,7 +350,8 @@ def smart_unload_recommendation() -> Dict[str, Any]:
         )
     elif usage.percentage_of_limit > 60:
         recommendation["recommendations"].insert(
-            0, {
+            0,
+            {
                 "action": "consider_unload",
                 "skill": get_least_used_skill(),
                 "reason": f"Context usage elevated ({usage.percentage_of_limit:.1f}%)",
@@ -340,6 +363,7 @@ def smart_unload_recommendation() -> Dict[str, Any]:
 
 
 # ========== Phase 2B Core Tools ==========
+
 
 def load_skill_tool(
     workspace_dir: Path,

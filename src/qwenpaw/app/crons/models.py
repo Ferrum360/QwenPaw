@@ -150,9 +150,7 @@ class DispatchSpec(BaseModel):
     mode: Literal["stream", "final"] = Field(default="stream")
     silent: bool = Field(
         default=False,
-        description=(
-            "Run an agent task without delivering its events to the channel."
-        ),
+        description=("Run an agent task without delivering its events to the channel."),
     )
     meta: Dict[str, Any] = Field(default_factory=dict)
 

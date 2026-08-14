@@ -405,8 +405,7 @@ def _generate_sandbox_script(  # noqa: E501  pylint: disable=too-many-branches,t
                             continue
                         # Skip if any deny_path is nested under this entry
                         has_nested_deny = any(
-                            dp.startswith(full_path + "/")
-                            for dp in deny_expanded
+                            dp.startswith(full_path + "/") for dp in deny_expanded
                         )
                         if has_nested_deny:
                             # Enumerate one level deeper, excluding deny_paths
@@ -458,9 +457,7 @@ def _generate_sandbox_script(  # noqa: E501  pylint: disable=too-many-branches,t
     if abi_version >= 4:
         if not config.network_allow or config.network_allow == []:
             # No network: handle all net access but add no rules → all denied
-            handled_net = (
-                LANDLOCK_ACCESS_NET_BIND_TCP | LANDLOCK_ACCESS_NET_CONNECT_TCP
-            )
+            handled_net = LANDLOCK_ACCESS_NET_BIND_TCP | LANDLOCK_ACCESS_NET_CONNECT_TCP
         elif "*" in config.network_allow:
             # All network allowed: don't handle network at all
             handled_net = 0

@@ -3,6 +3,7 @@
 
 Separated from goal_mode.py for maintainability.
 """
+
 from __future__ import annotations
 
 import logging

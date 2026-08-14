@@ -23,9 +23,7 @@ _TOOL_GUARD_I18N: dict[str, dict[str, str]] = {
             "to complete it."
         ),
         "reason_timeout": "Approval timeout after {timeout}s, auto-denied",
-        "approve_hint": (
-            "Type `/approve` to approve, or send any message to deny."
-        ),
+        "approve_hint": ("Type `/approve` to approve, or send any message to deny."),
         "blocked_footer": ("This tool is blocked and cannot be approved."),
         "denied_list_msg": "This tool is on the deny list.",
         "word_unknown": "unknown",
@@ -45,12 +43,8 @@ _TOOL_GUARD_I18N: dict[str, dict[str, str]] = {
             "Triggered by tool and file guardrails "
             "(Security → Tool Guard / File Guard)."
         ),
-        "guard_hint_file": (
-            "Triggered by file guardrails (Security → File Guard)."
-        ),
-        "guard_hint_tool": (
-            "Triggered by tool guardrails (Security → Tool Guard)."
-        ),
+        "guard_hint_file": ("Triggered by file guardrails (Security → File Guard)."),
+        "guard_hint_tool": ("Triggered by tool guardrails (Security → Tool Guard)."),
     },
     "zh": {
         "wait_title": "⏳ 等待审批",
@@ -65,7 +59,9 @@ _TOOL_GUARD_I18N: dict[str, dict[str, str]] = {
         "parameters": "参数",
         "reason": "原因",
         "reason_denied": "用户拒绝执行",
-        "instruction_no_retry": ("用户已拒绝此次工具调用。请不要重试该调用，也不要尝试其他方法来完成这一次调用。"),
+        "instruction_no_retry": (
+            "用户已拒绝此次工具调用。请不要重试该调用，也不要尝试其他方法来完成这一次调用。"
+        ),
         "reason_timeout": "审批超时（{timeout}秒），自动拒绝",
         "approve_hint": "输入 `/approve` 批准执行，或发送任意消息拒绝。",
         "blocked_footer": "该工具已被禁止，无法批准执行。",
@@ -83,7 +79,9 @@ _TOOL_GUARD_I18N: dict[str, dict[str, str]] = {
         "guard_label_mixed": "工具护栏与文件护栏",
         "guard_label_file": "文件护栏",
         "guard_label_tool": "工具护栏",
-        "guard_hint_mixed": ("由工具与文件护栏触发（可在「安全 → 工具护栏 / 文件护栏」" "调整）。"),
+        "guard_hint_mixed": (
+            "由工具与文件护栏触发（可在「安全 → 工具护栏 / 文件护栏」" "调整）。"
+        ),
         "guard_hint_file": ("由文件护栏触发（可在「安全 → 文件护栏」调整）。"),
         "guard_hint_tool": ("由工具护栏触发（可在「安全 → 工具护栏」调整）。"),
     },
@@ -106,8 +104,7 @@ _TOOL_GUARD_I18N: dict[str, dict[str, str]] = {
             "способами."
         ),
         "reason_timeout": (
-            "Время подтверждения истекло ({timeout}с), "
-            "автоматически отклонено"
+            "Время подтверждения истекло ({timeout}с), " "автоматически отклонено"
         ),
         "approve_hint": (
             "Введите `/approve` для согласования или отправьте любое "
@@ -136,8 +133,7 @@ _TOOL_GUARD_I18N: dict[str, dict[str, str]] = {
             "Сработала защита файлов («Безопасность» → защита файлов)."
         ),
         "guard_hint_tool": (
-            "Сработала защита инструментов («Безопасность» → "
-            "защита инструментов)."
+            "Сработала защита инструментов («Безопасность» → " "защита инструментов)."
         ),
     },
     "ja": {
@@ -159,7 +155,10 @@ _TOOL_GUARD_I18N: dict[str, dict[str, str]] = {
             "ださい。"
         ),
         "reason_timeout": "承認がタイムアウトしました（{timeout}秒）、自動拒否",
-        "approve_hint": ("`/approve` と入力して承認するか、" "拒否するには任意のメッセージを送信してください。"),
+        "approve_hint": (
+            "`/approve` と入力して承認するか、"
+            "拒否するには任意のメッセージを送信してください。"
+        ),
         "blocked_footer": ("このツールはブロックされており、承認できません。"),
         "denied_list_msg": "このツールは拒否リストにあります。",
         "word_unknown": "不明",
@@ -176,9 +175,16 @@ _TOOL_GUARD_I18N: dict[str, dict[str, str]] = {
         "guard_label_file": "ファイルガード",
         "guard_label_tool": "ツールガード",
         "guard_hint_mixed": (
-            "ツールおよびファイルのガードにより発火しました（" "「セキュリティ」→ ツールガード / ファイルガードで変更）。"
+            "ツールおよびファイルのガードにより発火しました（"
+            "「セキュリティ」→ ツールガード / ファイルガードで変更）。"
         ),
-        "guard_hint_file": ("ファイルガードにより発火しました（" "「セキュリティ」→ ファイルガードで変更）。"),
-        "guard_hint_tool": ("ツールガードにより発火しました（" "「セキュリティ」→ ツールガードで変更）。"),
+        "guard_hint_file": (
+            "ファイルガードにより発火しました（"
+            "「セキュリティ」→ ファイルガードで変更）。"
+        ),
+        "guard_hint_tool": (
+            "ツールガードにより発火しました（"
+            "「セキュリティ」→ ツールガードで変更）。"
+        ),
     },
 }

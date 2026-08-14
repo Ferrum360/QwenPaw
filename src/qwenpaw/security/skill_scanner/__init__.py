@@ -27,6 +27,7 @@ Quick start::
     if not result.is_safe:
         print(f"Blocked: {result.max_severity.value} findings detected")
 """
+
 from __future__ import annotations
 
 from concurrent import futures

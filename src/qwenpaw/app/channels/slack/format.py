@@ -63,9 +63,7 @@ def escape_slack_mrkdwn(text: str) -> str:
         return text
 
     def _escape(seg: str) -> str:
-        return (
-            seg.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
-        )
+        return seg.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
     parts: list[str] = []
     last = 0
@@ -177,10 +175,7 @@ def chunk_slack_text(text: str, limit: int = SLACK_TEXT_LIMIT) -> list[str]:
             if not line:
                 continue
 
-            if (
-                current_len + len(line) + (1 if current_line_group else 0)
-                <= limit
-            ):
+            if current_len + len(line) + (1 if current_line_group else 0) <= limit:
                 current_line_group.append(line)
                 current_len += len(line) + (1 if current_line_group else 0)
             else:

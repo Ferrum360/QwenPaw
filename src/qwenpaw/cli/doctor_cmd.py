@@ -112,8 +112,7 @@ def _check_api_health(
 
     if response.status_code == 200:
         click.echo(
-            click.style("OK", fg="green")
-            + f" — health ({health_url}, HTTP 200)",
+            click.style("OK", fg="green") + f" — health ({health_url}, HTTP 200)",
         )
         return True, response
 
@@ -173,8 +172,7 @@ def _fetch_running_server_python(
         return (
             None,
             None,
-            f"(not available: {source_url} did not report "
-            "python_environment)",
+            f"(not available: {source_url} did not report " "python_environment)",
         )
 
     try:
@@ -632,8 +630,7 @@ def run_doctor_checks(
         sec_notes = security_baseline_notes(cfg)
         if sec_notes:
             click.echo(
-                click.style("Note:", fg="yellow")
-                + " review security posture:",
+                click.style("Note:", fg="yellow") + " review security posture:",
             )
             for line in sec_notes:
                 click.echo(f"  - {line}")
@@ -841,8 +838,7 @@ def run_doctor_checks(
             err=True,
         )
         _doctor_fix_hint(
-            "`qwenpaw models list` / console model settings — not a "
-            "filesystem fix.",
+            "`qwenpaw models list` / console model settings — not a " "filesystem fix.",
         )
     for line in llm_notes:
         click.echo(click.style("Note:", fg="yellow") + f" {line}")
@@ -858,14 +854,12 @@ def run_doctor_checks(
         )
         if aok:
             click.echo(
-                click.style("OK", fg="green")
-                + " — all enabled agents reachable",
+                click.style("OK", fg="green") + " — all enabled agents reachable",
             )
         else:
             failed = True
             click.echo(
-                click.style("FAIL", fg="red")
-                + " — some enabled agents unreachable",
+                click.style("FAIL", fg="red") + " — some enabled agents unreachable",
                 err=True,
             )
         for ln in lines:
@@ -989,9 +983,7 @@ def run_doctor_checks(
     default=15.0,
     type=float,
     show_default=True,
-    help=(
-        "Timeout in seconds for the active LLM ping (streaming completion)."
-    ),
+    help=("Timeout in seconds for the active LLM ping (streaming completion)."),
 )
 @click.option(
     "--deep",

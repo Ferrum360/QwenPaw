@@ -46,9 +46,7 @@ _MAX_TOTAL_OUTPUT_CHARS = 80_000
 
 # Hide the console window on Windows; no-op on POSIX.
 _SUBPROCESS_FLAGS = (
-    getattr(subprocess, "CREATE_NO_WINDOW", 0)
-    if sys.platform == "win32"
-    else 0
+    getattr(subprocess, "CREATE_NO_WINDOW", 0) if sys.platform == "win32" else 0
 )
 
 
@@ -115,8 +113,7 @@ def _resolve_search_path(
         candidate_resolved.relative_to(root_resolved)
     except ValueError:
         return _make_response(
-            f"Error: path {path} is outside the project root "
-            f"{root_resolved}.",
+            f"Error: path {path} is outside the project root " f"{root_resolved}.",
         )
     if not candidate_resolved.exists():
         return _make_response(

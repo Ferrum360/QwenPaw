@@ -5,6 +5,7 @@ Each installation keeps a private key under BACKUP_DIR. The key is not placed
 inside backups; it exists only to decide whether a backup was created or
 trusted locally before restore/import applies sensitive files.
 """
+
 from __future__ import annotations
 
 import logging

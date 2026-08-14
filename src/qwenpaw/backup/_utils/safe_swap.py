@@ -37,6 +37,7 @@ concurrent callers cannot interleave their extract / commit / discard
 operations for the same destination.  The lock is held for the duration of
 the entire phase-1, phase-2+3, or cleanup operation.
 """
+
 from __future__ import annotations
 
 import logging

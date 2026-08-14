@@ -266,8 +266,7 @@ class CheckpointPolicy:
         value = cast(ConfigValue, value)
         if value < minimum or value > maximum:
             raise CheckpointError(
-                f"Config {section}.{key} must be between "
-                f"{minimum} and {maximum}",
+                f"Config {section}.{key} must be between " f"{minimum} and {maximum}",
             )
         return value
 
@@ -345,22 +344,17 @@ class CheckpointPolicy:
                     else:
                         missing.append((key, value))
                 if missing:
-                    additions = "\n".join(
-                        f"{key} = {value}" for key, value in missing
-                    )
+                    additions = "\n".join(f"{key} = {value}" for key, value in missing)
                     section = section.rstrip() + f"\n{additions}\n\n"
                 text = text[: match.start()] + section + text[match.end() :]
             else:
-                body = "\n".join(
-                    f"{key} = {value}" for key, value in values.items()
-                )
+                body = "\n".join(f"{key} = {value}" for key, value in values.items())
                 text = text.rstrip() + f"\n\n[{section_name}]\n{body}\n"
             try:
                 write_text_atomic(self.config_file, text)
             except OSError as exc:
                 raise CheckpointError(
-                    "Failed to write checkpoints config "
-                    f"{self.config_file}: {exc}",
+                    "Failed to write checkpoints config " f"{self.config_file}: {exc}",
                 ) from exc
             self.reload(force=True)
 
@@ -427,9 +421,7 @@ def session_file_path(
     safe_uid = sanitize_filename(user_id) if user_id else ""
     if safe_uid and safe_uid == safe_sid:
         safe_uid = ""
-    filename = (
-        f"{safe_uid}_{safe_sid}.json" if safe_uid else f"{safe_sid}.json"
-    )
+    filename = f"{safe_uid}_{safe_sid}.json" if safe_uid else f"{safe_sid}.json"
     if channel:
         return save_dir / sanitize_filename(channel) / filename
     return save_dir / filename

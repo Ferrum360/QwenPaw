@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """CLI channel: list and interactively configure channels in config.json."""
+
 from __future__ import annotations
 
 from types import SimpleNamespace
@@ -28,7 +29,6 @@ from .utils import prompt_confirm, prompt_path, prompt_select
 from .http import client, print_json, resolve_base_url
 from ..config import get_available_channels
 from ..app.channels.registry import get_channel_registry
-
 
 # Fields that contain secrets — display masked in ``list``
 _SECRET_FIELDS = {
@@ -325,9 +325,7 @@ def configure_wechat(current_config: WeChatConfig) -> WeChatConfig:
 
     bot_token_file = click.prompt(
         "bot_token file path",
-        default=(
-            current_config.bot_token_file or "~/.qwenpaw/wechat_bot_token"
-        ),
+        default=(current_config.bot_token_file or "~/.qwenpaw/wechat_bot_token"),
         type=str,
     )
     current_config.bot_token_file = bot_token_file
@@ -649,9 +647,7 @@ def get_channel_configurators() -> dict:
     """Return channel configurators (built-in + plugin get_configurator)."""
     available = get_available_channels()
     registry = get_channel_registry()
-    out = {
-        k: v for k, v in _ALL_CHANNEL_CONFIGURATORS.items() if k in available
-    }
+    out = {k: v for k, v in _ALL_CHANNEL_CONFIGURATORS.items() if k in available}
 
     def _default_plugin_configure(current):
         """Minimal configurator: enabled + bot_prefix."""
@@ -840,9 +836,7 @@ def list_cmd(agent_id: str) -> None:
             click.echo("No channels configured for this agent.")
             return
 
-        extra = (
-            getattr(agent_config.channels, "__pydantic_extra__", None) or {}
-        )
+        extra = getattr(agent_config.channels, "__pydantic_extra__", None) or {}
         for key, name in _get_channel_names().items():
             ch = getattr(agent_config.channels, key, None)
             if ch is None:
@@ -859,11 +853,7 @@ def list_cmd(agent_id: str) -> None:
             click.echo(f"{'─' * 40}")
 
             for field_name, value in _channel_config_fields(ch):
-                display = (
-                    _mask(str(value))
-                    if field_name in _SECRET_FIELDS
-                    else value
-                )
+                display = _mask(str(value)) if field_name in _SECRET_FIELDS else value
                 click.echo(f"  {field_name:20s}: {display}")
 
         click.echo()
@@ -887,9 +877,7 @@ def configure_cmd(agent_id: str) -> None:
         # Create a temporary Config object for the interactive configurator
         temp_config = Config()
         temp_config.channels = (
-            agent_config.channels
-            if agent_config.channels
-            else temp_config.channels
+            agent_config.channels if agent_config.channels else temp_config.channels
         )
 
         configure_channels_interactive(temp_config)
@@ -912,10 +900,7 @@ def configure_cmd(agent_id: str) -> None:
 @click.option(
     "--channel",
     required=True,
-    help=(
-        "Target channel (e.g., console, dingtalk, feishu, discord, "
-        "imessage, qq)"
-    ),
+    help=("Target channel (e.g., console, dingtalk, feishu, discord, " "imessage, qq)"),
 )
 @click.option(
     "--target-user",

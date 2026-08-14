@@ -100,17 +100,14 @@ class RoutingChatModel(ChatModelBase):
         text = " ".join(
             message["content"]
             for message in messages
-            if message.get("role") == "user"
-            and isinstance(message.get("content"), str)
+            if message.get("role") == "user" and isinstance(message.get("content"), str)
         )
         decision = self.policy.decide(
             text=text,
             tools_available=tools is not None,
         )
         endpoint = (
-            self.local_endpoint
-            if decision.route == "local"
-            else self.cloud_endpoint
+            self.local_endpoint if decision.route == "local" else self.cloud_endpoint
         )
 
         logger.debug(

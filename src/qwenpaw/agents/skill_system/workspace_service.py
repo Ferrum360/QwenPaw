@@ -75,9 +75,7 @@ def _register_workspace_skill_entry(
             installed_from or str(entry.get("installed_from", "") or "")
         ),
         "config": (
-            dict(config)
-            if config is not None
-            else dict(entry.get("config") or {})
+            dict(config) if config is not None else dict(entry.get("config") or {})
         ),
         "metadata": metadata,
         "requirements": metadata["requirements"],
@@ -134,9 +132,11 @@ class SkillService:
             entry = manifest.get("skills", {}).get(skill_name, {})
             skill = read_skill_from_dir(
                 skill_root / skill_name,
-                "builtin"
-                if entry.get("source", "customized") == "builtin"
-                else "customized",
+                (
+                    "builtin"
+                    if entry.get("source", "customized") == "builtin"
+                    else "customized"
+                ),
             )
             if skill is not None:
                 skills.append(skill)
@@ -291,9 +291,7 @@ class SkillService:
         config: dict[str, Any] | None,
         old_entry: dict[str, Any],
     ) -> dict[str, Any]:
-        new_config = (
-            config if config is not None else old_entry.get("config") or {}
-        )
+        new_config = config if config is not None else old_entry.get("config") or {}
         skill_root = get_workspace_skills_dir(self.workspace_dir)
         skill_root.mkdir(parents=True, exist_ok=True)
         skill_dir = safe_skill_dir(skill_root, skill_name)
@@ -304,9 +302,7 @@ class SkillService:
             else ""
         )
         content_changed = content != old_md
-        if not content_changed and new_config == (
-            old_entry.get("config") or {}
-        ):
+        if not content_changed and new_config == (old_entry.get("config") or {}):
             return {
                 "success": True,
                 "mode": "noop",
@@ -327,9 +323,7 @@ class SkillService:
                 encoding="utf-8",
             )
         source = (
-            "customized"
-            if content_changed
-            else old_entry.get("source", "customized")
+            "customized" if content_changed else old_entry.get("source", "customized")
         )
         metadata = build_skill_metadata(
             skill_name,
@@ -340,9 +334,7 @@ class SkillService:
 
         def _edit(payload: dict[str, Any]) -> None:
             payload.setdefault("skills", {})
-            current_entry = (
-                payload["skills"].get(skill_name) or old_entry or {}
-            )
+            current_entry = payload["skills"].get(skill_name) or old_entry or {}
             next_entry = {
                 "enabled": bool(current_entry.get("enabled", False)),
                 "channels": current_entry.get("channels") or ["all"],
@@ -393,9 +385,7 @@ class SkillService:
             scan_skill_dir_or_raise(staged_dir, final_name)
             copy_skill_dir(staged_dir, target_dir)
 
-        old_config = (
-            config if config is not None else old_entry.get("config") or {}
-        )
+        old_config = config if config is not None else old_entry.get("config") or {}
         old_channels = old_entry.get("channels") or ["all"]
         metadata = build_skill_metadata(
             final_name,
@@ -406,9 +396,7 @@ class SkillService:
 
         def _rename_entry(payload: dict[str, Any]) -> None:
             payload.setdefault("skills", {})
-            current_entry = (
-                payload["skills"].get(skill_name) or old_entry or {}
-            )
+            current_entry = payload["skills"].get(skill_name) or old_entry or {}
             next_entry = {
                 "enabled": bool(current_entry.get("enabled", False)),
                 "channels": current_entry.get("channels") or old_channels,
@@ -466,10 +454,7 @@ class SkillService:
                         ),
                     )
                 found = [(found[0][0], normalized_target)]
-            found = [
-                (d, normalize_skill_dir_name(renames.get(n, n)))
-                for d, n in found
-            ]
+            found = [(d, normalize_skill_dir_name(renames.get(n, n))) for d, n in found]
             existing_on_disk = (
                 {
                     p.name
@@ -571,10 +556,7 @@ class SkillService:
                 "failed": [self.workspace_dir.name],
                 "reason": "not_found",
             }
-        if (
-            target_workspaces
-            and self.workspace_dir.name not in target_workspaces
-        ):
+        if target_workspaces and self.workspace_dir.name not in target_workspaces:
             return {
                 "success": False,
                 "updated_workspaces": [],
@@ -735,8 +717,7 @@ class SkillService:
         except Exception as exc:
             raise SkillsError(
                 message=(
-                    "Workspace skill files were deleted, but manifest "
-                    "update failed."
+                    "Workspace skill files were deleted, but manifest " "update failed."
                 ),
                 details={
                     "skill_name": skill_name,

@@ -97,8 +97,7 @@ def _should_skip_by_content_range(
 
     if last_date < start_date_str or first_date > end_date_str:
         logger.debug(
-            "Skipping session by content range [%s, %s] "
-            "outside target [%s, %s]",
+            "Skipping session by content range [%s, %s] " "outside target [%s, %s]",
             first_date,
             last_date,
             start_date_str,
@@ -396,9 +395,7 @@ class AgentStatsService:
         for date_str, ts in token_summary.by_date.items():
             if date_str in daily_stats:
                 daily_stats[date_str]["prompt_tokens"] = ts.prompt_tokens
-                daily_stats[date_str][
-                    "completion_tokens"
-                ] = ts.completion_tokens
+                daily_stats[date_str]["completion_tokens"] = ts.completion_tokens
                 daily_stats[date_str]["llm_calls"] = ts.call_count
 
         for date_str, session_set in active_sessions.items():
@@ -408,9 +405,7 @@ class AgentStatsService:
         by_date = [daily_stats[d] for d in sorted(daily_stats.keys())]
 
         total_user_messages = sum(ds["user_messages"] for ds in by_date)
-        total_assistant_messages = sum(
-            ds["assistant_messages"] for ds in by_date
-        )
+        total_assistant_messages = sum(ds["assistant_messages"] for ds in by_date)
         total_messages = total_user_messages + total_assistant_messages
 
         return AgentStatsSummary(

@@ -97,9 +97,7 @@ else:
     from .deprecated_browser.browser_control import browser
 
 
-_STABLE_BROWSER_MODULE = (
-    "qwenpaw.agents.tools.deprecated_browser.browser_control"
-)
+_STABLE_BROWSER_MODULE = "qwenpaw.agents.tools.deprecated_browser.browser_control"
 
 
 def _loaded_stable_browser():

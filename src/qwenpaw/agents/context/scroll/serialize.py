@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """Serialize AgentScope ``Msg`` blocks into ``conversation_history`` rows."""
+
 from __future__ import annotations
 
 import re
@@ -81,11 +82,7 @@ def _media_ref(bd: dict) -> str | None:
     kind = media_type.split("/", 1)[0] if "/" in media_type else "file"
     if kind not in ("image", "audio", "video"):
         kind = "file"
-    ref = (
-        src.get("url")
-        if src.get("type") == "url"
-        else f"<{media_type or 'binary'}>"
-    )
+    ref = src.get("url") if src.get("type") == "url" else f"<{media_type or 'binary'}>"
     name = bd.get("name")
     if name and ref:
         return f"[{kind}: {name} — {ref}]"
@@ -174,9 +171,7 @@ def strip_headline_delta(
 
     while text:
         if state.suppressing:
-            close_re = (
-                _LEGACY_CLOSE_RE if state.legacy_comment else _PLAIN_CLOSE_RE
-            )
+            close_re = _LEGACY_CLOSE_RE if state.legacy_comment else _PLAIN_CLOSE_RE
             close = close_re.search(text)
             if close is not None:
                 text = text[close.end() :]
@@ -255,12 +250,8 @@ def msg_to_entries(msg: Msg) -> list[LogEntry]:
     own ``tool_result`` row whose ``content`` is the flattened output (so it is
     recallable by ``tool_call_id``).
     """
-    non_result = [
-        b for b in msg.content if getattr(b, "type", None) != "tool_result"
-    ]
-    results = [
-        b for b in msg.content if getattr(b, "type", None) == "tool_result"
-    ]
+    non_result = [b for b in msg.content if getattr(b, "type", None) != "tool_result"]
+    results = [b for b in msg.content if getattr(b, "type", None) == "tool_result"]
     created_at = getattr(msg, "created_at", None)
     entries: list[LogEntry] = []
 
@@ -307,9 +298,7 @@ def msg_to_entries(msg: Msg) -> list[LogEntry]:
                 )
         entries.append(
             LogEntry(
-                kind="model_turn"
-                if msg.role == "assistant"
-                else "context_msg",
+                kind="model_turn" if msg.role == "assistant" else "context_msg",
                 role=msg.role,
                 name=name,
                 content=text,
@@ -323,9 +312,7 @@ def msg_to_entries(msg: Msg) -> list[LogEntry]:
         )
     for b in results:
         block_metadata = (
-            b.get("metadata")
-            if isinstance(b, dict)
-            else getattr(b, "metadata", None)
+            b.get("metadata") if isinstance(b, dict) else getattr(b, "metadata", None)
         )
         entries.append(
             LogEntry(
@@ -337,9 +324,7 @@ def msg_to_entries(msg: Msg) -> list[LogEntry]:
                 tool_state=_state_value(getattr(b, "state", None)),
                 blocks=[_dump(b)],
                 metadata=(
-                    dict(block_metadata)
-                    if isinstance(block_metadata, dict)
-                    else {}
+                    dict(block_metadata) if isinstance(block_metadata, dict) else {}
                 ),
                 created_at=created_at,
             ),

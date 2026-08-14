@@ -4,6 +4,7 @@
 This module is intentionally optional: QwenPaw does not depend on langfuse at
 install time, so every helper becomes a no-op when Langfuse is unavailable.
 """
+
 from __future__ import annotations
 
 import importlib
@@ -201,9 +202,7 @@ async def tool_span(
         yield None
         return
 
-    client = (
-        (client_factory or _langfuse_client)() if ctx is not None else None
-    )
+    client = (client_factory or _langfuse_client)() if ctx is not None else None
     observation = None
 
     try:

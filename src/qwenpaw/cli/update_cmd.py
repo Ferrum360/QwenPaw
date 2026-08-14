@@ -193,9 +193,7 @@ def _detect_installation() -> InstallInfo:
     package_dir = Path(__file__).resolve().parent.parent
     python_executable = sys.executable
     environment_root = Path(sys.prefix).resolve()
-    environment_kind = (
-        "virtualenv" if sys.prefix != sys.base_prefix else "system"
-    )
+    environment_kind = "virtualenv" if sys.prefix != sys.base_prefix else "system"
 
     return InstallInfo(
         package_dir=str(package_dir),
@@ -623,8 +621,7 @@ def run_update_worker(plan_path: str | Path) -> int:
     else:
         click.echo(f"[qwenpaw] Update failed with exit code {return_code}.")
         click.echo(
-            "[qwenpaw] Please fix the error above and run "
-            "`qwenpaw update` again.",
+            "[qwenpaw] Please fix the error above and run " "`qwenpaw update` again.",
         )
 
     return return_code
@@ -636,8 +633,7 @@ def _echo_install_summary(info: InstallInfo, latest_version: str) -> None:
     click.echo(f"Latest version:  {latest_version}")
     click.echo(f"Python:          {info.python_executable}")
     click.echo(
-        f"Environment:     {info.environment_kind} "
-        f"({info.environment_root})",
+        f"Environment:     {info.environment_kind} " f"({info.environment_root})",
     )
     click.echo(f"Install path:    {info.package_dir}")
     click.echo(f"Installer:       {info.installer}")
@@ -663,8 +659,7 @@ def _confirm_source_override(info: InstallInfo, yes: bool) -> bool:
 
     click.echo(f"Warning: {message}")
     return click.confirm(
-        "Continue and replace the current installation with the PyPI "
-        "version?",
+        "Continue and replace the current installation with the PyPI " "version?",
         default=False,
     )
 

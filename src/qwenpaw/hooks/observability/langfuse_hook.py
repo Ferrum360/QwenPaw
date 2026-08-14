@@ -4,6 +4,7 @@
 Applies ``agent_trace_scope`` as a PRE_EXECUTE / FINALLY hook pair,
 grouping each agent request into a single Langfuse trace.
 """
+
 from __future__ import annotations
 
 import logging

@@ -13,7 +13,6 @@ from datetime import datetime, timezone
 from pathlib import Path, PurePosixPath
 from typing import Any
 
-
 DEFAULT_PAGE_SIZE = 200
 MAX_PAGE_SIZE = 500
 DEFAULT_CHUNK_SIZE = 256 * 1024
@@ -232,9 +231,7 @@ def list_directory(
                 info = entry.stat(follow_symlinks=False)
             except OSError:
                 continue
-            kind = (
-                "directory" if entry.is_dir(follow_symlinks=False) else "file"
-            )
+            kind = "directory" if entry.is_dir(follow_symlinks=False) else "file"
             relative = (
                 PurePosixPath(api_path, entry.name).as_posix()
                 if api_path

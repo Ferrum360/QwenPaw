@@ -75,8 +75,7 @@ def build_acp_mcp_driver_cards(
             }
         else:
             raise TypeError(
-                f"Unsupported ACP MCP server type: "
-                f"{type(server).__name__}",
+                f"Unsupported ACP MCP server type: " f"{type(server).__name__}",
             )
 
         cards.append(

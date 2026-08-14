@@ -109,8 +109,7 @@ def _discover_system_chromium_path() -> Optional[str]:
             ),
             Path("/Applications/Chromium.app/Contents/MacOS/Chromium"),
             Path(
-                "/Applications/Microsoft Edge.app/Contents/MacOS/"
-                "Microsoft Edge",
+                "/Applications/Microsoft Edge.app/Contents/MacOS/" "Microsoft Edge",
             ),
         ]
     else:
@@ -194,9 +193,7 @@ def _get_darwin_default_browser() -> Tuple[Optional[str], Optional[str]]:
     """
     result: Tuple[Optional[str], Optional[str]] = (None, None)
     pref = "~/Library/Preferences"
-    plist_name = (
-        "com.apple.LaunchServices.com.apple.launchservices.secure.plist"
-    )
+    plist_name = "com.apple.LaunchServices.com.apple.launchservices.secure.plist"
     plist_path = Path(os.path.expanduser(pref)) / plist_name
     if not plist_path.is_file():
         return result
@@ -297,9 +294,7 @@ def _exec_executable_token(exec_value: str) -> Optional[str]:
         idx += 1
         # Skip VAR=VALUE assignments that follow the `env` wrapper.
         while (
-            idx < len(tokens)
-            and "=" in tokens[idx]
-            and not tokens[idx].startswith("/")
+            idx < len(tokens) and "=" in tokens[idx] and not tokens[idx].startswith("/")
         ):
             idx += 1
     return tokens[idx] if idx < len(tokens) else None
@@ -574,9 +569,7 @@ def _load_and_validate_config(
 
     if migrated_weixin or migrated_display:
         try:
-            migration_name = (
-                "channel-display" if migrated_display else "weixin"
-            )
+            migration_name = "channel-display" if migrated_display else "weixin"
             backup_path = config_path.with_suffix(
                 f".{uuid.uuid4().hex[:8]}.{migration_name}-migrate.bak",
             )
@@ -847,10 +840,7 @@ def get_agent_dirs() -> list[Path]:
     if config.agents and config.agents.profiles:
         for profile in config.agents.profiles.values():
             workspace_dir = Path(profile.workspace_dir)
-            if (
-                workspace_dir.exists()
-                and (workspace_dir / "agent.json").exists()
-            ):
+            if workspace_dir.exists() and (workspace_dir / "agent.json").exists():
                 agent_dirs.append(workspace_dir)
 
     return agent_dirs
@@ -916,8 +906,7 @@ def sanitize_mcp_clients(
             )
         except Exception as exc:  # noqa: BLE001
             logger.warning(
-                f"Agent '{agent_id}': skipping invalid "
-                f"MCP client '{key}': {exc}",
+                f"Agent '{agent_id}': skipping invalid " f"MCP client '{key}': {exc}",
             )
             bad_keys.append(key)
     for key in bad_keys:

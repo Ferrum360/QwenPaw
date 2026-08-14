@@ -16,6 +16,7 @@ The state file lets startup cleanup decide whether to roll back to old content
 or finish cleanup after a crash.  The fallback is intentionally isolated here
 so ``safe_swap.py`` can remain focused on the normal rename protocol.
 """
+
 from __future__ import annotations
 
 import errno
@@ -123,8 +124,7 @@ def swap_mount_point_contents(dst: Path, tmp_dst: Path) -> None:
             recover_mount_point_swap(dst, tmp_dst)
         except Exception:
             logger.exception(
-                "Immediate recovery failed after mount-point swap error "
-                "for %s",
+                "Immediate recovery failed after mount-point swap error " "for %s",
                 dst,
             )
         raise
@@ -135,8 +135,7 @@ def _swap_mount_point_contents(dst: Path, tmp_dst: Path) -> None:
     old_dir = dst / OLD_CONTENT_DIR_NAME
     if old_dir.exists():
         raise RuntimeError(
-            "Reserved restore directory exists before restore starts: "
-            f"{old_dir}",
+            "Reserved restore directory exists before restore starts: " f"{old_dir}",
         )
 
     _write_state(dst, STATE_EVACUATING_OLD)

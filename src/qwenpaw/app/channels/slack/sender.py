@@ -54,12 +54,7 @@ def _resolve_local_file_path(url: str) -> Optional[str]:
         return None
     path = unquote(parsed.path)
     # Windows: strip leading / for drive-letter paths
-    if (
-        os.name == "nt"
-        and path.startswith("/")
-        and len(path) > 2
-        and path[2] == ":"
-    ):
+    if os.name == "nt" and path.startswith("/") and len(path) > 2 and path[2] == ":":
         path = path[1:]
     return path if os.path.isfile(path) else None
 
@@ -195,8 +190,7 @@ class SlackSender:
                     last_ts = ts
             except Exception:
                 logger.exception(
-                    "slack send: chat_postMessage failed chunk=%d/%d "
-                    "channel=%s",
+                    "slack send: chat_postMessage failed chunk=%d/%d " "channel=%s",
                     i + 1,
                     len(chunks),
                     channel_id,

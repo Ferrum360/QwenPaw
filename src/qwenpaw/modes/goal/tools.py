@@ -5,6 +5,7 @@ Modeled after Codex's goal tools. The agent calls
 ``update_goal(status="complete")`` to signal completion
 rather than relying on text-based detection.
 """
+
 from __future__ import annotations
 
 import json
@@ -63,10 +64,7 @@ def make_update_goal(owner: "GoalMode") -> Any:
                 consecutive goal turns.
         """
         if status not in ("complete", "blocked"):
-            return (
-                f"Invalid status '{status}'. "
-                f"Must be 'complete' or 'blocked'."
-            )
+            return f"Invalid status '{status}'. " f"Must be 'complete' or 'blocked'."
 
         session = owner.active_session()
         if session is None:
@@ -80,10 +78,7 @@ def make_update_goal(owner: "GoalMode") -> Any:
                 "Goal marked complete by agent: %s",
                 session.goal[:80],
             )
-            return (
-                f"Goal marked as complete. "
-                f"Iterations used: {session.iteration}"
-            )
+            return f"Goal marked as complete. " f"Iterations used: {session.iteration}"
 
         # status == "blocked"
         session.active = False

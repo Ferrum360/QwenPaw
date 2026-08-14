@@ -304,10 +304,7 @@ class ModelCommandHandler(BaseControlCommandHandler):
             save_agent_config(agent_config.id, agent_config)
         except Exception as e:
             logger.exception(f"Failed to save agent config: {e}")
-            return (
-                f"**Switch Failed**\n\n"
-                f"Failed to save configuration: {str(e)}"
-            )
+            return f"**Switch Failed**\n\n" f"Failed to save configuration: {str(e)}"
 
         logger.info(
             f"/model switch: agent={agent_config.id} "
@@ -355,10 +352,7 @@ class ModelCommandHandler(BaseControlCommandHandler):
             save_agent_config(agent_config.id, agent_config)
         except Exception as e:
             logger.exception(f"Failed to save agent config: {e}")
-            return (
-                f"**Reset Failed**\n\n"
-                f"Failed to save configuration: {str(e)}"
-            )
+            return f"**Reset Failed**\n\n" f"Failed to save configuration: {str(e)}"
 
         logger.info(
             f"/model reset: agent={agent_config.id} "
@@ -462,8 +456,7 @@ class ModelCommandHandler(BaseControlCommandHandler):
             lines.append(f"**Base URL:** `{provider.base_url}`")
 
         lines.append(
-            "\n---\n"
-            f"Use `/model {provider_id}:{model_id}` to switch to this model.",
+            "\n---\n" f"Use `/model {provider_id}:{model_id}` to switch to this model.",
         )
 
         return "\n".join(lines)

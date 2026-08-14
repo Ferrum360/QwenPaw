@@ -284,9 +284,7 @@ def write_text_atomic(
     """
     target = _resolve_write_target(Path(path))
     target.parent.mkdir(parents=True, exist_ok=True)
-    original_mode = (
-        stat.S_IMODE(target.stat().st_mode) if target.exists() else None
-    )
+    original_mode = stat.S_IMODE(target.stat().st_mode) if target.exists() else None
     final_mode = original_mode if original_mode is not None else new_file_mode
     temp_path: Path | None = None
     try:

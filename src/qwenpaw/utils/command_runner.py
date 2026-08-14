@@ -30,9 +30,7 @@ class CommandResult:
 
     @property
     def combined_output(self) -> str:
-        parts = [
-            part.strip() for part in (self.stdout, self.stderr) if part.strip()
-        ]
+        parts = [part.strip() for part in (self.stdout, self.stderr) if part.strip()]
         return "\n".join(parts)
 
     @property

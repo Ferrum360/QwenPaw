@@ -4,6 +4,7 @@
 Defines the StopGate ABC, StopAction enum, and
 StopHandlerResult dataclass.
 """
+
 from __future__ import annotations
 
 from abc import ABC, abstractmethod

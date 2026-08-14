@@ -14,6 +14,7 @@ accepts plain dicts — the formatter is now built-in and asserts on
 ``Msg`` instances), await ``model(messages)`` directly, and tolerate the
 same ``(ValueError, AppBaseException)`` factory failures.
 """
+
 from __future__ import annotations
 
 import asyncio
@@ -158,8 +159,7 @@ async def generate_and_update_title(
         )
         if updated is None:
             logger.debug(
-                "Chat %s no longer has placeholder name; "
-                "title update skipped",
+                "Chat %s no longer has placeholder name; " "title update skipped",
                 chat_id,
             )
             return
@@ -230,7 +230,10 @@ async def refresh_title_after_auto_memory(
     via :meth:`ChatManager.record_auto_title_refresh` (plus an INFO log), so
     audits can verify whether the refresh succeeded without parsing debug logs.
     """
-    async def _record(chat_id: str, *, ok: bool, reason: str = "", title: str = "") -> None:
+
+    async def _record(
+        chat_id: str, *, ok: bool, reason: str = "", title: str = ""
+    ) -> None:
         try:
             await workspace.chat_manager.record_auto_title_refresh(
                 chat_id,

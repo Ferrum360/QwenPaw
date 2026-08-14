@@ -6,6 +6,7 @@ This module handles:
 - Message content manipulation
 - Message validation
 """
+
 import asyncio
 import logging
 import os
@@ -149,9 +150,7 @@ def _convert_audio_to_wav(src_path: str) -> Optional[str]:
     # AMR (AMR-NB/AMR-WB) used by QQ voice messages has non-standard
     # encapsulation; increase analyzeduration and probesize so ffmpeg
     # can correctly detect the codec before decoding.
-    amr_extra: list = (
-        _AMR_FFMPEG_PROBE_PARAMS if ext in _AMR_EXTENSIONS else []
-    )
+    amr_extra: list = _AMR_FFMPEG_PROBE_PARAMS if ext in _AMR_EXTENSIONS else []
 
     try:
         subprocess.run(
@@ -482,9 +481,7 @@ async def process_file_and_media_blocks_in_message(msg) -> None:
     Downloads to local and updates paths/URLs.  Handles both dict blocks
     (1.x) and Pydantic block objects (2.0 ``DataBlock``).
     """
-    messages = (
-        [msg] if isinstance(msg, Msg) else msg if isinstance(msg, list) else []
-    )
+    messages = [msg] if isinstance(msg, Msg) else msg if isinstance(msg, list) else []
 
     for message in messages:
         if not isinstance(message, Msg):
@@ -562,9 +559,7 @@ def is_first_user_interaction(messages: list) -> bool:
     system_prompt_count = sum(1 for msg in messages if msg.role == "system")
     non_system_messages = messages[system_prompt_count:]
 
-    user_msg_count = sum(
-        1 for msg in non_system_messages if msg.role == "user"
-    )
+    user_msg_count = sum(1 for msg in non_system_messages if msg.role == "user")
     assistant_msg_count = sum(
         1 for msg in non_system_messages if msg.role == "assistant"
     )

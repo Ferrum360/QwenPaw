@@ -263,9 +263,7 @@ def _list_all_files(workspace_dir: Path) -> list[dict]:
     try:
         for dirpath, dirnames, filenames in os.walk(root, topdown=True):
             # Prune in place — must mutate, not rebind, for os.walk to honor.
-            dirnames[:] = sorted(
-                d for d in dirnames if not _is_skipped_name(d)
-            )
+            dirnames[:] = sorted(d for d in dirnames if not _is_skipped_name(d))
             rel_dir = os.path.relpath(dirpath, root)
             for name in sorted(filenames):
                 if _is_skipped_name(name):
@@ -276,9 +274,7 @@ def _list_all_files(workspace_dir: Path) -> list[dict]:
                 except OSError:
                     continue
                 rel = (
-                    name
-                    if rel_dir == "."
-                    else f"{rel_dir}/{name}".replace(os.sep, "/")
+                    name if rel_dir == "." else f"{rel_dir}/{name}".replace(os.sep, "/")
                 )
                 files.append(
                     {
@@ -464,9 +460,7 @@ async def download_workspace_file(
         target = resolve_workspace_path(files_root, path)
         info = target.stat()
         filename = target.name.replace('"', "")
-        media_type = (
-            mimetypes.guess_type(filename)[0] or "application/octet-stream"
-        )
+        media_type = mimetypes.guess_type(filename)[0] or "application/octet-stream"
         return target, info, filename, media_type
 
     try:
@@ -657,9 +651,7 @@ def _upload_name_key(
 ) -> str:
     """Build a filename comparison key matching the target filesystem."""
     comparable = (
-        filename
-        if normalization_sensitive
-        else unicodedata.normalize("NFC", filename)
+        filename if normalization_sensitive else unicodedata.normalize("NFC", filename)
     )
     return comparable if case_sensitive else comparable.casefold()
 
@@ -1065,9 +1057,7 @@ async def workspace_watch_events(
                 change_name = (
                     "added"
                     if change_type is Change.added
-                    else "deleted"
-                    if change_type is Change.deleted
-                    else "modified"
+                    else "deleted" if change_type is Change.deleted else "modified"
                 )
                 events.append(
                     {"change": change_name, "path": rel.as_posix()},
@@ -1311,9 +1301,7 @@ async def get_transcription_provider_type() -> dict:
     """Get transcription provider type setting."""
     config = load_config()
     return {
-        "transcription_provider_type": (
-            config.agents.transcription_provider_type
-        ),
+        "transcription_provider_type": (config.agents.transcription_provider_type),
     }
 
 
@@ -1331,8 +1319,7 @@ async def put_transcription_provider_type(
     body: dict = Body(
         ...,
         description=(
-            "Provider type, e.g. "
-            '{"transcription_provider_type": "whisper_api"}'
+            "Provider type, e.g. " '{"transcription_provider_type": "whisper_api"}'
         ),
     ),
 ) -> dict:
@@ -1457,9 +1444,7 @@ async def post_transcribe_audio(
         ".ogg",
         ".flac",
     }
-    suffix = (
-        os.path.splitext(file.filename or "audio.webm")[1].lower() or ".webm"
-    )
+    suffix = os.path.splitext(file.filename or "audio.webm")[1].lower() or ".webm"
     if suffix not in allowed_extensions:
         raise HTTPException(
             status_code=400,
@@ -1659,8 +1644,7 @@ async def _rollback_embedding_update(
             )
         except Exception:
             logger.exception(
-                "Failed to restore the previous embedding runtime "
-                "for agent '%s'",
+                "Failed to restore the previous embedding runtime " "for agent '%s'",
                 agent_id,
             )
 
@@ -1717,8 +1701,7 @@ async def put_agents_running_config(
             old_agent_config = agent_config.model_copy(deep=True)
             old_running_config = agent_config.running or AgentsRunningConfig()
             memory_manager_backend_changed = (
-                old_running_config.memory_manager_backend
-                != new_memory_manager_backend
+                old_running_config.memory_manager_backend != new_memory_manager_backend
             )
             old_memory_config = old_running_config.reme_light_memory_config
             old_embedding_config = old_memory_config.embedding_model_config
@@ -1949,9 +1932,7 @@ async def upload_workspace(
     ):
         raise HTTPException(
             status_code=400,
-            detail=(
-                f"Expected a zip file, got content-type: {file.content_type}"
-            ),
+            detail=(f"Expected a zip file, got content-type: {file.content_type}"),
         )
 
     agent = await get_agent_for_request(request)

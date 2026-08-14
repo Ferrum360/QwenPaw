@@ -360,9 +360,7 @@ def _filter_recent_sessions(
     nowdate = ensure_tz_aware(datetime.now(timezone.utc))
     ts_date = nowdate - timedelta(days=days)
 
-    filtered_sessions = [
-        s for s in sessions_to_read if s["mod_time"] >= ts_date
-    ]
+    filtered_sessions = [s for s in sessions_to_read if s["mod_time"] >= ts_date]
 
     if len(filtered_sessions) < 5:
         sessions_to_read.sort(key=lambda x: x["mod_time"], reverse=True)

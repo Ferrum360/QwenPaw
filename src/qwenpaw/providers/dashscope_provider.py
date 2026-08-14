@@ -109,18 +109,12 @@ class DashScopeProvider(OpenAIProvider):
         eb = effective.get("extra_body")
         eb = eb if isinstance(eb, dict) else {}
         if enabled is not None:
-            if (
-                "thinking_enable" not in effective
-                and "enable_thinking" not in eb
-            ):
+            if "thinking_enable" not in effective and "enable_thinking" not in eb:
                 effective["thinking_enable"] = enabled
         if enabled is False:
             return
         if budget is not None:
-            if (
-                "thinking_budget" not in effective
-                and "thinking_budget" not in eb
-            ):
+            if "thinking_budget" not in effective and "thinking_budget" not in eb:
                 effective["thinking_budget"] = budget
         if effort is not None:
             effective.setdefault("reasoning_effort", effort)
@@ -134,8 +128,7 @@ class DashScopeProvider(OpenAIProvider):
 
             raise ProviderError(
                 message=(
-                    f"DashScope provider '{self.id}' has no api_key "
-                    "configured."
+                    f"DashScope provider '{self.id}' has no api_key " "configured."
                 ),
             )
 

@@ -9,6 +9,7 @@ Remaining contents:
   1.x session restore.  No live code constructs the legacy block names
   directly anymore.
 """
+
 from __future__ import annotations
 
 

@@ -631,8 +631,7 @@ def _logon_user(username: str, password: str) -> ctypes.wintypes.HANDLE:
     )
     if not ok:
         raise OSError(
-            f"LogonUserW failed for '{username}': "
-            f"error={ctypes.get_last_error()}",
+            f"LogonUserW failed for '{username}': " f"error={ctypes.get_last_error()}",
         )
     return h_token
 
@@ -710,8 +709,7 @@ def _get_token_info_raw(
     )
     if not ok:
         raise OSError(
-            f"GetTokenInformation({label}) failed: "
-            f"error={ctypes.get_last_error()}",
+            f"GetTokenInformation({label}) failed: " f"error={ctypes.get_last_error()}",
         )
     return buf
 
@@ -1014,8 +1012,7 @@ def _add_traverse_ace(  # pylint: disable=too-many-return-statements
                 )
                 if sr_size.value == 0:
                     logger.warning(
-                        "_add_traverse_ace: "
-                        "MakeSelfRelativeSD size query failed",
+                        "_add_traverse_ace: " "MakeSelfRelativeSD size query failed",
                     )
                     return False
 
@@ -1387,9 +1384,7 @@ def _allow_null_device(psid: ctypes.c_void_p) -> None:
     if code == 0:
         entry = _build_explicit_access(
             psid,
-            _WC.FILE_GENERIC_READ
-            | _WC.FILE_GENERIC_WRITE
-            | _WC.FILE_GENERIC_EXECUTE,
+            _WC.FILE_GENERIC_READ | _WC.FILE_GENERIC_WRITE | _WC.FILE_GENERIC_EXECUTE,
             _WC.SET_ACCESS,
         )
 
@@ -2217,9 +2212,7 @@ def _create_new_sandbox(
 
     _grant_winsta_desktop_access(user_sid_string)
 
-    network_blocked = not (
-        bool(config.network_allow) and "*" in config.network_allow
-    )
+    network_blocked = not (bool(config.network_allow) and "*" in config.network_allow)
     if network_blocked:
         _install_wfp_block_filters(username, user_sid_string)
 
@@ -2778,9 +2771,7 @@ def _remove_acls_from_metadata(
                 # Use fast NtSetSecurityObject path for traverse ACEs
                 ok = _remove_traverse_ace(entry_path, sid)
             else:
-                use_reset_only = (
-                    os.path.normpath(entry_path) == _workspace_default
-                )
+                use_reset_only = os.path.normpath(entry_path) == _workspace_default
                 ok = _remove_acl_with_verify_sync_local(
                     entry_path,
                     sid,

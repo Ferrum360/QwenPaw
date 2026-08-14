@@ -184,9 +184,7 @@ class MCPDriverHandler(DriverHandler):
             return DriverInvocationResult(
                 ok=False,
                 error_type="unsupported_capability",
-                message=(
-                    f"Unsupported MCP capability: {invocation.capability_id}"
-                ),
+                message=(f"Unsupported MCP capability: {invocation.capability_id}"),
             )
         subjects = _subjects_from_context(invocation.request_context)
         subject = subjects[0]
@@ -215,8 +213,7 @@ class MCPDriverHandler(DriverHandler):
             )
         except Exception as exc:
             logger.warning(
-                "MCP capability invocation failed for Driver '%s' "
-                "tool '%s': %s",
+                "MCP capability invocation failed for Driver '%s' " "tool '%s': %s",
                 self.name,
                 tool_name,
                 exc,
@@ -269,8 +266,7 @@ def validate_mcp_endpoint(card: DriverCard) -> None:
             or not all(isinstance(item, str) for item in args)
         ):
             raise DriverCardError(
-                f"DriverCard {card.name} endpoint.args must be a list "
-                "of strings",
+                f"DriverCard {card.name} endpoint.args must be a list " "of strings",
             )
         cwd = endpoint.get("cwd")
         if cwd is not None and not isinstance(cwd, str):
@@ -281,8 +277,7 @@ def validate_mcp_endpoint(card: DriverCard) -> None:
 
     if transport not in {"streamable_http", "sse"}:
         raise DriverCardError(
-            f"DriverCard {card.name} has unsupported MCP transport: "
-            f"{transport}",
+            f"DriverCard {card.name} has unsupported MCP transport: " f"{transport}",
         )
     url = endpoint.get("url")
     if not isinstance(url, str) or not url.strip():
@@ -339,8 +334,7 @@ def _mcp_tool_to_capability(
         fallback=driver_name,
     )
     description = str(
-        getattr(raw_tool, "description", getattr(tool, "description", ""))
-        or "",
+        getattr(raw_tool, "description", getattr(tool, "description", "")) or "",
     )
     if display_namespace != driver_name and display_name:
         description = (

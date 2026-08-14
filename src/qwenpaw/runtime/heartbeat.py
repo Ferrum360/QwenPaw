@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """SSE heartbeat wrapper for async iterators."""
+
 from __future__ import annotations
 
 import asyncio

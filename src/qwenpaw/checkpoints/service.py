@@ -513,9 +513,7 @@ class CheckpointService:
             self._entry_from_record(
                 record,
                 restore_index=restore_indexes.get(record.ref),
-                is_head=(
-                    record.commit == heads.get(ref_session_key(record.ref))
-                ),
+                is_head=(record.commit == heads.get(ref_session_key(record.ref))),
             )
             for record in records
         ]
@@ -527,10 +525,7 @@ class CheckpointService:
 
     def _list_ref_records(self) -> list[_RefRecord]:
         """Read checkpoint refs and commit metadata in one Git process."""
-        fmt = (
-            "%(refname)%1f%(objectname)%1f%(creatordate:unix)%1f"
-            + "%(contents)%1e"
-        )
+        fmt = "%(refname)%1f%(objectname)%1f%(creatordate:unix)%1f" + "%(contents)%1e"
         output = self.repository.run_git(
             "for-each-ref",
             f"--format={fmt}",
@@ -815,9 +810,7 @@ class CheckpointService:
             user_id=user_id,
             session_id=session_id,
         )
-        if index_target.isdigit() and (
-            explicit_index or len(index_target) < 7
-        ):
+        if index_target.isdigit() and (explicit_index or len(index_target) < 7):
             index = int(index_target)
             if 1 <= index <= len(timeline):
                 return timeline[index - 1]
@@ -832,9 +825,7 @@ class CheckpointService:
                 return entry
             if len(target) >= 7 and entry.commit.startswith(target):
                 return entry
-        if index_target.isdigit() and (
-            explicit_index or len(index_target) < 7
-        ):
+        if index_target.isdigit() and (explicit_index or len(index_target) < 7):
             raise CheckpointError(f"Timeline index out of range: {target}")
         raise CheckpointError(
             f"Unknown restore target for this session: {target}",
@@ -905,9 +896,7 @@ class CheckpointService:
         keep_days: int | None,
         pre_restore_days: int | None,
     ) -> GcResult:
-        resolved_count = (
-            self.gc_keep_count if keep_count is None else keep_count
-        )
+        resolved_count = self.gc_keep_count if keep_count is None else keep_count
         resolved_days = self.gc_keep_days if keep_days is None else keep_days
         resolved_pre_restore_days = (
             self.pre_restore_retention_days
@@ -923,11 +912,7 @@ class CheckpointService:
         scoped_records = (
             records
             if all_sessions
-            else [
-                record
-                for record in records
-                if ref_session_key(record.ref) == key
-            ]
+            else [record for record in records if ref_session_key(record.ref) == key]
         )
         now_ms = int(time.time() * 1000)
         keep_cutoff_ms = now_ms - resolved_days * 86_400_000
@@ -944,9 +929,7 @@ class CheckpointService:
         }
 
         auto_records = [
-            record
-            for record in scoped_records
-            if record.ref.startswith("refs/auto/")
+            record for record in scoped_records if record.ref.startswith("refs/auto/")
         ]
         kept_auto = (
             set()
@@ -985,9 +968,7 @@ class CheckpointService:
                 keep_refs.append(ref)
 
         if not dry_run and delete_refs:
-            commits_by_ref = {
-                record.ref: record.commit for record in scoped_records
-            }
+            commits_by_ref = {record.ref: record.commit for record in scoped_records}
             commands = "".join(
                 f"delete {ref} {commits_by_ref[ref]}\n" for ref in delete_refs
             )

@@ -390,8 +390,7 @@ class AuditLog:
         if self._conn is None:
             return
         row = self._conn.execute(
-            "SELECT rowid FROM audit_events "
-            "ORDER BY rowid ASC LIMIT 1 OFFSET ?",
+            "SELECT rowid FROM audit_events " "ORDER BY rowid ASC LIMIT 1 OFFSET ?",
             (self.PURGE_COUNT - 1,),
         ).fetchone()
         if row:

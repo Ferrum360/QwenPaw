@@ -263,9 +263,7 @@ class WelcomeMessage(Static):
     def _compose_frame(self, elapsed: float) -> tuple[Text, bool]:
         height = len(self._grid)
         # ``None`` cells stay blank; a colour means a lit block at that cell.
-        canvas: list[list[str | None]] = [
-            [None] * self._width for _ in range(height)
-        ]
+        canvas: list[list[str | None]] = [[None] * self._width for _ in range(height)]
         settled = True
         for index, (start, end) in enumerate(self._segments):
             offset = self._glyph_offset(index, elapsed)
@@ -283,9 +281,7 @@ class WelcomeMessage(Static):
                     char = source[col]
                     if char == " ":
                         continue
-                    dest[col] = (
-                        _bright_dot_hex(color) if char == "O" else color
-                    )
+                    dest[col] = _bright_dot_hex(color) if char == "O" else color
         body = _canvas_to_text(canvas)
         self._append_context(body)
         return body, settled
@@ -361,8 +357,7 @@ def _mix_hex(left: str, right: str, amount: float) -> str:
     left_rgb = _hex_to_rgb(left)
     right_rgb = _hex_to_rgb(right)
     mixed = tuple(
-        round(a + (b - a) * amount)
-        for a, b in zip(left_rgb, right_rgb, strict=True)
+        round(a + (b - a) * amount) for a, b in zip(left_rgb, right_rgb, strict=True)
     )
     return f"#{mixed[0]:02x}{mixed[1]:02x}{mixed[2]:02x}"
 

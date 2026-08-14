@@ -5,6 +5,7 @@ Replaces the custom ``run_mission_phase2`` executor
 with a StopHandler-compatible gate that checks
 ``prd.json`` completion after each agent turn.
 """
+
 from __future__ import annotations
 
 import asyncio

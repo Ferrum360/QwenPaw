@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Unified schemas for the skill market.
-"""
+"""Unified schemas for the skill market."""
 
 from __future__ import annotations
 

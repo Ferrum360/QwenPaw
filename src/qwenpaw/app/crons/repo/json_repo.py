@@ -220,8 +220,7 @@ def migrate_legacy_weixin_jobs_file(jobs_path: Path | str) -> None:
         )
     except OSError as exc:
         logger.error(
-            "Failed to migrate legacy 'weixin' cron dispatch targets in "
-            "%s: %s",
+            "Failed to migrate legacy 'weixin' cron dispatch targets in " "%s: %s",
             path,
             exc,
         )
@@ -235,11 +234,7 @@ def migrate_final_mode_to_stream(jobs_path: Path | str) -> None:
     skip it — even if the user later sets a job back to ``final``
     intentionally.
     """
-    path = (
-        Path(jobs_path).expanduser()
-        if isinstance(jobs_path, str)
-        else jobs_path
-    )
+    path = Path(jobs_path).expanduser() if isinstance(jobs_path, str) else jobs_path
     if not path.is_file():
         return
     try:
@@ -310,15 +305,13 @@ def migrate_final_mode_to_stream(jobs_path: Path | str) -> None:
         )
         os.replace(tmp_path, path)
         logger.warning(
-            "Migrated cron dispatch mode 'final' -> 'stream' in %s "
-            "(backup: %s)",
+            "Migrated cron dispatch mode 'final' -> 'stream' in %s " "(backup: %s)",
             path,
             backup_path,
         )
     except OSError as exc:
         logger.error(
-            "Failed to migrate cron dispatch mode 'final' -> 'stream' "
-            "in %s: %s",
+            "Failed to migrate cron dispatch mode 'final' -> 'stream' " "in %s: %s",
             path,
             exc,
         )

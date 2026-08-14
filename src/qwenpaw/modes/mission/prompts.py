@@ -5,6 +5,7 @@ The worker prompt is adapted from the Ralph project
 (https://github.com/snarktank/ralph) by snarktank, MIT License.
 See design/ralph/LICENSE for the full license text.
 """
+
 from __future__ import annotations
 
 # ---------------------------------------------------------------------------

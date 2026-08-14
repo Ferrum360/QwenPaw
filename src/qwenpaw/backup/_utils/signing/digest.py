@@ -6,6 +6,7 @@ It binds the archive bytes plus selected metadata to this installation's
 private signing key so restore/import can distinguish local backups from
 foreign or legacy archives that need explicit user trust.
 """
+
 from __future__ import annotations
 
 import hashlib
@@ -122,6 +123,5 @@ def _assert_signed_fields_cover_model() -> None:
         missing = sorted(expected - covered)
         extra = sorted(covered - expected)
         raise AssertionError(
-            "BackupMeta signing field mismatch: "
-            f"missing={missing} extra={extra}",
+            "BackupMeta signing field mismatch: " f"missing={missing} extra={extra}",
         )

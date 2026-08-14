@@ -257,8 +257,7 @@ def _install_requirements_cli(
         return True
 
     pip_missing = (
-        "No module named pip" in result.stderr
-        or "No module named pip" in result.stdout
+        "No module named pip" in result.stderr or "No module named pip" in result.stdout
     )
     if not pip_missing:
         click.echo("❌ Failed to install dependencies:", err=True)
@@ -601,8 +600,7 @@ def install(source: str, force: bool):
 
     if target_dir.exists() and not force:
         click.echo(
-            f"❌ Plugin '{plugin_id}' already exists. "
-            "Use --force to reinstall.",
+            f"❌ Plugin '{plugin_id}' already exists. " "Use --force to reinstall.",
             err=True,
         )
         return

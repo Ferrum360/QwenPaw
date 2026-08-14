@@ -3,6 +3,7 @@
 """
 Streaming AI skill optimization API
 """
+
 import json
 import logging
 
@@ -15,7 +16,6 @@ from qwenpaw.exceptions import (
 )
 
 from ...agents.model_factory import create_model_and_formatter
-
 
 logger = logging.getLogger(__name__)
 
@@ -185,8 +185,7 @@ async def ai_optimize_skill_stream(request: AIOptimizeSkillRequest):
                 error_msg = json.dumps(
                     {
                         "error": (
-                            "No AI model configured. "
-                            "Please configure in Settings."
+                            "No AI model configured. " "Please configure in Settings."
                         ),
                     },
                 )

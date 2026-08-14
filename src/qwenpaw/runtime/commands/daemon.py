@@ -5,6 +5,7 @@ Shared by in-chat /daemon <sub> and the CLI daemon command.
 Logs: tail the project log file. Restart: in-process reload of channels,
 cron and MCP (no process exit); works on Mac/Windows without a process manager.
 """
+
 # pylint: disable=too-many-return-statements
 from __future__ import annotations
 
@@ -172,9 +173,7 @@ def run_daemon_reload_config(context: DaemonContext) -> str:
     """Reload config (re-call load_config); no process restart."""
     try:
         context.load_config_fn()
-        return (
-            "**Config reloaded**\n\n- load_config() re-invoked successfully."
-        )
+        return "**Config reloaded**\n\n- load_config() re-invoked successfully."
     except Exception as e:
         return f"**Reload failed**\n\n- {e}"
 

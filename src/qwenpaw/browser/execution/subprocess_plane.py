@@ -101,9 +101,7 @@ class LinkServer:
         self._event_owner: tuple[str, str] | None = None
         self._expected_owner: tuple[str, str] | None = None
         self._closed = False
-        self._page_registry = (
-            page_registry if page_registry is not None else {}
-        )
+        self._page_registry = page_registry if page_registry is not None else {}
         self._page_meta_type = PageMeta
 
     async def start(self) -> None:
@@ -220,9 +218,7 @@ class LinkServer:
                     cause=ErrorCause.API_MISUSE,
                     suggested_action="fatal",
                     reason="control call owner mismatch",
-                    detail=(
-                        f"claimed={owner} anchored={self._expected_owner}"
-                    ),
+                    detail=(f"claimed={owner} anchored={self._expected_owner}"),
                 )
             params = dict(payload["params"])
             variant = str(params.pop("variant", ""))
@@ -255,9 +251,7 @@ class LinkServer:
                     raise BrowserError(
                         category=ErrorCategory.RETRYABLE,
                         cause=ErrorCause.STATE_STALE,
-                        suggested_action=(
-                            "Use await browser.open(url) to reopen."
-                        ),
+                        suggested_action=("Use await browser.open(url) to reopen."),
                         reason="page is no longer available",
                         detail=page_id,
                     )
@@ -294,9 +288,7 @@ class LinkServer:
             )
             if method == "new_page" and key[2]:
                 self._page_registry[key] = PageMeta(
-                    scope="chat"
-                    if present
-                    else str(params.get("scope", "cycle")),
+                    scope="chat" if present else str(params.get("scope", "cycle")),
                 )
             elif method == "close_page" and key[2]:
                 self._page_registry.pop(key, None)
@@ -716,11 +708,7 @@ class SubprocessPlane:
 
     async def close_workspace(self, workspace_id: str) -> None:
         """Reclaim every provider session and worker owned by a workspace."""
-        owners = {
-            owner
-            for owner in self._owner_last_used
-            if owner[0] == workspace_id
-        }
+        owners = {owner for owner in self._owner_last_used if owner[0] == workspace_id}
         for key in self._workers:
             if key.startswith(f"{workspace_id}/"):
                 _, session_id = key.split("/", 1)

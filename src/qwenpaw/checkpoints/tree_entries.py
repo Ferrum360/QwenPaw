@@ -37,8 +37,7 @@ def parse_tree_entries(
         fields = header.split()
         if not separator or not path or len(fields) != 3:
             raise CheckpointError(
-                "Checkpoint contains malformed Git tree entry "
-                f"in {commit[:12]}",
+                "Checkpoint contains malformed Git tree entry " f"in {commit[:12]}",
             )
         if paths is not None and path not in paths:
             continue

@@ -21,6 +21,7 @@ Usage
 Analysers receive the policy at construction time and use it in place of their
 previously-hardcoded sets/lists.
 """
+
 from __future__ import annotations
 
 import logging
@@ -286,12 +287,10 @@ class ScanPolicy:
         with open(path, "w", encoding="utf-8") as fh:
             fh.write("# QwenPaw Skill Scanner – Scan Policy\n")
             fh.write(
-                "# Customise this file to match your"
-                " organisation's security bar.\n",
+                "# Customise this file to match your" " organisation's security bar.\n",
             )
             fh.write(
-                "# Only include sections you want to"
-                " override; omitted sections\n",
+                "# Only include sections you want to" " override; omitted sections\n",
             )
             fh.write("# will use the built-in defaults.\n\n")
             yaml.dump(
@@ -414,9 +413,7 @@ class ScanPolicy:
                 "doc_path_indicators": sorted(
                     self.rule_scoping.doc_path_indicators,
                 ),
-                "doc_filename_patterns": (
-                    self.rule_scoping.doc_filename_patterns
-                ),
+                "doc_filename_patterns": (self.rule_scoping.doc_filename_patterns),
                 "dedupe_duplicate_findings": (
                     self.rule_scoping.dedupe_duplicate_findings
                 ),
@@ -448,17 +445,11 @@ class ScanPolicy:
                 "max_file_size_bytes": (self.file_limits.max_file_size_bytes),
                 "max_reference_depth": (self.file_limits.max_reference_depth),
                 "max_name_length": (self.file_limits.max_name_length),
-                "max_description_length": (
-                    self.file_limits.max_description_length
-                ),
-                "min_description_length": (
-                    self.file_limits.min_description_length
-                ),
+                "max_description_length": (self.file_limits.max_description_length),
+                "min_description_length": (self.file_limits.min_description_length),
             },
             "analysis_thresholds": {
-                "min_confidence_pct": (
-                    self.analysis_thresholds.min_confidence_pct
-                ),
+                "min_confidence_pct": (self.analysis_thresholds.min_confidence_pct),
                 "max_regex_pattern_length": (
                     self.analysis_thresholds.max_regex_pattern_length
                 ),

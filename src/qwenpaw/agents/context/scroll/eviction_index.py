@@ -92,11 +92,7 @@ class Line:
     @property
     def text(self) -> str:
         """A single headline, or ``first - last`` for a span."""
-        return (
-            self.head
-            if self.head == self.tail
-            else f"{self.head} - {self.tail}"
-        )
+        return self.head if self.head == self.tail else f"{self.head} - {self.tail}"
 
     @property
     def span(self) -> str:
@@ -173,9 +169,7 @@ class EvictionIndex:
         ``(no milestone)`` marker. Its full turns remain recoverable by the
         block's seq span.
         """
-        lines = [
-            Line(lf.seq, lf.seq, lf.headline, lf.headline) for lf in leaves
-        ]
+        lines = [Line(lf.seq, lf.seq, lf.headline, lf.headline) for lf in leaves]
         if not lines:
             lines = [
                 Line(seq_lo, seq_hi, "(no milestone)", "(no milestone)"),
@@ -220,8 +214,7 @@ class EvictionIndex:
                         "seq_lo": b.seq_lo,
                         "seq_hi": b.seq_hi,
                         "lines": [
-                            [ln.seq_lo, ln.seq_hi, ln.head, ln.tail]
-                            for ln in b.lines
+                            [ln.seq_lo, ln.seq_hi, ln.head, ln.tail] for ln in b.lines
                         ],
                     }
                     for b in tier
@@ -307,11 +300,7 @@ class EvictionIndex:
             # state so that task state remains closest to the live request.
             out.extend(_LIVE_TURN_BANNER)
         body = "\n".join(out)
-        return (
-            f"<system-info>\n{body}\n</system-info>"
-            if include_envelope
-            else body
-        )
+        return f"<system-info>\n{body}\n</system-info>" if include_envelope else body
 
     def describe(self) -> str:
         """The tier/span map without the ``render`` preamble — for the

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """Fancy startup display utilities using rich."""
+
 import logging
 from typing import Optional, Tuple, cast
 
@@ -48,9 +49,7 @@ class AgentStartupDisplay:
         self._phase = "Starting core agents"
         self._failed = False
         self._elapsed_seconds: float | None = None
-        self._redirected_handlers: list[
-            tuple[logging.StreamHandler, object]
-        ] = []
+        self._redirected_handlers: list[tuple[logging.StreamHandler, object]] = []
 
     def start(self) -> "AgentStartupDisplay":
         """Start the fixed terminal region when a TTY is available."""
@@ -160,11 +159,7 @@ class AgentStartupDisplay:
                 failed=self._failed,
             ),
         ]
-        if (
-            self._task_id is not None
-            and self._phase != "Ready"
-            and not self._failed
-        ):
+        if self._task_id is not None and self._phase != "Ready" and not self._failed:
             renderables.append(self._progress)
         return Group(*renderables)
 
@@ -249,13 +244,11 @@ def _build_startup_panel(
     status_color = "red" if failed else "green" if ready else "yellow"
     marker = "×" if failed else "✓" if ready else "•"
     tree = Tree(
-        f"[bold {status_color}]{marker}[/bold {status_color}] "
-        f"[bold]QwenPaw[/bold]",
+        f"[bold {status_color}]{marker}[/bold {status_color}] " f"[bold]QwenPaw[/bold]",
         guide_style="bright_black",
     )
     tree.add(
-        f"[dim]Status:[/dim]  "
-        f"[bold {status_color}]{status}[/bold {status_color}]",
+        f"[dim]Status:[/dim]  " f"[bold {status_color}]{status}[/bold {status_color}]",
     )
     if api_info:
         host, port = api_info

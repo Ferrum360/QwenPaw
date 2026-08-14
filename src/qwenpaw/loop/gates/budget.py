@@ -4,6 +4,7 @@
 Tracks per-session token usage. Returns TERMINATE when
 ``max_tokens`` is exceeded.
 """
+
 from __future__ import annotations
 
 import logging

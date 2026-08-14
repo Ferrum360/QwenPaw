@@ -3,6 +3,7 @@
 
 Decouples stop handler execution logic from the agent class.
 """
+
 from __future__ import annotations
 
 import logging

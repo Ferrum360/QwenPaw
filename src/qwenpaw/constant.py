@@ -55,9 +55,7 @@ class EnvVarLoader:
                 return min_value
             if max_value is not None and value > max_value:
                 return max_value
-            if not allow_inf and (
-                value == float("inf") or value == float("-inf")
-            ):
+            if not allow_inf and (value == float("inf") or value == float("-inf")):
                 return default
             return value
         except (TypeError, ValueError):
@@ -87,9 +85,7 @@ class EnvVarLoader:
         return _get_env(env_var, default)
 
 
-CUSTOM_AGENT_STARTUP_CONCURRENCY_ENV = (
-    "QWENPAW_CUSTOM_AGENT_STARTUP_CONCURRENCY"
-)
+CUSTOM_AGENT_STARTUP_CONCURRENCY_ENV = "QWENPAW_CUSTOM_AGENT_STARTUP_CONCURRENCY"
 DEFAULT_CUSTOM_AGENT_STARTUP_CONCURRENCY = 5
 CUSTOM_AGENT_STARTUP_CONCURRENCY = EnvVarLoader.get_int(
     CUSTOM_AGENT_STARTUP_CONCURRENCY_ENV,
@@ -147,9 +143,7 @@ SYNTHETIC_USER_MESSAGE_TAGS = frozenset(
         RUBRIC_EVALUATION_MESSAGE_TAG,
     },
 )
-AUTO_MEMORY_SEARCH_TEXT = (
-    "I'll check memory for relevant context before answering."
-)
+AUTO_MEMORY_SEARCH_TEXT = "I'll check memory for relevant context before answering."
 AUTO_MEMORY_SEARCH_THINKING_PREFIX = (
     "I should search long-term memory before answering."
 )
@@ -165,9 +159,7 @@ def _resolve_docs_dir() -> Path | None:
     _pkg_docs = Path(__file__).resolve().parent / "docs"
     if _pkg_docs.is_dir() and any(_pkg_docs.glob("*.md")):
         return _pkg_docs
-    _src_docs = (
-        Path(__file__).resolve().parents[2] / "website" / "public" / "docs"
-    )
+    _src_docs = Path(__file__).resolve().parents[2] / "website" / "public" / "docs"
     if _src_docs.is_dir() and any(_src_docs.glob("*.md")):
         return _src_docs
     return None
@@ -194,9 +186,7 @@ def _discover_agent_languages() -> frozenset[str]:
         langs = {
             d.name
             for d in md_root.iterdir()
-            if d.is_dir()
-            and not d.name.startswith(".")
-            and any(d.glob("*.md"))
+            if d.is_dir() and not d.name.startswith(".") and any(d.glob("*.md"))
         }
         if langs:
             return frozenset(langs)
@@ -312,9 +302,7 @@ CORS_ORIGINS = EnvVarLoader.get_str("QWENPAW_CORS_ORIGINS", "").strip()
 # Upload size limit (MB).  None = no limit.
 UPLOAD_MAX_SIZE_MB: int | None = (
     int(v)
-    if (v := EnvVarLoader.get_str("QWENPAW_UPLOAD_MAX_SIZE_MB", ""))
-    .strip()
-    .isdigit()
+    if (v := EnvVarLoader.get_str("QWENPAW_UPLOAD_MAX_SIZE_MB", "")).strip().isdigit()
     else None
 )
 

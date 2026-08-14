@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """Fan-out notifier for live tool output subscribers."""
+
 from __future__ import annotations
 
 import asyncio
@@ -30,9 +31,7 @@ class ToolStream:
         self._subscribers = (*self._subscribers, queue)
 
     def remove_subscriber(self, queue: asyncio.Queue[Any]) -> None:
-        self._subscribers = tuple(
-            q for q in self._subscribers if q is not queue
-        )
+        self._subscribers = tuple(q for q in self._subscribers if q is not queue)
 
     async def append(self, chunk: Any) -> None:
         if self._is_closed:

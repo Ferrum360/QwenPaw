@@ -13,7 +13,6 @@ from .clawhub import provider as _clawhub_provider
 from .modelscope import provider as _modelscope_provider
 from .qwenpaw import provider as _qwenpaw_provider
 
-
 PROVIDERS: dict[str, MarketProvider] = {
     _qwenpaw_provider.key: _qwenpaw_provider,
     _clawhub_provider.key: _clawhub_provider,

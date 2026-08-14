@@ -272,8 +272,7 @@ class ChromeControlLink(CdpVerbsMixin):
         extension_tabs = [
             tab
             for tab in tabs
-            if tab.get("createdByQwenPaw")
-            and isinstance(tab.get("tabId"), int)
+            if tab.get("createdByQwenPaw") and isinstance(tab.get("tabId"), int)
         ]
         extension_tab_ids = {int(tab["tabId"]) for tab in extension_tabs}
         for (workspace_id, session_id, page_id), tab_id in list(
@@ -305,10 +304,7 @@ class ChromeControlLink(CdpVerbsMixin):
 
     def _page_id(self, owner: OwnerKey, page_id: str | None = None) -> str:
         resolved = page_id or self._active.get(owner)
-        if (
-            resolved is None
-            or self._page_key(owner, resolved) not in self._pages
-        ):
+        if resolved is None or self._page_key(owner, resolved) not in self._pages:
             if owner in self._closed:
                 raise BrowserError(
                     category=ErrorCategory.RETRYABLE,
@@ -322,9 +318,7 @@ class ChromeControlLink(CdpVerbsMixin):
             raise BrowserError(
                 category=ErrorCategory.RETRYABLE,
                 cause=ErrorCause.STATE_STALE,
-                suggested_action=(
-                    "Open a fresh page with await browser.open(url)"
-                ),
+                suggested_action=("Open a fresh page with await browser.open(url)"),
                 reason="no active page in this session",
                 detail="pages are released when a response cycle ends",
             )
@@ -514,9 +508,7 @@ class ChromeControlLink(CdpVerbsMixin):
             raise BrowserError(
                 category=ErrorCategory.RETRYABLE,
                 cause=ErrorCause.STATE_STALE,
-                suggested_action=(
-                    "Reconnect first: browser = await Browser.connect()"
-                ),
+                suggested_action=("Reconnect first: browser = await Browser.connect()"),
                 reason="browser session is closed",
                 detail="this session was closed earlier in the chat",
             )

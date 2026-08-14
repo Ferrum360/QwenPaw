@@ -7,6 +7,7 @@ Architecture:
     ├── GoalStatusRubric  — checks session.active
     └── SubAgentRubric    — placeholder for subagent eval
 """
+
 from __future__ import annotations
 
 import logging

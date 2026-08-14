@@ -23,7 +23,6 @@ from .constants import (
     DINGTALK_TYPE_MAPPING,
 )
 
-
 _DATA_URL_RE = re.compile(
     r"^data:(?P<mime>[^;]+);base64,(?P<b64>.*)$",
     re.I | re.S,
@@ -121,9 +120,7 @@ def conversation_type_from_chatbot_message(incoming_message: Any) -> str:
 def short_session_id_from_conversation_id(conversation_id: str) -> str:
     """Use last N chars of conversation_id as session_id."""
     n = DINGTALK_SESSION_ID_SUFFIX_LEN
-    return (
-        conversation_id[-n:] if len(conversation_id) >= n else conversation_id
-    )
+    return conversation_id[-n:] if len(conversation_id) >= n else conversation_id
 
 
 def session_param_from_webhook_url(url: str) -> Optional[str]:

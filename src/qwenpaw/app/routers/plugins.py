@@ -290,9 +290,7 @@ def _sync_plugin_tools_to_agents(loader, plugin_id: str) -> None:
                 for tool_name in tool_names:
                     if tool_name in agent_cfg.tools.builtin_tools:
                         continue
-                    agent_cfg.tools.builtin_tools[
-                        tool_name
-                    ] = BuiltinToolConfig(
+                    agent_cfg.tools.builtin_tools[tool_name] = BuiltinToolConfig(
                         name=tool_name,
                         enabled=False,
                         config={},
@@ -430,8 +428,7 @@ def _post_unload_cleanup(
                     command_registry.unregister_command(f"/{cmd_name}")
                 except Exception as exc:
                     logger.warning(
-                        f"Could not unregister priority for"
-                        f" '/{cmd_name}': {exc}",
+                        f"Could not unregister priority for" f" '/{cmd_name}': {exc}",
                     )
         except Exception as exc:
             logger.warning(
@@ -734,9 +731,7 @@ async def install_plugin(
         "description": record.manifest.description,
         "author": record.manifest.author,
         "loaded": True,
-        "message": (
-            f"Plugin '{record.manifest.name}' installed successfully."
-        ),
+        "message": (f"Plugin '{record.manifest.name}' installed successfully."),
     }
 
 
@@ -808,9 +803,7 @@ async def upload_plugin(
         "description": record.manifest.description,
         "author": record.manifest.author,
         "loaded": True,
-        "message": (
-            f"Plugin '{record.manifest.name}' installed successfully."
-        ),
+        "message": (f"Plugin '{record.manifest.name}' installed successfully."),
     }
 
 

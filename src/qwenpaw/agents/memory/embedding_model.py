@@ -21,7 +21,6 @@ from qwenpaw.config.config import EmbeddingModelConfig
 
 from .reme_config import _embedding_credential, _is_embedding_enabled
 
-
 _CREDENTIAL_TYPES = {
     "openai": OpenAICredential,
     "dashscope": DashScopeCredential,

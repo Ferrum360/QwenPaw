@@ -113,9 +113,7 @@ def _collect_table_parts(item: dict, parts: list[str]) -> None:
     """Extract text from a native table component."""
     columns = item.get("columns") or []
     col_names = [c.get("name", "") for c in columns if isinstance(c, dict)]
-    headers = [
-        c.get("display_name", "") for c in columns if isinstance(c, dict)
-    ]
+    headers = [c.get("display_name", "") for c in columns if isinstance(c, dict)]
     if headers:
         parts.append(" | ".join(headers))
     rows = item.get("rows") or []
@@ -356,9 +354,7 @@ def _parse_md_table(table_lines: List[str]) -> Optional[Dict[str, Any]]:
             "name": col_keys[i],
             "display_name": headers[i],
             "width": "auto",
-            "horizontal_align": (
-                alignments[i] if i < len(alignments) else "left"
-            ),
+            "horizontal_align": (alignments[i] if i < len(alignments) else "left"),
         }
         for i in range(len(headers))
     ]
@@ -480,6 +476,4 @@ def build_interactive_content_chunks(text: str) -> List[str]:
     """Build card JSONs, split when table count exceeds the limit."""
     elements = _build_elements(text)
     chunks = _split_elements(elements)
-    return [
-        json.dumps({"elements": chunk}, ensure_ascii=False) for chunk in chunks
-    ]
+    return [json.dumps({"elements": chunk}, ensure_ascii=False) for chunk in chunks]

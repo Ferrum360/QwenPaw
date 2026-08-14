@@ -377,10 +377,7 @@ async def _policy_tool_call(
     result = await FunctionTool.__call__(self, *args, **kwargs)
 
     # Check if sandbox violation was returned (state=DENIED)
-    if not (
-        isinstance(result, ToolChunk)
-        and result.state == ToolResultState.DENIED
-    ):
+    if not (isinstance(result, ToolChunk) and result.state == ToolResultState.DENIED):
         return result
 
     # Extract violation message from metadata or content
@@ -392,9 +389,7 @@ async def _policy_tool_call(
         for block in result.content or []:
             if hasattr(block, "text") and "Sandbox violation:" in block.text:
                 violation_msg = (
-                    block.text.split("Sandbox violation:", 1)[1]
-                    .split("\n")[0]
-                    .strip()
+                    block.text.split("Sandbox violation:", 1)[1].split("\n")[0].strip()
                 )
                 break
 
@@ -588,9 +583,7 @@ async def _ask_user_approval(
                     rule_id="policy_ask",
                     category=GuardThreatCategory.RESOURCE_ABUSE,
                     severity=(
-                        GuardSeverity.HIGH
-                        if violation_msg
-                        else GuardSeverity.INFO
+                        GuardSeverity.HIGH if violation_msg else GuardSeverity.INFO
                     ),
                     title=(
                         "Sandbox Violation — Approve Unsandboxed Execution?"
@@ -669,9 +662,7 @@ async def _ask_user_approval(
             },
             "channel_meta": ctx.get("channel_meta"),
             "_channel_instance": ctx.get("_channel_instance"),
-            **(
-                {"_spawn_subagent": True} if ctx.get("_spawn_subagent") else {}
-            ),
+            **({"_spawn_subagent": True} if ctx.get("_spawn_subagent") else {}),
         },
     )
 
@@ -714,9 +705,7 @@ async def _ask_user_approval(
         # ── Record approved rule (skip for builtin ask) ──
         # SIMILAR → the generalized pattern; EXACT (default) → the literal
         # target the user actually approved. Widening is opt-in.
-        rule_target = (
-            generalized_target if scope == ApprovalScope.SIMILAR else target
-        )
+        rule_target = generalized_target if scope == ApprovalScope.SIMILAR else target
         await governor.add_approved_rule(
             tc_spec,
             generalized_target=rule_target,

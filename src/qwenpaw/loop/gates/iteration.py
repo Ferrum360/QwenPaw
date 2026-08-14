@@ -4,6 +4,7 @@
 Tracks per-session iteration count.  Returns TERMINATE when
 ``max_iterations`` is reached.
 """
+
 from __future__ import annotations
 
 import logging
@@ -74,9 +75,7 @@ class IterationGate(LoopGate):
             self.deactivate()
             return StopHandlerResult(
                 action=StopAction.TERMINATE,
-                reason=(
-                    f"Max iterations " f"({state.max_iterations}) reached"
-                ),
+                reason=(f"Max iterations " f"({state.max_iterations}) reached"),
             )
         return StopHandlerResult(
             action=StopAction.BYPASS,

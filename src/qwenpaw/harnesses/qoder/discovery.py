@@ -55,10 +55,7 @@ def default_install_candidates(
         if local_app_data:
             candidates.append(
                 (
-                    Path(local_app_data)
-                    / "Programs"
-                    / "Qoder"
-                    / "qodercli.exe",
+                    Path(local_app_data) / "Programs" / "Qoder" / "qodercli.exe",
                     "standalone",
                 ),
             )

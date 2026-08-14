@@ -4,6 +4,7 @@
 Runs ``cloudflared tunnel --url http://localhost:<port>`` and exposes
 the generated ``*.trycloudflare.com`` URL.
 """
+
 from __future__ import annotations
 
 import asyncio

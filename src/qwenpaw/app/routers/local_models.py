@@ -168,8 +168,7 @@ async def server_available(
             port=None,
             model_name=None,
             message=(
-                install_message
-                or "Current environment does not support llama.cpp"
+                install_message or "Current environment does not support llama.cpp"
             ),
         )
 
@@ -200,9 +199,7 @@ async def server_available(
         except ValueError:
             message = "llama.cpp server status is temporarily unavailable"
     else:
-        message = (
-            "llama.cpp server is not running, please start the server first"
-        )
+        message = "llama.cpp server is not running, please start the server first"
 
     if server_state["running"] and not ready and not message:
         message = "llama.cpp server is not responding"
@@ -358,9 +355,7 @@ async def list_local(
     manager: LocalModelManager = Depends(get_local_model_manager),
 ) -> List[LocalModelInfo]:
     """List recommended models plus downloaded local models."""
-    models_by_id = {
-        model.id: model for model in manager.get_recommended_models()
-    }
+    models_by_id = {model.id: model for model in manager.get_recommended_models()}
     for model in manager.list_downloaded_models():
         models_by_id.setdefault(model.id, model)
     return list(models_by_id.values())
@@ -431,10 +426,7 @@ async def delete_local_model(
 ) -> ActionResponse:
     """Delete a downloaded local model by repo id."""
     server_state = manager.get_llamacpp_server_status()
-    if (
-        server_state.get("running")
-        and server_state.get("model_name") == model_id
-    ):
+    if server_state.get("running") and server_state.get("model_name") == model_id:
         raise HTTPException(
             status_code=409,
             detail="Cannot delete a model while it is running",

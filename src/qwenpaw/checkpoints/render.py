@@ -48,11 +48,7 @@ def render_timeline(
         ],
     )
     for entry in entries:
-        idx = (
-            str(entry.restore_index)
-            if entry.restore_index is not None
-            else "-"
-        )
+        idx = str(entry.restore_index) if entry.restore_index is not None else "-"
         kind_label = {
             "auto": "auto",
             "snap": "snapshot",
@@ -120,9 +116,7 @@ def _render_timeline_graph(entries: list[CheckpointEntry]) -> list[str]:
 
     children: dict[str | None, list[CheckpointEntry]] = {}
     for entry in entries:
-        parent = (
-            entry.parent_commit if entry.parent_commit in by_commit else None
-        )
+        parent = entry.parent_commit if entry.parent_commit in by_commit else None
         children.setdefault(parent, []).append(entry)
     for siblings in children.values():
         siblings.sort(
@@ -146,15 +140,9 @@ def _render_timeline_graph(entries: list[CheckpointEntry]) -> list[str]:
                 marker = "o"
             else:
                 marker = "x"
-            idx = (
-                str(entry.restore_index)
-                if entry.restore_index is not None
-                else "-"
-            )
+            idx = str(entry.restore_index) if entry.restore_index is not None else "-"
             index_label = f" #{idx}" if idx != "-" else ""
-            name = (
-                f" {entry.name}" if entry.kind == "snap" and entry.name else ""
-            )
+            name = f" {entry.name}" if entry.kind == "snap" and entry.name else ""
             kind_label = {
                 "snap": "snapshot",
                 "pre-restore": "safety",
@@ -173,8 +161,7 @@ def _render_timeline_graph(entries: list[CheckpointEntry]) -> list[str]:
     return [
         "",
         "```text",
-        "  * = HEAD    o = active path    x = branch    "
-        f"({len(entries)} entries)",
+        "  * = HEAD    o = active path    x = branch    " f"({len(entries)} entries)",
         "",
         *graph_lines,
         "```",
@@ -204,9 +191,7 @@ def render_restore(result: RestoreResult) -> str:
         path for path in result.restored_paths if path.startswith("sessions/")
     ]
     changed_paths = [
-        path
-        for path in result.restored_paths
-        if not path.startswith("sessions/")
+        path for path in result.restored_paths if not path.startswith("sessions/")
     ]
     # File previews are the user's selection list for --files, so truncating
     # them would make valid restore candidates undiscoverable.
@@ -218,8 +203,7 @@ def render_restore(result: RestoreResult) -> str:
         f"- Target: `{result.target}`",
         f"- Commit: `{result.commit[:12]}`",
         f"- Scope: {' + '.join(scope_parts)}",
-        "- Conversation: "
-        f"{'would be restored' if result.dry_run else 'restored'}",
+        "- Conversation: " f"{'would be restored' if result.dry_run else 'restored'}",
     ]
 
     if changed_paths:
@@ -236,9 +220,7 @@ def render_restore(result: RestoreResult) -> str:
             ["", f"**{delete_action} ({len(result.deleted_paths)})**"],
         )
         shown_deleted = (
-            result.deleted_paths
-            if show_all_paths
-            else result.deleted_paths[:20]
+            result.deleted_paths if show_all_paths else result.deleted_paths[:20]
         )
         for path in shown_deleted:
             lines.append(f"- `{path}`")

@@ -160,9 +160,7 @@ class TokenManager:
                 "timestamp": timestamp,
             }
 
-            retry_hint = (
-                f" (retry {attempt}/{SIGN_MAX_RETRIES})" if attempt > 0 else ""
-            )
+            retry_hint = f" (retry {attempt}/{SIGN_MAX_RETRIES})" if attempt > 0 else ""
             logger.info("yuanbao: signing token: url=%s%s", url, retry_hint)
 
             try:

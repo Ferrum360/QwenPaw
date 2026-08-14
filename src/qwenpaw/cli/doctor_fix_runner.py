@@ -17,6 +17,7 @@ non-zero on FAIL (for CI).
 (safe + read-only validation + workspace skill reconcile); rejects risky ids
 even with ``-y``.
 """
+
 from __future__ import annotations
 
 # pylint: disable=too-many-branches,too-many-statements
@@ -305,11 +306,7 @@ def _plan_fixes(
             "normalize-jobs-cron",
         },
     )
-    if (
-        needs_existing_wd
-        and not wd.is_dir()
-        and "ensure-working-dir" not in fix_ids
-    ):
+    if needs_existing_wd and not wd.is_dir() and "ensure-working-dir" not in fix_ids:
         raise ValueError(
             f"working directory {wd} does not exist; include "
             "ensure-working-dir in --only or run `qwenpaw doctor fix` without "
@@ -466,9 +463,7 @@ def _plan_fixes(
 
     if cfg is not None and "write-empty-jobs-json" in fix_ids:
         empty = JobsFile(version=1, jobs=[])
-        body = (
-            json.dumps(empty.model_dump(), ensure_ascii=False, indent=2) + "\n"
-        )
+        body = json.dumps(empty.model_dump(), ensure_ascii=False, indent=2) + "\n"
         JobsFile.model_validate(json.loads(body))
 
         for agent_id in cfg.agents.profiles:
@@ -625,11 +620,7 @@ def _plan_fixes(
                         f"missing {cdir / 'package-lock.json'} "
                         "(npm ci needs a lockfile)",
                     )
-                if (
-                    not skip_prev_backup
-                    and target.exists()
-                    and any(target.iterdir())
-                ):
+                if not skip_prev_backup and target.exists() and any(target.iterdir()):
                     bkp_root = r / ".qwenpaw-doctor-fix-backups"
                     sid = _utc_session_id()
                     bkp = bkp_root / sid
@@ -659,13 +650,9 @@ def _plan_fixes(
                     check=True,
                     env=os.environ.copy(),
                 )
-                if (
-                    not dist_dir.is_dir()
-                    or not (dist_dir / "index.html").is_file()
-                ):
+                if not dist_dir.is_dir() or not (dist_dir / "index.html").is_file():
                     raise RuntimeError(
-                        f"after npm run build, expected "
-                        f"{dist_dir / 'index.html'}",
+                        f"after npm run build, expected " f"{dist_dir / 'index.html'}",
                     )
                 if target.exists():
                     shutil.rmtree(target)

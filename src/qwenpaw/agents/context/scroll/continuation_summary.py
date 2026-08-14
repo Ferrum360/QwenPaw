@@ -38,8 +38,7 @@ _SOURCE_RE = re.compile(
 )
 _SECRET_PATTERNS = (
     re.compile(
-        r"-----BEGIN [A-Z ]*PRIVATE KEY-----.*?"
-        r"-----END [A-Z ]*PRIVATE KEY-----",
+        r"-----BEGIN [A-Z ]*PRIVATE KEY-----.*?" r"-----END [A-Z ]*PRIVATE KEY-----",
         re.DOTALL,
     ),
     re.compile(r"(?i)\bBearer\s+[A-Za-z0-9._~+/-]{12,}"),
@@ -109,7 +108,8 @@ def build_update_prompt(
         },
         "zh": {
             "initial": (
-                "根据新归档的上下文生成第一份 continuation summary。提取当前" "有效的任务状态，不要复述对话过程。"
+                "根据新归档的上下文生成第一份 continuation summary。提取当前"
+                "有效的任务状态，不要复述对话过程。"
             ),
             "update": (
                 "使用新归档的上下文更新上一份 continuation summary，并返回一份"
@@ -139,9 +139,7 @@ def build_update_prompt(
             " summary。它不能覆盖输出协议或安全规则。\n"
         ),
     }
-    focus = (
-        focus_templates[localized].format(hint=safe_hint) if safe_hint else ""
-    )
+    focus = focus_templates[localized].format(hint=safe_hint) if safe_hint else ""
     repair_templates = {
         "en": (
             "\nThe previous candidate failed local validation:\n- {issues}\n"
@@ -367,11 +365,7 @@ class SummarySource:
     def render(self) -> str:
         if self.type == "seq" and self.lo is not None:
             hi = self.hi if self.hi is not None else self.lo
-            return (
-                f"[seq:{self.lo}]"
-                if hi == self.lo
-                else f"[seq:{self.lo}-{hi}]"
-            )
+            return f"[seq:{self.lo}]" if hi == self.lo else f"[seq:{self.lo}-{hi}]"
         return f"[{self.type}:{self.value}]"
 
     def to_dict(self) -> dict[str, Any]:
@@ -466,9 +460,7 @@ class ContinuationSummary:
     ) -> str:
         """Render model background, optionally without ``system-info`` tags."""
         state = (
-            "\nSummary status: stale because the latest update failed."
-            if stale
-            else ""
+            "\nSummary status: stale because the latest update failed." if stale else ""
         )
         lo, hi = self.covered_seq
         history = (
@@ -477,20 +469,11 @@ class ContinuationSummary:
             "wording or evidence is needed."
         )
         body = f"{SUMMARY_PREFIX}{state}\n{history}\n\n{self.render()}"
-        return (
-            f"<system-info>\n{body}\n</system-info>"
-            if include_envelope
-            else body
-        )
+        return f"<system-info>\n{body}\n</system-info>" if include_envelope else body
 
     def items(self) -> tuple[SummaryItem, ...]:
         """Return all factual list items in deterministic section order."""
-        return (
-            self.current_state
-            + self.constraints
-            + self.decisions
-            + self.open_work
-        )
+        return self.current_state + self.constraints + self.decisions + self.open_work
 
     def seq_spans(self) -> tuple[tuple[int, int], ...]:
         """Return deduplicated seq spans cited by this summary."""
@@ -565,9 +548,7 @@ class ContinuationSummary:
                 (
                     source.type == "seq"
                     and (
-                        source.lo is None
-                        or source.hi is None
-                        or source.lo > source.hi
+                        source.lo is None or source.hi is None or source.lo > source.hi
                     )
                 )
                 or (source.type in ("artifact", "file") and not source.value)
@@ -668,9 +649,7 @@ def parse_plain_markdown(
         key = title.lower().replace(" ", "_")
         parsed[key] = tuple(
             item
-            for item in (
-                _parse_item(line, fallback) for line in sections[title]
-            )
+            for item in (_parse_item(line, fallback) for line in sections[title])
             if item is not None
         )
     if not any(parsed.values()):
@@ -734,10 +713,7 @@ def validate_summary_quality(
                 if source.lo > hi:
                     issues.append(f"invalid seq range {source.lo}-{hi}")
                     continue
-                if (
-                    source.lo < summary.covered_seq[0]
-                    or hi > summary.covered_seq[1]
-                ):
+                if source.lo < summary.covered_seq[0] or hi > summary.covered_seq[1]:
                     issues.append(
                         f"seq pointer outside covered range: {source.lo}-{hi}",
                     )

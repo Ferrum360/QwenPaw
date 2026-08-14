@@ -176,8 +176,7 @@ class CdpControlLink(CdpVerbsMixin):
                 _,
                 candidate_session_id,
             ) in self._pages.items()
-            if owner[0] == workspace_id
-            and candidate_session_id == cdp_session_id
+            if owner[0] == workspace_id and candidate_session_id == cdp_session_id
         ]
         return matches[0] if len(matches) == 1 else None
 
@@ -258,9 +257,7 @@ class CdpControlLink(CdpVerbsMixin):
             raise BrowserError(
                 category=ErrorCategory.RETRYABLE,
                 cause=ErrorCause.STATE_STALE,
-                suggested_action=(
-                    "Open a fresh page with await browser.open(url)"
-                ),
+                suggested_action=("Open a fresh page with await browser.open(url)"),
                 reason="no active page in this session",
                 detail="pages are released when a response cycle ends",
             )
@@ -450,9 +447,7 @@ class CdpControlLink(CdpVerbsMixin):
             raise BrowserError(
                 category=ErrorCategory.RETRYABLE,
                 cause=ErrorCause.STATE_STALE,
-                suggested_action=(
-                    "Reconnect first: browser = await Browser.connect()"
-                ),
+                suggested_action=("Reconnect first: browser = await Browser.connect()"),
                 reason="browser session is closed",
                 detail="this session was closed earlier in the chat",
             )
@@ -602,9 +597,7 @@ class CdpControlLink(CdpVerbsMixin):
                 timeout=timeout,
             )
         session = self._sessions.pop(owner, None)
-        browser_context_id = (
-            None if session is None else session["browser_context_id"]
-        )
+        browser_context_id = None if session is None else session["browser_context_id"]
         if browser_context_id is not None:
             await self._transport_for(owner[0]).send(
                 "Target.disposeBrowserContext",
@@ -615,9 +608,7 @@ class CdpControlLink(CdpVerbsMixin):
         self._closed.add(owner)
         if not any(remaining[0] == owner[0] for remaining in self._sessions):
             async with self._launch_lock(owner[0]):
-                if not any(
-                    remaining[0] == owner[0] for remaining in self._sessions
-                ):
+                if not any(remaining[0] == owner[0] for remaining in self._sessions):
                     process = self._owned.pop(owner[0], None)
                     if process is not None:
                         await self._reap_process(process)

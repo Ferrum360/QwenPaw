@@ -7,6 +7,7 @@ all live here; the dispatcher reads the module-level metadata
 (``NAME`` / ``MESSAGE_TYPE`` / ``ACTION_TYPE``) plus ``render`` /
 ``handle`` to wire it in.
 """
+
 from __future__ import annotations
 
 import asyncio
@@ -325,9 +326,7 @@ def handle(
 
     action = parsed["action"]
     operator = getattr(event, "operator", None) if event else None
-    operator_open_id = (
-        getattr(operator, "open_id", None) if operator else None
-    ) or ""
+    operator_open_id = (getattr(operator, "open_id", None) if operator else None) or ""
 
     # Re-inject as /approval command.
     _enqueue_approval_command(

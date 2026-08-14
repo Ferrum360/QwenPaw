@@ -226,9 +226,11 @@ async def nm_bridge_ws(websocket: WebSocket) -> None:
                 if bridge is not None and hasattr(bridge, "detach_websocket"):
                     params = message.get("params")
                     reason = str(
-                        params.get("reason")
-                        if isinstance(params, dict)
-                        else "disconnected",
+                        (
+                            params.get("reason")
+                            if isinstance(params, dict)
+                            else "disconnected"
+                        ),
                     )
                     await bridge.detach_websocket(websocket, reason=reason)
                     bridge_detached = True
@@ -253,9 +255,7 @@ async def nm_bridge_ws(websocket: WebSocket) -> None:
             "browser.ws.disconnect client=%s reason=%s duration_s=%.1f "
             "close_code=%s close_reason=%s",
             client,
-            protocol_failure[0]
-            if protocol_failure
-            else "websocket_disconnect",
+            protocol_failure[0] if protocol_failure else "websocket_disconnect",
             (datetime.now(UTC) - started).total_seconds(),
             close_code,
             sanitize_log_value(close_reason),
@@ -279,8 +279,7 @@ def _hello_failure(response: Any) -> tuple[str, str]:
     return (
         str(response.get("code") or "bridge_hello_rejected"),
         str(
-            response.get("message")
-            or "Native Messaging bridge rejected hello.",
+            response.get("message") or "Native Messaging bridge rejected hello.",
         ),
     )
 

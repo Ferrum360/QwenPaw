@@ -155,7 +155,9 @@ class IntentClassifier:
 
         # 检查磁盘缓存
         if self._cache_dir:
-            cache_file = self._cache_dir / f"{hashlib.md5(text.encode()).hexdigest()}.json"
+            cache_file = (
+                self._cache_dir / f"{hashlib.md5(text.encode()).hexdigest()}.json"
+            )
             if cache_file.exists():
                 try:
                     data = json.loads(cache_file.read_text())
@@ -172,7 +174,9 @@ class IntentClassifier:
                     "model": self.model_name,
                     "input": text,
                 },
-                headers={"Authorization": f"Bearer {self.api_key}"} if self.api_key else {},
+                headers=(
+                    {"Authorization": f"Bearer {self.api_key}"} if self.api_key else {}
+                ),
                 timeout=10,
             )
             response.raise_for_status()
@@ -184,7 +188,9 @@ class IntentClassifier:
 
             # 存入磁盘缓存
             if self._cache_dir:
-                cache_file = self._cache_dir / f"{hashlib.md5(text.encode()).hexdigest()}.json"
+                cache_file = (
+                    self._cache_dir / f"{hashlib.md5(text.encode()).hexdigest()}.json"
+                )
                 cache_file.write_text(json.dumps({"embedding": embedding}))
 
             return embedding

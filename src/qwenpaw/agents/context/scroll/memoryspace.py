@@ -194,8 +194,7 @@ def fts_match_query(raw: str) -> str:
     def render(group: str) -> str:
         toks = _FTS_TOKEN_RE.findall(group)
         return " ".join(
-            t if t in _FTS_OPERATORS else '"' + t.replace('"', '""') + '"'
-            for t in toks
+            t if t in _FTS_OPERATORS else '"' + t.replace('"', '""') + '"' for t in toks
         )
 
     groups = _or_query_groups(raw)
@@ -250,9 +249,7 @@ def _like_search_groups(raw: str) -> list[list[str]]:
 
 def _like_pattern(term: str) -> str:
     """Wrap one literal term as a SQLite LIKE contains-pattern."""
-    escaped = (
-        term.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
-    )
+    escaped = term.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
     return f"%{escaped}%"
 
 
@@ -693,11 +690,7 @@ class MemorySpace:
             raise ValueError("created_from must not be after created_to")
         return (
             lower.isoformat() if lower is not None else None,
-            (
-                MemorySpace._date_upper_bound(final)
-                if final is not None
-                else None
-            ),
+            (MemorySpace._date_upper_bound(final) if final is not None else None),
         )
 
     @staticmethod
@@ -876,9 +869,7 @@ class MemorySpace:
         match = fts_match_query(query)
         fts_available = self._fts_available()
         use_like = (
-            not fts_available
-            or not match
-            or _CJK_QUERY_RE.search(query) is not None
+            not fts_available or not match or _CJK_QUERY_RE.search(query) is not None
         )
         if not include_turn:
             return self._search_matching_rows_only(
@@ -1047,9 +1038,7 @@ class MemorySpace:
             offset += len(page)
             if not has_more:
                 break
-        raw_partial = (
-            len(distinct) < limit and offset >= self._row_cap and has_more
-        )
+        raw_partial = len(distinct) < limit and offset >= self._row_cap and has_more
         return rows, raw_partial, len(distinct)
 
     def _search_fts_rows(
@@ -1066,8 +1055,7 @@ class MemorySpace:
         fts = "conversation_history_fts"
         where = [
             f"{fts} MATCH ?",
-            f"(ch.name IS NULL OR ch.name NOT IN "
-            f"({_RECALL_EXCL_PLACEHOLDERS}))",
+            f"(ch.name IS NULL OR ch.name NOT IN " f"({_RECALL_EXCL_PLACEHOLDERS}))",
         ]
         params: list = [match, *_RECALL_TOOL_NAMES]
         excl = self._active_turn_exclusion("ch.")
@@ -1156,9 +1144,7 @@ class MemorySpace:
                 (*user_params, *batch),
             ):
                 starts[int(row["hit_seq"])] = (
-                    int(row["start_seq"])
-                    if row["start_seq"] is not None
-                    else None
+                    int(row["start_seq"]) if row["start_seq"] is not None else None
                 )
         return starts
 
@@ -1214,8 +1200,7 @@ class MemorySpace:
                 span_params.append(int(next_user_seq))
             end_row = self._conn.execute(
                 "SELECT MAX(seq) AS seq "
-                "FROM hist.conversation_history WHERE "
-                + " AND ".join(span_conditions),
+                "FROM hist.conversation_history WHERE " + " AND ".join(span_conditions),
                 tuple(span_params),
             ).fetchone()
             actual_end = (
@@ -1440,9 +1425,7 @@ class MemorySpace:
         query_params: list[str] = []
         for terms in groups:
             query_clauses.append(
-                "("
-                + " AND ".join("content LIKE ? ESCAPE '\\'" for _ in terms)
-                + ")",
+                "(" + " AND ".join("content LIKE ? ESCAPE '\\'" for _ in terms) + ")",
             )
             query_params.extend(map(_like_pattern, terms))
         # Exclude the recall tool's own turns (NULL-safe: keep un-named rows).
@@ -1470,9 +1453,7 @@ class MemorySpace:
             "SELECT seq, session_id, agent_id, kind, role, name, headline, "
             "content, metadata, created_at "
             "FROM hist.conversation_history "
-            "WHERE "
-            + " AND ".join(where)
-            + " ORDER BY seq DESC LIMIT ? OFFSET ?"
+            "WHERE " + " AND ".join(where) + " ORDER BY seq DESC LIMIT ? OFFSET ?"
         )
         params.extend((int(limit), int(offset)))
         return [
@@ -1560,10 +1541,7 @@ class MemorySpace:
             "WHERE " + " AND ".join(where) + " ORDER BY seq DESC LIMIT ?"
         )
         params.append(int(limit))
-        return [
-            {kk: r[kk] for kk in r.keys()}
-            for r in self._conn.execute(sql, params)
-        ]
+        return [{kk: r[kk] for kk in r.keys()} for r in self._conn.execute(sql, params)]
 
     def _search_saved_tool_files(  # pylint: disable=too-many-branches
         self,
@@ -1591,9 +1569,7 @@ class MemorySpace:
             )
             if not candidates:
                 break
-            next_before_seq = min(
-                int(candidate["seq"]) for candidate in candidates
-            )
+            next_before_seq = min(int(candidate["seq"]) for candidate in candidates)
             for row in candidates:
                 if budget.is_exhausted():
                     break
@@ -1842,11 +1818,7 @@ class MemorySpace:
         budget: _ScanBudget | None = None,
     ) -> list[dict]:
         """Stream line matches with bounded memory and byte consumption."""
-        if (
-            not needle_groups
-            or any(not group for group in needle_groups)
-            or limit <= 0
-        ):
+        if not needle_groups or any(not group for group in needle_groups) or limit <= 0:
             return []
         if budget is None:
             budget = _ScanBudget(
@@ -1882,8 +1854,7 @@ class MemorySpace:
 
                 folded = line.casefold()
                 if any(
-                    all(needle in folded for needle in group)
-                    for group in needle_groups
+                    all(needle in folded for needle in group) for group in needle_groups
                 ):
                     item = {
                         "line": line_no,
@@ -1905,9 +1876,7 @@ class MemorySpace:
 
     @staticmethod
     def _finish_file_match(item: dict) -> dict:
-        excerpt = "\n".join(
-            f"{line_no}: {line}" for line_no, line in item["lines"]
-        )
+        excerpt = "\n".join(f"{line_no}: {line}" for line_no, line in item["lines"])
         return {"line": item["line"], "excerpt": excerpt}
 
     @staticmethod

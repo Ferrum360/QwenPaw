@@ -94,8 +94,7 @@ _EXPLICIT_UNSUPPORTED_MEDIA_PATTERNS = (
         re.IGNORECASE,
     ),
     re.compile(
-        r"\bvision\s+is\s+not\s+enabled\s+for\s+"
-        r"(?:this\s+)?(?:model|deployment)\b",
+        r"\bvision\s+is\s+not\s+enabled\s+for\s+" r"(?:this\s+)?(?:model|deployment)\b",
         re.IGNORECASE,
     ),
     re.compile(
@@ -139,9 +138,7 @@ _REQUEST_SCOPED_MEDIA_LIMIT_SIGNALS = (
 
 def _effective_artifact_retention_days(light_context_config: Any) -> int:
     """Return the independently configured tool-result artifact lifetime."""
-    return (
-        light_context_config.tool_result_pruning_config.offload_retention_days
-    )
+    return light_context_config.tool_result_pruning_config.offload_retention_days
 
 
 class QwenPawAgent(CodingModeMixin, Agent):
@@ -343,11 +340,7 @@ class QwenPawAgent(CodingModeMixin, Agent):
             # is recognized as already durable (no re-append on resume).
             cm = getattr(self, "_context_manager", None)
             scroll = state_dict.get("scroll")
-            if (
-                cm is not None
-                and scroll is not None
-                and hasattr(cm, "load_state")
-            ):
+            if cm is not None and scroll is not None and hasattr(cm, "load_state"):
                 cm.load_state(scroll)
                 if hasattr(cm, "reconcile_loaded_context"):
                     cm.reconcile_loaded_context(self)
@@ -549,11 +542,7 @@ class QwenPawAgent(CodingModeMixin, Agent):
         if formatter is None:
             return False
         count = getattr(formatter, "_qwenpaw_last_wire_media_count", 0)
-        return (
-            isinstance(count, int)
-            and not isinstance(count, bool)
-            and (count > 0)
-        )
+        return isinstance(count, int) and not isinstance(count, bool) and (count > 0)
 
     async def _prepare_model_input(self) -> dict[str, Any]:
         """Freeze local images before they enter a provider request."""
@@ -638,9 +627,7 @@ class QwenPawAgent(CodingModeMixin, Agent):
                 "Model input exceeded the provider context limit; attempting "
                 "one context recovery.",
             )
-            input_changed = (
-                await context_manager.recover_from_context_overflow(self)
-            )
+            input_changed = await context_manager.recover_from_context_overflow(self)
             if not input_changed:
                 logger.warning(
                     "Context-overflow recovery did not change the model "
@@ -656,8 +643,7 @@ class QwenPawAgent(CodingModeMixin, Agent):
             refreshed_messages = refreshed["messages"]
             refreshed_tools = refreshed.get("tools", [])
             logger.info(
-                "Context-overflow recovery rebuilt model input "
-                "(messages %d -> %d).",
+                "Context-overflow recovery rebuilt model input " "(messages %d -> %d).",
                 before,
                 after,
             )
@@ -712,8 +698,7 @@ class QwenPawAgent(CodingModeMixin, Agent):
         from .model_factory import _supports_multimodal_for_current_model
 
         should_strip = (
-            not _supports_multimodal_for_current_model()
-            or self._model_rejects_media()
+            not _supports_multimodal_for_current_model() or self._model_rejects_media()
         )
         if should_strip:
             if self._uses_request_time_media_normalization():
@@ -823,8 +808,7 @@ class QwenPawAgent(CodingModeMixin, Agent):
                 stop_result.reason,
             )
             continuation = (
-                stop_result.continuation_message
-                or "Continue working on the task."
+                stop_result.continuation_message or "Continue working on the task."
             )
             continuation_metadata = stop_result.continuation_metadata or {
                 QWENPAW_MESSAGE_TAG_KEY: (LOOP_CONTINUATION_MESSAGE_TAG),
@@ -911,10 +895,7 @@ class QwenPawAgent(CodingModeMixin, Agent):
     def _is_global_media_capability_error(exc: Exception) -> bool:
         """Return whether an error proves model-wide media rejection."""
         error_str = str(exc).lower()
-        if any(
-            signal in error_str
-            for signal in _REQUEST_SCOPED_MEDIA_LIMIT_SIGNALS
-        ):
+        if any(signal in error_str for signal in _REQUEST_SCOPED_MEDIA_LIMIT_SIGNALS):
             return False
         return any(
             pattern.search(error_str) is not None
@@ -1096,9 +1077,7 @@ class QwenPawAgent(CodingModeMixin, Agent):
                     )
                     if isinstance(output, list):
                         filtered = [
-                            item
-                            for item in output
-                            if not self._is_media_block(item)
+                            item for item in output if not self._is_media_block(item)
                         ]
                         stripped_count = len(output) - len(filtered)
                         total_stripped += stripped_count
@@ -1109,9 +1088,7 @@ class QwenPawAgent(CodingModeMixin, Agent):
                                     filtered or MEDIA_UNSUPPORTED_PLACEHOLDER
                                 )
                             else:
-                                block.output = (
-                                    filtered or MEDIA_UNSUPPORTED_PLACEHOLDER
-                                )
+                                block.output = filtered or MEDIA_UNSUPPORTED_PLACEHOLDER
 
                 new_content.append(block)
 

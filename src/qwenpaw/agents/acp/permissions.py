@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """ACP permission handling."""
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -136,9 +137,7 @@ class ACPPermissionAdapter:
                 return command.strip()
             argv = raw_input.get("args") or raw_input.get("argv")
             if isinstance(argv, list):
-                parts = [
-                    str(item).strip() for item in argv if str(item).strip()
-                ]
+                parts = [str(item).strip() for item in argv if str(item).strip()]
                 if parts:
                     return " ".join(parts)
         # Fallback: when rawInput has no command/argv, use title for

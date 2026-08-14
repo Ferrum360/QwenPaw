@@ -97,10 +97,7 @@ class WeChatQRCodeAuthHandler(QRCodeAuthHandler):
             if channels is not None:
                 wechat_cfg = getattr(channels, "wechat", None)
                 if wechat_cfg is not None:
-                    return (
-                        getattr(wechat_cfg, "base_url", "")
-                        or _DEFAULT_BASE_URL
-                    )
+                    return getattr(wechat_cfg, "base_url", "") or _DEFAULT_BASE_URL
         except Exception:
             pass
         return _DEFAULT_BASE_URL
@@ -135,8 +132,7 @@ class WeChatQRCodeAuthHandler(QRCodeAuthHandler):
             scan_url = qrcode_img_content
         else:
             scan_url = (
-                f"https://liteapp.weixin.qq.com/q/7GiQu1"
-                f"?qrcode={qrcode}&bot_type=3"
+                f"https://liteapp.weixin.qq.com/q/7GiQu1" f"?qrcode={qrcode}&bot_type=3"
             )
 
         return QRCodeResult(scan_url=scan_url, poll_token=qrcode)
@@ -239,9 +235,7 @@ class WecomQRCodeAuthHandler(QRCodeAuthHandler):
         from urllib.parse import quote
         import httpx
 
-        query_url = (
-            f"{_WECOM_AUTH_ORIGIN}/ai/qc/query_result" f"?scode={quote(token)}"
-        )
+        query_url = f"{_WECOM_AUTH_ORIGIN}/ai/qc/query_result" f"?scode={quote(token)}"
 
         try:
             async with httpx.AsyncClient(timeout=10) as client:
@@ -493,11 +487,7 @@ class FeishuQRCodeAuthHandler(QRCodeAuthHandler):
 
     def _get_accounts_domain(self, domain: str) -> str:
         """Get accounts domain based on feishu/lark selection."""
-        return (
-            _LARK_ACCOUNTS_DOMAIN
-            if domain == "lark"
-            else _FEISHU_ACCOUNTS_DOMAIN
-        )
+        return _LARK_ACCOUNTS_DOMAIN if domain == "lark" else _FEISHU_ACCOUNTS_DOMAIN
 
     async def fetch_qrcode(self, request: Request) -> QRCodeResult:
         """Initiate device authorization flow and return QR code."""

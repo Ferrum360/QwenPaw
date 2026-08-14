@@ -3,6 +3,7 @@
 
 Handles migration from legacy single-agent config to new multi-agent structure.
 """
+
 import json
 import logging
 import shutil
@@ -141,8 +142,7 @@ def _do_migrate_legacy_workspace() -> bool:
         ),
         llm_routing=(
             legacy_agents.llm_routing
-            if hasattr(legacy_agents, "llm_routing")
-            and legacy_agents.llm_routing
+            if hasattr(legacy_agents, "llm_routing") and legacy_agents.llm_routing
             else AgentsLLMRoutingConfig()
         ),
         system_prompt_files=(
@@ -378,8 +378,7 @@ def _do_migrate_legacy_skills() -> bool:
 
     def _has_legacy_skill_root(root: Path) -> bool:
         return any(
-            (root / name).exists()
-            for name in ("active_skills", "customized_skills")
+            (root / name).exists() for name in ("active_skills", "customized_skills")
         )
 
     def _discover_skill_dirs(root: Path) -> dict[str, Path]:
@@ -412,10 +411,7 @@ def _do_migrate_legacy_skills() -> bool:
             except Exception:
                 pass
             logger.debug(
-                (
-                    "Skipping legacy skill copy from %s to %s "
-                    "because target exists"
-                ),
+                ("Skipping legacy skill copy from %s to %s " "because target exists"),
                 source_dir,
                 target_dir,
             )
@@ -606,9 +602,7 @@ def _do_migrate_legacy_skills() -> bool:
                 if not entry.get("enabled", False):
                     entry["enabled"] = True
                     entry["updated_at"] = (
-                        datetime.now(timezone.utc)
-                        .isoformat()
-                        .replace("+00:00", "Z")
+                        datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
                     )
                     changed += 1
             return changed

@@ -75,9 +75,7 @@ async def get_harness_models(
     _supported_provider(provider_id)
     workspace = await get_agent_for_request(request)
     config = workspace.config
-    settings = (
-        dict(config.backend_settings) if config.backend == provider_id else {}
-    )
+    settings = dict(config.backend_settings) if config.backend == provider_id else {}
     adapter = await workspace.harness_runtime.adapter(provider_id, settings)
     unavailable_message = await _capability_unavailable_message(adapter)
     if unavailable_message:
@@ -100,9 +98,7 @@ async def get_harness_mcp(
         return {"servers": []}
     workspace = await get_agent_for_request(request)
     config = workspace.config
-    settings = (
-        dict(config.backend_settings) if config.backend == provider_id else {}
-    )
+    settings = dict(config.backend_settings) if config.backend == provider_id else {}
     adapter = await workspace.harness_runtime.adapter(provider_id, settings)
     unavailable_message = await _capability_unavailable_message(adapter)
     if unavailable_message:
@@ -125,9 +121,7 @@ async def get_harness_skills(
         return {"skills": []}
     workspace = await get_agent_for_request(request)
     config = workspace.config
-    settings = (
-        dict(config.backend_settings) if config.backend == provider_id else {}
-    )
+    settings = dict(config.backend_settings) if config.backend == provider_id else {}
     adapter = await workspace.harness_runtime.adapter(provider_id, settings)
     unavailable_message = await _capability_unavailable_message(adapter)
     if unavailable_message:

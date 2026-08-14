@@ -29,13 +29,11 @@ def _parse_date(s: str | None) -> date | None:
 )
 async def get_agent_statistics(
     request: Request,
-    start_date: str
-    | None = Query(
+    start_date: str | None = Query(
         None,
         description="Start date YYYY-MM-DD (inclusive). Default: 30 days ago",
     ),
-    end_date: str
-    | None = Query(
+    end_date: str | None = Query(
         None,
         description="End date YYYY-MM-DD (inclusive). Default: today",
     ),

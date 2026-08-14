@@ -20,8 +20,6 @@ def require_owner(params: Mapping[str, Any]) -> OwnerKey:
             cause=ErrorCause.API_MISUSE,
             suggested_action="fatal",
             reason="request is missing owner identity",
-            detail=(
-                f"workspace_id={workspace_id!r} " f"session_id={session_id!r}"
-            ),
+            detail=(f"workspace_id={workspace_id!r} " f"session_id={session_id!r}"),
         )
     return workspace_id, session_id

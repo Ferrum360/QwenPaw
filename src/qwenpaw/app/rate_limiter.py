@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """Rate limiting utilities for authentication endpoints."""
+
 import time
 from collections import defaultdict, deque
 from typing import Dict, Deque
@@ -114,11 +115,7 @@ class LoginRateLimiter:
             # On successful login, clear failed attempts for this user
             self._cleanup_old_attempts(self.user_attempts[username])
             self.user_attempts[username] = deque(
-                [
-                    (ts, succ)
-                    for ts, succ in self.user_attempts[username]
-                    if succ
-                ],
+                [(ts, succ) for ts, succ in self.user_attempts[username] if succ],
                 maxlen=100,
             )
             # Remove user lock if exists
@@ -132,9 +129,7 @@ class LoginRateLimiter:
 
             # Lock user account if too many failed attempts
             if recent_failed_attempts_user >= self.user_max_failed_attempts:
-                self.locked_users[username] = (
-                    timestamp + self.user_lock_duration
-                )
+                self.locked_users[username] = timestamp + self.user_lock_duration
 
             # Check if IP should be locked based on rate limiting rules
             if self.is_ip_rate_limited(ip_address):

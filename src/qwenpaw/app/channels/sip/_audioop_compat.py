@@ -9,6 +9,7 @@ The module is injected into ``sys.modules["audioop"]`` so that
 third-party libraries (e.g. pyVoIP) that ``import audioop``
 internally will also pick it up without modification.
 """
+
 from __future__ import annotations
 
 import sys

@@ -15,6 +15,7 @@ Usage::
 Custom analyzers can be registered at construction time or later via
 :meth:`register_analyzer`.
 """
+
 from __future__ import annotations
 
 import logging

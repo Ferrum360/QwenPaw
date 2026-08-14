@@ -327,8 +327,7 @@ class ILinkClient:
         ret = resp.get("ret", -1)
         errcode = resp.get("errcode", -1)
         logger.debug(
-            f"ILinkClient sendtyping response: ret={ret}, "
-            f"errcode={errcode}",
+            f"ILinkClient sendtyping response: ret={ret}, " f"errcode={errcode}",
         )
         return resp
 

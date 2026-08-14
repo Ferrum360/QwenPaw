@@ -10,6 +10,7 @@ Architecture:
     BYPASS / None -> skip.
     No gates or all BYPASS -> TERMINATE.
 """
+
 from __future__ import annotations
 
 import logging
@@ -140,18 +141,12 @@ class StopHandler:
             action=StopAction.INTERRUPT_AND_CONTINUE,
             continuation_message=msg,
             reason=(
-                continue_result.reason
-                if continue_result
-                else "Active gate continues"
+                continue_result.reason if continue_result else "Active gate continues"
             ),
             continuation_metadata=(
-                continue_result.continuation_metadata
-                if continue_result
-                else None
+                continue_result.continuation_metadata if continue_result else None
             ),
-            final_message=(
-                continue_result.final_message if continue_result else None
-            ),
+            final_message=(continue_result.final_message if continue_result else None),
         )
 
     def _maybe_reset_peers(

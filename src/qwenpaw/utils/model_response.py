@@ -7,6 +7,7 @@
 is a single response or a stream of chunks. Every call site that reads a model
 reply needs the same handling, so it lives here once.
 """
+
 from __future__ import annotations
 
 from collections.abc import AsyncIterable
@@ -28,11 +29,7 @@ def safe_attr(obj: Any, name: str) -> Any:
 def _first_text_in_list(items: list) -> str:
     """First text fragment from a list-of-blocks ``content``."""
     for item in items:
-        got = (
-            item.get("text")
-            if isinstance(item, dict)
-            else safe_attr(item, "text")
-        )
+        got = item.get("text") if isinstance(item, dict) else safe_attr(item, "text")
         if isinstance(got, str):
             return got
     return ""

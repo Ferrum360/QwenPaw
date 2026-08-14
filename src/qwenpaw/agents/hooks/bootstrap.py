@@ -4,6 +4,7 @@
 This hook checks for BOOTSTRAP.md on the first user interaction and
 prepends guidance to help set up the agent's identity and preferences.
 """
+
 import logging
 from pathlib import Path
 from typing import Any
@@ -55,9 +56,7 @@ class BootstrapHook:
         """
         try:
             bootstrap_path = self.working_dir / "BOOTSTRAP.md"
-            bootstrap_completed_flag = (
-                self.working_dir / ".bootstrap_completed"
-            )
+            bootstrap_completed_flag = self.working_dir / ".bootstrap_completed"
 
             # Check if bootstrap has already been triggered before
             if bootstrap_completed_flag.exists():
@@ -79,9 +78,7 @@ class BootstrapHook:
                 self.language,
             )
 
-            system_prompt_count = sum(
-                1 for msg in messages if msg.role == "system"
-            )
+            system_prompt_count = sum(1 for msg in messages if msg.role == "system")
             for msg in messages[system_prompt_count:]:
                 if msg.role == "user":
                     prepend_to_message_content(msg, bootstrap_guidance)

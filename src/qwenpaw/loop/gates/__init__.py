@@ -8,6 +8,7 @@ Public API:
     RubricStrategy, GoalStatusRubric, RubricVerdict,
     RubricEvaluation, DefaultRubric, SubAgentRubric.
 """
+
 from .base import (
     StopAction,
     StopGate,

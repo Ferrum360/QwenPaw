@@ -146,8 +146,7 @@ async def _fetch_html(url: str) -> str:
     resp.raise_for_status()
     ct = (resp.headers.get("content-type") or "").lower()
     if ct and not any(
-        ct.startswith(t)
-        for t in ("text/", "application/xhtml", "application/xml")
+        ct.startswith(t) for t in ("text/", "application/xhtml", "application/xml")
     ):
         raise ValueError(
             f"Unsupported Content-Type: {ct}",

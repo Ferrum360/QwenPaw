@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """Shared session-state utilities."""
+
 from __future__ import annotations
 
 

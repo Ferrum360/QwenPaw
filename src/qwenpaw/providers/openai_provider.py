@@ -53,9 +53,7 @@ def _uses_max_completion_tokens(model_id: str) -> bool:
     """Return whether an OpenAI model requires max_completion_tokens."""
     model_name = model_id.strip().lower().rsplit("/", maxsplit=1)[-1]
     return model_name.startswith("gpt-5") or (
-        len(model_name) > 1
-        and model_name[0] == "o"
-        and model_name[1].isdigit()
+        len(model_name) > 1 and model_name[0] == "o" and model_name[1].isdigit()
     )
 
 
@@ -205,9 +203,7 @@ class OpenAIProvider(Provider):
             model_id = str(getattr(row, "id", "") or "").strip()
             if not model_id:
                 continue
-            model_name = (
-                str(getattr(row, "name", "") or model_id).strip() or model_id
-            )
+            model_name = str(getattr(row, "name", "") or model_id).strip() or model_id
             models.append(ModelInfo(id=model_id, name=model_name))
 
         deduped: List[ModelInfo] = []
@@ -236,8 +232,7 @@ class OpenAIProvider(Provider):
         except Exception as exc:
             return (
                 False,
-                f"Unknown exception when connecting to `{self.base_url}`: "
-                f"{exc}",
+                f"Unknown exception when connecting to `{self.base_url}`: " f"{exc}",
             )
 
     async def fetch_models(self, timeout: float = 5) -> List[ModelInfo]:
@@ -297,10 +292,7 @@ class OpenAIProvider(Provider):
             return True, ""
         except APIError as exc:
             detail = str(exc) or getattr(exc, "message", "")
-            if any(
-                marker in detail.lower()
-                for marker in _API_TYPE_MISMATCH_MARKERS
-            ):
+            if any(marker in detail.lower() for marker in _API_TYPE_MISMATCH_MARKERS):
                 # The endpoint recognised the key and the model but the
                 # model must be invoked through its dedicated task API
                 # (e.g. DashScope video generation), so connectivity is OK.
@@ -366,8 +358,7 @@ class OpenAIProvider(Provider):
         """Probe a DashScope task-API model via the upload-policy API."""
         parsed = urlparse(self.base_url)
         policy_url = (
-            f"{parsed.scheme}://{parsed.netloc}"
-            f"{_DASHSCOPE_UPLOAD_POLICY_PATH}"
+            f"{parsed.scheme}://{parsed.netloc}" f"{_DASHSCOPE_UPLOAD_POLICY_PATH}"
         )
         try:
             async with httpx.AsyncClient(timeout=timeout) as client:
@@ -614,8 +605,7 @@ class OpenAIProvider(Provider):
                                 "type": "image_url",
                                 "image_url": {
                                     "url": (
-                                        "data:image/png;base64,"
-                                        f"{_PROBE_IMAGE_B64}"
+                                        "data:image/png;base64," f"{_PROBE_IMAGE_B64}"
                                     ),
                                 },
                             },
@@ -891,9 +881,7 @@ class GitHubModelsProvider(OpenAIProvider):
                 model_id = candidate
                 break
         if not model_id:
-            model_id = (
-                self.models[0].id if self.models else "openai/gpt-4o-mini"
-            )
+            model_id = self.models[0].id if self.models else "openai/gpt-4o-mini"
 
         try:
             client = self._client(timeout=timeout)
@@ -931,6 +919,5 @@ class GitHubModelsProvider(OpenAIProvider):
         except Exception as exc:
             return (
                 False,
-                f"Unknown exception when connecting to `{self.base_url}`: "
-                f"{exc}",
+                f"Unknown exception when connecting to `{self.base_url}`: " f"{exc}",
             )

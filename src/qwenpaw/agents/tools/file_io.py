@@ -65,9 +65,7 @@ def _resolve_file_path(file_path: str) -> str:
         return str(path)
     else:
         project_dir = (
-            get_current_project_dir()
-            or get_current_workspace_dir()
-            or WORKING_DIR
+            get_current_project_dir() or get_current_workspace_dir() or WORKING_DIR
         )
         return str(project_dir / file_path)
 
@@ -391,10 +389,7 @@ async def edit_file(
                 content=[
                     TextBlock(
                         type="text",
-                        text=(
-                            f"Error: The file {resolved_path} "
-                            f"does not exist."
-                        ),
+                        text=(f"Error: The file {resolved_path} " f"does not exist."),
                     ),
                 ],
             )
@@ -405,10 +400,7 @@ async def edit_file(
                 content=[
                     TextBlock(
                         type="text",
-                        text=(
-                            f"Error: The path {resolved_path} "
-                            f"is not a file."
-                        ),
+                        text=(f"Error: The path {resolved_path} " f"is not a file."),
                     ),
                 ],
             )

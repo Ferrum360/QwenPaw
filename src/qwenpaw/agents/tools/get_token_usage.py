@@ -55,9 +55,7 @@ async def get_token_usage(
         filter_desc.append("all models")
     lines.append(f"Token usage ({start} ~ {end}, {', '.join(filter_desc)}):")
     lines.append("")
-    total_tokens = (
-        summary.total_prompt_tokens + summary.total_completion_tokens
-    )
+    total_tokens = summary.total_prompt_tokens + summary.total_completion_tokens
     lines.append(f"- Total tokens: {total_tokens:,}")
     lines.append(f"- Prompt tokens: {summary.total_prompt_tokens:,}")
     lines.append(

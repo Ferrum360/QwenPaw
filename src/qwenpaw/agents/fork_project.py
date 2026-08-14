@@ -592,8 +592,7 @@ def _prune_statuses_unlocked(
         data["by_task"] = {
             tid: info
             for tid, info in by_task.items()
-            if isinstance(info, dict)
-            and str(info.get("branch") or "") in live_branches
+            if isinstance(info, dict) and str(info.get("branch") or "") in live_branches
         }
 
 
@@ -772,8 +771,7 @@ def register_fork(
                 tid: info
                 for tid, info in by_task.items()
                 if not (
-                    isinstance(info, dict)
-                    and str(info.get("branch") or "") == branch
+                    isinstance(info, dict) and str(info.get("branch") or "") == branch
                 )
             }
         _write_registry_unlocked(project_dir, data)
@@ -1263,8 +1261,7 @@ def _apply_crash_recovery(
                 _mark_fork_failed_unlocked(
                     project_dir,
                     branch,
-                    reason=fail_reason
-                    or "no commit evidence after crashed finalize",
+                    reason=fail_reason or "no commit evidence after crashed finalize",
                     expected_scope=expected_scope,
                 )
                 return False
@@ -1619,10 +1616,7 @@ def forks_merged_into_head(
                 return False
             if status == _STATUS_MERGED:
                 continue
-            if (
-                status != _STATUS_FINALIZED
-                or meta.get("finalized") is not True
-            ):
+            if status != _STATUS_FINALIZED or meta.get("finalized") is not True:
                 return False
             meta["status"] = _STATUS_MERGED
             forks[branch] = meta

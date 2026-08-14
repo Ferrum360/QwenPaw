@@ -4,6 +4,7 @@
 POST /fork/agent — prepare a forked session + git worktree
 for spawn_subagent(fork=True).
 """
+
 from __future__ import annotations
 
 import asyncio
@@ -103,9 +104,7 @@ def _session_path(
     """Reconstruct the session file path (SafeJSONSession compat)."""
     safe_sid = sanitize_filename(session_id)
     safe_uid = sanitize_filename(user_id) if user_id else ""
-    filename = (
-        f"{safe_uid}_{safe_sid}.json" if safe_uid else f"{safe_sid}.json"
-    )
+    filename = f"{safe_uid}_{safe_sid}.json" if safe_uid else f"{safe_sid}.json"
 
     if channel:
         safe_channel = sanitize_filename(channel)
@@ -151,9 +150,7 @@ def _write_fork_session(
     """
     safe_sid = sanitize_filename(fork_session_id)
     safe_uid = sanitize_filename(user_id) if user_id else ""
-    filename = (
-        f"{safe_uid}_{safe_sid}.json" if safe_uid else f"{safe_sid}.json"
-    )
+    filename = f"{safe_uid}_{safe_sid}.json" if safe_uid else f"{safe_sid}.json"
 
     if channel:
         safe_channel = sanitize_filename(channel)

@@ -259,9 +259,7 @@ class ToolCoordinator:
                     exc_info=True,
                 )
 
-        bg_task_name = (
-            entry.background_task.get_name() if entry.background_task else ""
-        )
+        bg_task_name = entry.background_task.get_name() if entry.background_task else ""
         reason = ctx.offload_reason.value if ctx.offload_reason else "unknown"
         if ctx.offload_reason == OffloadReason.USER:
             text = (
@@ -568,14 +566,10 @@ class ToolCoordinator:
         ctx = entry.ctx
 
         remaining_offload = (
-            (ctx.offload_deadline - now)
-            if ctx.offload_deadline is not None
-            else None
+            (ctx.offload_deadline - now) if ctx.offload_deadline is not None else None
         )
         remaining_kill = (
-            (ctx.kill_deadline - now)
-            if ctx.kill_deadline is not None
-            else None
+            (ctx.kill_deadline - now) if ctx.kill_deadline is not None else None
         )
 
         # kill takes priority — execution limit supersedes offload
@@ -584,9 +578,7 @@ class ToolCoordinator:
         if remaining_offload is not None and remaining_offload <= 0:
             return _NextEvent(type="deadline_reached")
 
-        candidates = [
-            r for r in (remaining_offload, remaining_kill) if r is not None
-        ]
+        candidates = [r for r in (remaining_offload, remaining_kill) if r is not None]
         remaining = min(candidates) if candidates else None
 
         waiters: dict[str, asyncio.Task[Any]] = {}
@@ -621,9 +613,7 @@ class ToolCoordinator:
 
         if "chunk" in waiters and waiters["chunk"] in done:
             item = waiters["chunk"].result()
-            event_type = (
-                "stream_closed" if item is _STREAM_SENTINEL else "chunk"
-            )
+            event_type = "stream_closed" if item is _STREAM_SENTINEL else "chunk"
             return _NextEvent(
                 type=event_type,
                 chunk=item if event_type == "chunk" else None,

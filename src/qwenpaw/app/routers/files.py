@@ -49,9 +49,7 @@ def _check_path(path: Path) -> str | None:
         return "SENSITIVE_FILE_BLOCKED"
     # 2. Workspace scope check (skippable via config).
     if not _is_preview_outside_workspace_allowed():
-        if not (
-            resolved == _ALLOWED_ROOT or resolved.is_relative_to(_ALLOWED_ROOT)
-        ):
+        if not (resolved == _ALLOWED_ROOT or resolved.is_relative_to(_ALLOWED_ROOT)):
             return "OUTSIDE_WORKSPACE"
     return None
 

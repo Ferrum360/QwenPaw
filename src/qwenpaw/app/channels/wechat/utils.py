@@ -54,9 +54,7 @@ def aes_ecb_decrypt(data: bytes, key_b64: str) -> bytes:
     # Auto-detect key format (mirrors official TypeScript parseAesKey logic)
     key: bytes
     raw = key_b64.strip()
-    if len(raw) in (32, 48, 64) and all(
-        c in "0123456789abcdefABCDEF" for c in raw
-    ):
+    if len(raw) in (32, 48, 64) and all(c in "0123456789abcdefABCDEF" for c in raw):
         # Format: raw hex string (e.g. image_item.aeskey — 32 hex chars)
         key = bytes.fromhex(raw)
     else:

@@ -23,9 +23,7 @@ class ExecutionContext:
     browser_connecting: asyncio.Future[Browser] | None = None
 
 
-_CURRENT: contextvars.ContextVar[
-    "ExecutionContext | None"
-] = contextvars.ContextVar(
+_CURRENT: contextvars.ContextVar["ExecutionContext | None"] = contextvars.ContextVar(
     "qwenpaw_browser_exec_ctx",
     default=None,
 )

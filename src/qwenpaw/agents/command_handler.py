@@ -52,9 +52,7 @@ logger = logging.getLogger(__name__)
 # so the same wording is shown across the web UI and ACP clients.
 SYSTEM_COMMAND_DESCRIPTIONS: dict[str, str] = {
     "clear": "Clear the conversation context",
-    "compact": (
-        "Compact the conversation context; optional instruction supported"
-    ),
+    "compact": ("Compact the conversation context; optional instruction supported"),
 }
 # Manual ``/compact`` skips the auto ``trigger_ratio`` gate and runs compaction
 # directly; the field is constrained ``gt=0``, so we use a negligible value
@@ -164,8 +162,7 @@ class CommandHandler(ConversationCommandHandlerMixin):
         """
         if agent is not None and state is not None:
             raise ValueError(
-                "agent and state are mutually exclusive; "
-                "pass one or the other",
+                "agent and state are mutually exclusive; " "pass one or the other",
             )
         self.agent_name = agent_name
         self._agent = agent
@@ -460,9 +457,7 @@ class CommandHandler(ConversationCommandHandlerMixin):
         # so it must be reported explicitly — a fold-only run used to claim
         # "Nothing to compact" while live outputs were replaced with stubs.
         folded_line = (
-            f"- Tool results folded to recall stubs: {folded}\n"
-            if folded
-            else ""
+            f"- Tool results folded to recall stubs: {folded}\n" if folded else ""
         )
         action_label = (
             "Messages archived"
@@ -518,9 +513,7 @@ class CommandHandler(ConversationCommandHandlerMixin):
     def _uses_scroll_context(self) -> bool:
         """Return whether the active light-context strategy is Scroll."""
         try:
-            light_context = (
-                self._get_agent_config().running.light_context_config
-            )
+            light_context = self._get_agent_config().running.light_context_config
         except Exception:
             return False
         return getattr(light_context, "strategy", "native") == "scroll"
@@ -581,10 +574,7 @@ class CommandHandler(ConversationCommandHandlerMixin):
             lcc = self._get_agent_config().running.light_context_config
         except Exception:
             return None
-        if (
-            getattr(lcc, "strategy", "native") != "scroll"
-            or not self._workspace_dir
-        ):
+        if getattr(lcc, "strategy", "native") != "scroll" or not self._workspace_dir:
             return None
         try:
             from .context.scroll.history import HistoryStore
@@ -595,9 +585,7 @@ class CommandHandler(ConversationCommandHandlerMixin):
             # Must match the id normal turns persist under (the builder uses
             # ``ctx.session_id``), so these rows align with the live history.
             session_id = (
-                self._session_id
-                or getattr(self._state, "session_id", "")
-                or "local"
+                self._session_id or getattr(self._state, "session_id", "") or "local"
             )
             return ScrollContextManager(
                 history=history,
@@ -732,9 +720,7 @@ class CommandHandler(ConversationCommandHandlerMixin):
             half = running_config.history_max_length // 2
             history_str = f"{history_str[:half]}\n...\n{history_str[-half:]}"
 
-        history_str += (
-            "\n\n---\n\n- Use /message <index> to view full message content"
-        )
+        history_str += "\n\n---\n\n- Use /message <index> to view full message content"
 
         # Add compact summary hint if available
         if self._get_summary():
@@ -808,8 +794,7 @@ class CommandHandler(ConversationCommandHandlerMixin):
         task_list = self.memory_manager.list_summarize_status()
         if not task_list:
             return await self._make_system_msg(
-                "**No Summary Tasks**\n\n"
-                "- No summary tasks have been started",
+                "**No Summary Tasks**\n\n" "- No summary tasks have been started",
             )
 
         status_lines = ["**Summary Task Status**\n\n"]
@@ -1199,8 +1184,7 @@ class CommandHandler(ConversationCommandHandlerMixin):
                         # Check first message for summary marker
                         if (
                             i == 0
-                            and msg.metadata.get("has_compressed_summary")
-                            == "true"
+                            and msg.metadata.get("has_compressed_summary") == "true"
                         ):
                             has_summary_marker = True
                         if len(loaded_messages) >= MAX_LOAD_HISTORY_COUNT:

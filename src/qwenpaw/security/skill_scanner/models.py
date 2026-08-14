@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
-"""Data models for skill scanning results.
+"""Data models for skill scanning results."""
 
-"""
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -9,7 +8,6 @@ from datetime import datetime, timezone
 from enum import Enum
 from pathlib import Path
 from typing import Any
-
 
 # ---------------------------------------------------------------------------
 # Enums
@@ -187,8 +185,7 @@ class ScanResult:
     def is_safe(self) -> bool:
         """``True`` when there are no CRITICAL or HIGH findings."""
         return not any(
-            f.severity in (Severity.CRITICAL, Severity.HIGH)
-            for f in self.findings
+            f.severity in (Severity.CRITICAL, Severity.HIGH) for f in self.findings
         )
 
     @property

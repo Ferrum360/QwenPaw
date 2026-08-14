@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """Resolve the web console static assets directory (shared by app and CLI)."""
+
 from __future__ import annotations
 
 import os

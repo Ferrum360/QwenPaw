@@ -5,13 +5,13 @@ These models are intentionally separate from the skill-scanner models so
 that the two sub-systems can evolve independently while sharing the same
 conceptual vocabulary (severity, threat category, finding, result).
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
 from typing import Any
-
 
 # Memory mark attached to tool-guard denied messages so they can be
 # identified and cleaned up across modules (react_agent, runner, etc.).

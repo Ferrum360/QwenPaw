@@ -259,14 +259,10 @@ def _subject_scope_matches(
     if subject_value == POLICY_TARGET_WILDCARD:
         return True
     if subject_type == PRINCIPAL_SUBJECT_USER:
-        return (
-            _selector_value(context.request_context.get("user_id"))
-            == subject_value
-        )
+        return _selector_value(context.request_context.get("user_id")) == subject_value
     if subject_type == PRINCIPAL_SUBJECT_SESSION:
         return (
-            _selector_value(context.request_context.get("session_id"))
-            == subject_value
+            _selector_value(context.request_context.get("session_id")) == subject_value
         )
     return False
 

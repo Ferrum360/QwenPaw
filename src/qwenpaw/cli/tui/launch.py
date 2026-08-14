@@ -145,9 +145,7 @@ def _build_transport(
     from .transport.acp import AcpTransport
 
     project_dir = _resolve_project_dir(project)
-    description = (
-        f"qwenpaw acp ({sys.executable} -m qwenpaw acp --local-diagnostics)"
-    )
+    description = f"qwenpaw acp ({sys.executable} -m qwenpaw acp --local-diagnostics)"
     if project_dir:
         description = f"{description} cwd={project_dir}"
 

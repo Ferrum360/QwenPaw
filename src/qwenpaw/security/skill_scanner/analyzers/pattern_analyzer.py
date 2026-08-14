@@ -5,6 +5,7 @@ Loads security rules from YAML files (see ``rules/signatures/``) and
 performs fast, line-based regex matching with a multiline fallback for
 patterns that intentionally span newlines.
 """
+
 from __future__ import annotations
 
 import logging
@@ -105,9 +106,7 @@ class SecurityRule:
 
         # --- Pass 1: line-based matching (fast) --------------------------
         for line_num, line in enumerate(lines, start=1):
-            excluded = any(
-                ep.search(line) for ep in self.compiled_exclude_patterns
-            )
+            excluded = any(ep.search(line) for ep in self.compiled_exclude_patterns)
             if excluded:
                 continue
             for pattern in self.compiled_patterns:
@@ -131,8 +130,7 @@ class SecurityRule:
             for m in pattern.finditer(content):
                 matched_text = m.group(0)
                 excluded = any(
-                    ep.search(matched_text)
-                    for ep in self.compiled_exclude_patterns
+                    ep.search(matched_text) for ep in self.compiled_exclude_patterns
                 )
                 if excluded:
                     continue
@@ -336,9 +334,7 @@ class PatternAnalyzer(BaseAnalyzer):
                     )
 
         # Filter well-known test credentials
-        findings = [
-            f for f in findings if not self._is_known_test_credential(f)
-        ]
+        findings = [f for f in findings if not self._is_known_test_credential(f)]
 
         # De-duplicate if enabled in policy
         if self.policy.rule_scoping.dedupe_duplicate_findings:

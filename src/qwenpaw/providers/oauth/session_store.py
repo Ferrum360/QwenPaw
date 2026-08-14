@@ -7,7 +7,6 @@ import time
 from dataclasses import dataclass, field
 from typing import Dict, Optional
 
-
 _TTL_SECONDS = 600  # 10 minutes
 
 

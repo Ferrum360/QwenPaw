@@ -11,7 +11,6 @@ from pydantic import BaseModel, Field
 
 from ...exceptions import SkillConflictError
 
-
 ALL_SKILL_ROUTING_CHANNELS = [
     "console",
     "discord",

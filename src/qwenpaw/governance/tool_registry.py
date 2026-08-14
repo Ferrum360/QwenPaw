@@ -193,9 +193,7 @@ class ToolRegistry:
         if pattern_param:
             pattern = input_data.get(pattern_param, "")
             if pattern:
-                path = (
-                    os.path.join(path, str(pattern)) if path else str(pattern)
-                )
+                path = os.path.join(path, str(pattern)) if path else str(pattern)
 
         return path
 

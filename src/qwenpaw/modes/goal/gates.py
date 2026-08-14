@@ -7,6 +7,7 @@ GoalTurnGate tracks cross-request goal turns (outer
 loop), distinct from IterationGate which tracks
 per-request ReAct iterations (inner loop).
 """
+
 from __future__ import annotations
 
 import logging

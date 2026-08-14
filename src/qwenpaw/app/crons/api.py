@@ -38,13 +38,11 @@ async def get_cron_manager(
 )
 async def list_dispatch_targets(
     request: Request,
-    channel: str
-    | None = Query(
+    channel: str | None = Query(
         default=None,
         description="Optional channel filter",
     ),
-    keyword: str
-    | None = Query(
+    keyword: str | None = Query(
         default=None,
         description="Optional keyword for user/session/channel",
     ),
@@ -70,9 +68,7 @@ async def list_dispatch_targets(
             session_id=chat.session_id,
         )
         if kw:
-            haystack = (
-                f"{item.channel} {item.user_id} {item.session_id}".lower()
-            )
+            haystack = f"{item.channel} {item.user_id} {item.session_id}".lower()
             if kw not in haystack:
                 continue
         deduped[(item.channel, item.user_id, item.session_id)] = item

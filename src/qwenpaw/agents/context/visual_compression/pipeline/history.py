@@ -95,13 +95,8 @@ def _active_user_index(messages: list[Msg]) -> int | None:
             "visual_history",
         }:
             continue
-        metadata = (
-            message.metadata if isinstance(message.metadata, dict) else {}
-        )
-        if (
-            metadata.get(QWENPAW_MESSAGE_TAG_KEY)
-            in SYNTHETIC_USER_MESSAGE_TAGS
-        ):
+        metadata = message.metadata if isinstance(message.metadata, dict) else {}
+        if metadata.get(QWENPAW_MESSAGE_TAG_KEY) in SYNTHETIC_USER_MESSAGE_TAGS:
             continue
         return index
     return None
@@ -278,10 +273,7 @@ def _prepare_history_chunks(
                 preset,
             ),
         )
-        if (
-            not estimated_pages
-            or len(estimated_pages) > pages_left - used_pages
-        ):
+        if not estimated_pages or len(estimated_pages) > pages_left - used_pages:
             break
         prepared.append(
             _PreparedHistoryChunk(
@@ -345,9 +337,7 @@ def compress_history(  # pylint: disable=R0912,R0915
     # complete collapsed range once, avoiding per-chunk auxiliary fan-out.
     source_text = "\n\n".join(chunk.source_text for chunk in prepared)
     rendered_text = "\n\n".join(chunk.render_text for chunk in prepared)
-    estimated_pages = [
-        page for chunk in prepared for page in chunk.estimated_pages
-    ]
+    estimated_pages = [page for chunk in prepared for page in chunk.estimated_pages]
     intro = _history_intro()
     sheet = _factsheet_text(source_text)
     provenance = f"{first}:{collapsed_end}"

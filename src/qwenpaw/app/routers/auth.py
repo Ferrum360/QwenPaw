@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """Authentication API endpoints."""
+
 from __future__ import annotations
 
 from fastapi import APIRouter, HTTPException, Request
@@ -25,9 +26,7 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 class LoginRequest(BaseModel):
     username: str
     password: str
-    expires_in: int | None = (
-        None  # Token expiry in seconds, -1/0 for permanent
-    )
+    expires_in: int | None = None  # Token expiry in seconds, -1/0 for permanent
 
 
 class LoginResponse(BaseModel):
@@ -38,9 +37,7 @@ class LoginResponse(BaseModel):
 class RegisterRequest(BaseModel):
     username: str
     password: str
-    expires_in: int | None = (
-        None  # Token expiry in seconds, -1/0 for permanent
-    )
+    expires_in: int | None = None  # Token expiry in seconds, -1/0 for permanent
 
 
 class AuthStatusResponse(BaseModel):
@@ -175,9 +172,7 @@ class UpdateProfileRequest(BaseModel):
     current_password: str
     new_username: str | None = None
     new_password: str | None = None
-    expires_in: int | None = (
-        None  # Token expiry in seconds, -1/0 for permanent
-    )
+    expires_in: int | None = None  # Token expiry in seconds, -1/0 for permanent
 
 
 @router.post("/update-profile")
@@ -236,9 +231,7 @@ async def update_profile(req: UpdateProfileRequest, request: Request):
 
 
 class RevokeTokenRequest(BaseModel):
-    token: str | None = (
-        None  # Optional: revoke specific token, or current if omitted
-    )
+    token: str | None = None  # Optional: revoke specific token, or current if omitted
 
 
 @router.post("/revoke-token")

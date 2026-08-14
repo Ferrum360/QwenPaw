@@ -5,6 +5,7 @@
 This module provides utilities for building system prompts from
 markdown configuration files in the working directory.
 """
+
 import logging
 import re
 from pathlib import Path
@@ -201,9 +202,7 @@ class PromptBuilder:
             memory_section = ""
 
         return (
-            (content + "\n\n" + memory_section).strip()
-            if content
-            else memory_section
+            (content + "\n\n" + memory_section).strip() if content else memory_section
         )
 
     def build(self) -> str:

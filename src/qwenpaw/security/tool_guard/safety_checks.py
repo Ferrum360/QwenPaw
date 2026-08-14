@@ -4,6 +4,7 @@
 Called by ACP permissions, ToolGuard guardians, and other security layers
 to eliminate duplicated safety rule definitions.
 """
+
 from __future__ import annotations
 
 import os
@@ -274,8 +275,7 @@ _CATASTROPHIC_PATTERNS: tuple[str, ...] = (
     ),
     (r"\brm\b(?=[^\n]*-Recurse\b)" + r"[^\n]*" + _WIN_CATASTROPHIC_TARGET),
     # Require recursive (/s) so bare ``del C:\`` / ``rd C:\`` are not hit.
-    r"\bdel\b(?=[^\n]*/[sS]\b)\s+(?:/[a-zA-Z]+\s+)*"
-    + _WIN_CATASTROPHIC_TARGET,
+    r"\bdel\b(?=[^\n]*/[sS]\b)\s+(?:/[a-zA-Z]+\s+)*" + _WIN_CATASTROPHIC_TARGET,
     (
         r"\b(?:rd|rmdir)\b(?=[^\n]*/[sS]\b)\s+(?:/[a-zA-Z]+\s+)*"
         + _WIN_CATASTROPHIC_TARGET
@@ -388,11 +388,7 @@ def _is_safe_temp_tree(parts: tuple[str, ...]) -> bool:
     """Return True for typical temp / pytest workspace roots."""
     if len(parts) >= 2 and parts[1] == "tmp":
         return True
-    if (
-        len(parts) >= 3
-        and parts[1] == "var"
-        and parts[2] in {"tmp", "folders"}
-    ):
+    if len(parts) >= 3 and parts[1] == "var" and parts[2] in {"tmp", "folders"}:
         return True
     if len(parts) >= 3 and parts[1] == "private" and parts[2] == "tmp":
         return True
@@ -887,11 +883,7 @@ def _extract_recursive_rm_targets(command: str) -> list[str]:
         except ValueError:
             tokens = segment.split()
         rm_idx = next(
-            (
-                i
-                for i, tok in enumerate(tokens)
-                if tok == "rm" or tok.endswith("/rm")
-            ),
+            (i for i, tok in enumerate(tokens) if tok == "rm" or tok.endswith("/rm")),
             None,
         )
         if rm_idx is None:

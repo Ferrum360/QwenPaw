@@ -66,9 +66,7 @@ def _child_env_with_plugin_site(env: "dict | None") -> "dict | None":
         return env
     base = dict(os.environ if env is None else env)
     existing = base.get("PYTHONPATH", "")
-    base["PYTHONPATH"] = (
-        site_dir + os.pathsep + existing if existing else site_dir
-    )
+    base["PYTHONPATH"] = site_dir + os.pathsep + existing if existing else site_dir
     return base
 
 

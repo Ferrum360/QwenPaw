@@ -182,15 +182,12 @@ class ChannelManager:
             sig = inspect.signature(ch_cls.from_config)
             filtered_kwargs: dict[str, Any]
             if any(
-                p.kind == inspect.Parameter.VAR_KEYWORD
-                for p in sig.parameters.values()
+                p.kind == inspect.Parameter.VAR_KEYWORD for p in sig.parameters.values()
             ):
                 filtered_kwargs = from_config_kwargs
             else:
                 filtered_kwargs = {
-                    k: v
-                    for k, v in from_config_kwargs.items()
-                    if k in sig.parameters
+                    k: v for k, v in from_config_kwargs.items() if k in sig.parameters
                 }
 
             try:
@@ -621,8 +618,7 @@ class ChannelManager:
             agent_id = self._workspace.agent_id if self._workspace else None
             if agent_id is None:
                 raise RuntimeError(
-                    "Cannot restart channel: workspace not set"
-                    " on ChannelManager",
+                    "Cannot restart channel: workspace not set" " on ChannelManager",
                 )
 
             agent_config = load_agent_config(agent_id)
@@ -820,8 +816,7 @@ class ChannelManager:
         )
         ch_name = getattr(ch, "channel", channel)
         logger.info(
-            "channel send_text: channel=%s user_id=%s session_id=%s "
-            "to_handle=%s",
+            "channel send_text: channel=%s user_id=%s session_id=%s " "to_handle=%s",
             ch_name,
             (user_id or "")[:40],
             (session_id or "")[:40],

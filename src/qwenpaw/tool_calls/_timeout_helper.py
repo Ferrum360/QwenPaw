@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """Cooperative timeout helpers for built-in tools."""
+
 from __future__ import annotations
 
 import asyncio
@@ -52,10 +53,7 @@ def arm_kill_deadline(
     now = loop.time()
     desired_kill = now + secs
     ctx.kill_deadline = desired_kill
-    if (
-        ctx.offload_deadline is not None
-        and ctx.offload_deadline >= desired_kill
-    ):
+    if ctx.offload_deadline is not None and ctx.offload_deadline >= desired_kill:
         pulled = now + max(0.0, secs * OFFLOAD_TIMEOUT_RATIO)
         if pulled >= desired_kill and secs > 0:
             pulled = desired_kill - min(0.001, secs / 2.0)

@@ -12,6 +12,7 @@ languages return ``None`` when the user has not installed a server —
 the Coding Mode toolkit then simply omits them from the ``lsp`` tool's
 description (no popups, no auto-downloads — see PROPOSAL §三).
 """
+
 from __future__ import annotations
 
 import importlib.util
@@ -70,10 +71,7 @@ def _discover_typescript(project_dir: Path) -> Optional[list[str]]:
         return [binary, "--stdio"]
     suffix = ".cmd" if sys.platform == "win32" else ""
     local = (
-        project_dir
-        / "node_modules"
-        / ".bin"
-        / f"typescript-language-server{suffix}"
+        project_dir / "node_modules" / ".bin" / f"typescript-language-server{suffix}"
     )
     if local.exists():
         return [str(local), "--stdio"]

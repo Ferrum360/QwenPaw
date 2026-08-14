@@ -159,8 +159,7 @@ class HostRuntimeProvider:
         return RuntimeStatus(
             supported_platform=sys.platform in _SUPPORTED_PLATFORMS,
             host_reachable=(
-                cls.get_capability() is not None
-                or _control_endpoint() is not None
+                cls.get_capability() is not None or _control_endpoint() is not None
             ),
         )
 
@@ -189,11 +188,7 @@ def _environment_capability() -> RuntimeCapability | None:
         protocol_version = int(raw_version)
     except ValueError:
         return None
-    if (
-        not pipe_name
-        or not secret
-        or protocol_version != COMPUTER_USE_PROTOCOL_VERSION
-    ):
+    if not pipe_name or not secret or protocol_version != COMPUTER_USE_PROTOCOL_VERSION:
         return None
     return RuntimeCapability(pipe_name, secret, protocol_version)
 

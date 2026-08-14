@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # flake8: noqa: E501
 """CLI init: interactively create working_dir config.json and HEARTBEAT.md."""
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -299,9 +300,7 @@ def init_cmd(
             target=target or "main",
             active_hours=active_hours,
         )
-        existing = (
-            load_config(config_path) if config_path.is_file() else Config()
-        )
+        existing = load_config(config_path) if config_path.is_file() else Config()
         # Ensure agents.defaults exists
         if existing.agents.defaults is None:
             from ..config.config import AgentsDefaultsConfig
@@ -355,8 +354,7 @@ def init_cmd(
 
         # --- channels (interactive when not --defaults) ---
         if not use_defaults and prompt_confirm(
-            "Configure channels? "
-            "(iMessage/Discord/DingTalk/Feishu/QQ/Console)",
+            "Configure channels? " "(iMessage/Discord/DingTalk/Feishu/QQ/Console)",
             default=False,
         ):
             configure_channels_interactive(existing)
@@ -368,11 +366,7 @@ def init_cmd(
     provider_manager = ProviderManager.get_instance()
     activate_llm = provider_manager.get_active_model()
 
-    if (
-        activate_llm is not None
-        and activate_llm.provider_id
-        and activate_llm.model
-    ):
+    if activate_llm is not None and activate_llm.provider_id and activate_llm.model:
         click.echo(
             f"\n✓ LLM already configured: "
             f"{activate_llm.provider_id} / {activate_llm.model}",
@@ -401,8 +395,7 @@ def init_cmd(
             click.echo(f"✓ {synced} new skill(s) enabled.")
         else:
             click.echo(
-                "✓ Skills already up to date "
-                "(kept your enable/disable choices).",
+                "✓ Skills already up to date " "(kept your enable/disable choices).",
             )
     elif write_config:
         # Interactive mode and config was written: prompt user
@@ -443,9 +436,7 @@ def init_cmd(
     from ..agents.utils import copy_md_files
 
     config = load_config(config_path) if config_path.is_file() else Config()
-    current_language = (
-        config.agents.language or "zh"
-    )  # Default to "zh" if None
+    current_language = config.agents.language or "zh"  # Default to "zh" if None
     installed_language = config.agents.installed_md_files_language
 
     if use_defaults:

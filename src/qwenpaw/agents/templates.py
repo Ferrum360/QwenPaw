@@ -94,9 +94,7 @@ def build_agent_template(
         agent_config = AgentProfileConfig(
             id=agent_id,
             name=name or "Local Agent",
-            description=(
-                description or "An agent running on local deployed models."
-            ),
+            description=(description or "An agent running on local deployed models."),
             workspace_dir=str(workspace_dir),
             template_id=template_id,
             language=resolved_language,

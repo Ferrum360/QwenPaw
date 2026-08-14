@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """GuardedFunctionTool — permission-checked tool wrapper."""
+
 from __future__ import annotations
 
 import asyncio
@@ -43,9 +44,7 @@ class GuardedFunctionTool:
                 (FunctionTool,),
                 {
                     "__init__": _guarded_tool_init,
-                    "_resolve_execution_level": (
-                        _guarded_tool_resolve_execution_level
-                    ),
+                    "_resolve_execution_level": (_guarded_tool_resolve_execution_level),
                     "check_permissions": _guarded_tool_check_permissions,
                     "__doc__": cls.__doc__,
                 },
@@ -250,8 +249,7 @@ async def _guarded_tool_check_permissions(
             return PermissionDecision(
                 behavior=PermissionBehavior.ALLOW,
                 message=(
-                    "Tool guard SMART: auto-allowed low-risk "
-                    f"({max_sev.value})."
+                    "Tool guard SMART: auto-allowed low-risk " f"({max_sev.value})."
                 ),
             )
 
@@ -377,9 +375,7 @@ async def _ask_user_approval(
             },
             "channel_meta": ctx.get("channel_meta"),
             "_channel_instance": ctx.get("_channel_instance"),
-            **(
-                {"_spawn_subagent": True} if ctx.get("_spawn_subagent") else {}
-            ),
+            **({"_spawn_subagent": True} if ctx.get("_spawn_subagent") else {}),
         },
     )
 

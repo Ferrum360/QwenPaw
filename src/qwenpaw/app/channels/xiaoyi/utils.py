@@ -35,9 +35,7 @@ async def download_file(
                     ext = Path(filename).suffix or ".bin"
 
                 # Build safe filename
-                safe_name = "".join(
-                    c for c in filename if c.isalnum() or c in "-_."
-                )
+                safe_name = "".join(c for c in filename if c.isalnum() or c in "-_.")
                 if not safe_name:
                     safe_name = "file"
 

@@ -76,35 +76,35 @@ def _read_frontmatter_safe(skill_dir: Path, skill_name: str) -> dict:
         fm_dict = {}
 
         # Try to get name from frontmatter (top-level key)
-        if hasattr(post, 'name'):
+        if hasattr(post, "name"):
             fm_dict["name"] = post.name
-        elif hasattr(post, 'metadata') and isinstance(post.metadata, dict):
+        elif hasattr(post, "metadata") and isinstance(post.metadata, dict):
             # Fallback: check if name is in metadata dict
             fm_dict["name"] = post.metadata.get("name", skill_name)
         else:
             fm_dict["name"] = skill_name
 
         # Get description from frontmatter (top-level key)
-        if hasattr(post, 'description'):
+        if hasattr(post, "description"):
             fm_dict["description"] = str(post.description)
-        elif hasattr(post, 'metadata') and isinstance(post.metadata, dict):
+        elif hasattr(post, "metadata") and isinstance(post.metadata, dict):
             fm_dict["description"] = str(post.metadata.get("description", ""))
         else:
             fm_dict["description"] = ""
 
         # Get metadata dict (nested qwenpaw config etc.)
-        if hasattr(post, 'metadata') and isinstance(post.metadata, dict):
+        if hasattr(post, "metadata") and isinstance(post.metadata, dict):
             fm_dict["metadata"] = post.metadata
         else:
             fm_dict["metadata"] = {}
 
         # Get triggers from metadata.qwenpaw.triggers or top-level triggers
         triggers = []
-        if hasattr(post, 'metadata') and isinstance(post.metadata, dict):
+        if hasattr(post, "metadata") and isinstance(post.metadata, dict):
             qwenpaw_config = post.metadata.get("qwenpaw", {})
             if isinstance(qwenpaw_config, dict):
                 triggers = qwenpaw_config.get("triggers", [])
-        if not triggers and hasattr(post, 'triggers'):
+        if not triggers and hasattr(post, "triggers"):
             triggers = post.triggers
         if isinstance(triggers, list):
             fm_dict["triggers"] = triggers
@@ -184,9 +184,7 @@ def get_builtin_skill_language_preference() -> str:
 def set_builtin_skill_language_preference(language: str) -> None:
     """Update the in-memory cached builtin language preference."""
     with _BUILTIN_CACHE_LOCK:
-        _builtin_cache[
-            "language_preference"
-        ] = _normalize_builtin_skill_language(
+        _builtin_cache["language_preference"] = _normalize_builtin_skill_language(
             language,
         )
 
@@ -252,9 +250,7 @@ def _iter_packaged_builtin_variants() -> Iterator[BuiltinSkillVariant]:
         )
 
 
-def _get_packaged_builtin_registry() -> (
-    dict[str, dict[str, BuiltinSkillVariant]]
-):
+def _get_packaged_builtin_registry() -> dict[str, dict[str, BuiltinSkillVariant]]:
     """Return the packaged builtin registry."""
     cached = _builtin_cache.get("registry")
     if cached is not None:
@@ -343,12 +339,9 @@ def _stringify_skill_env_value(value: Any) -> str:
 
 def _skill_config_env_var_name(skill_name: str) -> str:
     normalized = [
-        char if char.isalnum() else "_"
-        for char in str(skill_name or "").upper()
+        char if char.isalnum() else "_" for char in str(skill_name or "").upper()
     ]
-    return (
-        f"QWENPAW_SKILL_CONFIG_{''.join(normalized).strip('_') or 'DEFAULT'}"
-    )
+    return f"QWENPAW_SKILL_CONFIG_{''.join(normalized).strip('_') or 'DEFAULT'}"
 
 
 def _build_skill_config_env_overrides(
@@ -366,9 +359,7 @@ def _build_skill_config_env_overrides(
     overrides: dict[str, str] = {}
 
     normalized_required_envs = [
-        str(env_name).strip()
-        for env_name in require_envs
-        if str(env_name).strip()
+        str(env_name).strip() for env_name in require_envs if str(env_name).strip()
     ]
 
     required_set = set(normalized_required_envs)
@@ -382,8 +373,7 @@ def _build_skill_config_env_overrides(
     for env_name in normalized_required_envs:
         if env_name not in overrides:
             logger.warning(
-                "Skill '%s' requires env '%s' but config does "
-                "not provide it",
+                "Skill '%s' requires env '%s' but config does " "not provide it",
                 skill_name,
                 env_name,
             )
@@ -628,20 +618,15 @@ def _build_builtin_import_candidate(
     }
     return {
         "name": canonical_name,
-        "description": preferred_variant.description
-        if preferred_variant
-        else "",
-        "version_text": preferred_variant.version_text
-        if preferred_variant
-        else "",
+        "description": preferred_variant.description if preferred_variant else "",
+        "version_text": preferred_variant.version_text if preferred_variant else "",
         "current_version_text": current_version_text,
         "current_source": current_source,
         "current_language": current_language,
         "available_languages": sorted(variants.keys()),
         "languages": language_specs,
         "status": str(
-            language_specs.get(preferred_lang, {}).get("status", "")
-            or "missing",
+            language_specs.get(preferred_lang, {}).get("status", "") or "missing",
         ),
     }
 
@@ -1022,9 +1007,7 @@ def _build_reconciled_pool_entry(
         protected=protected,
     )
     new_entry["external"] = is_external
-    if not is_external and (
-        source == "builtin" or is_pool_builtin_entry(existing)
-    ):
+    if not is_external and (source == "builtin" or is_pool_builtin_entry(existing)):
         language = _resolve_pool_builtin_language(
             skill_name,
             existing or new_entry,
@@ -1092,10 +1075,7 @@ def reconcile_pool_manifest() -> dict[str, Any]:
             existing = normalize_skill_manifest_entry(raw_existing)
             if raw_existing not in (None, existing):
                 logger.warning(
-                    (
-                        "Malformed pool manifest entry for '%s'; "
-                        "rebuilding from disk"
-                    ),
+                    ("Malformed pool manifest entry for '%s'; " "rebuilding from disk"),
                     skill_name,
                 )
             try:
@@ -1187,9 +1167,7 @@ def reconcile_workspace_manifest(workspace_dir: Path) -> dict[str, Any]:
                     source = existing.get("source", "customized")
                 else:
                     source = (
-                        "builtin"
-                        if skill_name in builtin_versions
-                        else "customized"
+                        "builtin" if skill_name in builtin_versions else "customized"
                     )
 
                 metadata = build_skill_metadata(
@@ -1403,7 +1381,7 @@ def detect_lazy_skill_trigger(
                 triggers = meta.get("triggers", [])
                 if triggers:  # Only register if has triggers
                     # Get or create existing registration
-                    existing = getattr(classifier, '_skill_triggers', {})
+                    existing = getattr(classifier, "_skill_triggers", {})
                     if skill_name not in existing:
                         classifier.register_skill(skill_name, triggers)
 

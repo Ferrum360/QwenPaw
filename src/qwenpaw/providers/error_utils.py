@@ -7,7 +7,6 @@ import re
 from collections.abc import Iterator
 from typing import Any
 
-
 _STREAMING_ERROR_STATUS_RE = re.compile(
     r"\bStreaming response failed\s*:\s*\[\s*([1-5]\d{2})\s*\]",
     re.IGNORECASE,

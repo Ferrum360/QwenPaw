@@ -8,6 +8,7 @@ Persistence strategy (two layers):
    ``os.getenv()`` and child subprocesses (``subprocess.run``, etc.)
    can read them immediately.
 """
+
 from __future__ import annotations
 
 import json
@@ -162,9 +163,7 @@ def load_envs(
             data = json.load(fh)
         if isinstance(data, dict):
             raw = {k: str(v) for k, v in data.items()}
-            has_plaintext = any(
-                v and not is_encrypted(v) for v in raw.values()
-            )
+            has_plaintext = any(v and not is_encrypted(v) for v in raw.values())
             decrypted = {k: decrypt(v) for k, v in raw.items()}
             if has_plaintext:
                 _rewrite_encrypted(path, decrypted)
@@ -184,8 +183,7 @@ def _rewrite_encrypted(path: Path, envs: dict[str, str]) -> None:
     """Re-write *envs* with all values encrypted (migration helper)."""
     try:
         encrypted = {
-            k: encrypt(v) if v and not is_encrypted(v) else v
-            for k, v in envs.items()
+            k: encrypt(v) if v and not is_encrypted(v) else v for k, v in envs.items()
         }
         _prepare_secret_parent(path)
         with open(path, "w", encoding="utf-8") as fh:
@@ -210,8 +208,7 @@ def save_envs(
         )
     _prepare_secret_parent(path)
     encrypted = {
-        k: encrypt(v) if v and not is_encrypted(v) else v
-        for k, v in envs.items()
+        k: encrypt(v) if v and not is_encrypted(v) else v for k, v in envs.items()
     }
     with open(path, "w", encoding="utf-8") as fh:
         json.dump(encrypted, fh, indent=2, ensure_ascii=False)

@@ -4,6 +4,7 @@
 Shared by the web app lifespan and ACP server to eliminate duplicated
 bootstrap logic that previously drifted independently.
 """
+
 from __future__ import annotations
 
 import logging

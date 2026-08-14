@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """Default loop mode for ordinary ReAct requests."""
+
 from __future__ import annotations
 
 import logging
@@ -108,9 +109,7 @@ class DefaultMode(AgentMode):
             gates.append(
                 DoomLoopGate(
                     window_size=loop_config.doom_loop.window_size,
-                    similarity_threshold=(
-                        loop_config.doom_loop.similarity_threshold
-                    ),
+                    similarity_threshold=(loop_config.doom_loop.similarity_threshold),
                     stages=loop_config.doom_loop.stages,
                 ),
             )

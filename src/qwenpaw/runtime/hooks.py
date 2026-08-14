@@ -93,7 +93,7 @@ class HookContext:
     workspace_dir: Path | None
 
     # ── Containers (read by hooks; never mutated) ──
-    workspace: (Any)  # forward ref: app/workspace/workspace.py:Workspace
+    workspace: Any  # forward ref: app/workspace/workspace.py:Workspace
     app_services: Any  # forward ref: AppServiceManager
 
     # ── Per-request mutable state, filled in across phases ──
@@ -196,8 +196,7 @@ def _topo_sort(
         for nm in h.before:
             if nm not in name_to_hook:
                 logger.warning(
-                    "hook %s declares before=%s but"
-                    " %s is not registered; ignoring",
+                    "hook %s declares before=%s but" " %s is not registered; ignoring",
                     h.name,
                     nm,
                     nm,
@@ -207,8 +206,7 @@ def _topo_sort(
         for nm in h.after:
             if nm not in name_to_hook:
                 logger.warning(
-                    "hook %s declares after=%s but"
-                    " %s is not registered; ignoring",
+                    "hook %s declares after=%s but" " %s is not registered; ignoring",
                     h.name,
                     nm,
                     nm,
@@ -319,9 +317,7 @@ class HookRegistry:
         """
         merged = cls()
         for r in registries:
-            for (
-                hooks
-            ) in r._by_phase.values():  # pylint: disable=protected-access
+            for hooks in r._by_phase.values():  # pylint: disable=protected-access
                 for h in hooks:
                     merged.register(h)
         return merged

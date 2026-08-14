@@ -115,8 +115,7 @@ class MacOSSandbox(LocalSandbox):
         # can break the profile grammar.
         if "\n" in path or "\r" in path:
             raise ValueError(
-                "Seatbelt path contains newlines "
-                f"(possible injection): {path!r}",
+                "Seatbelt path contains newlines " f"(possible injection): {path!r}",
             )
         # Escape backslash first (order matters), then double-quote.
         path = path.replace("\\", "\\\\")
@@ -312,10 +311,7 @@ class MacOSSandbox(LocalSandbox):
             # shapes so legitimate application output containing
             # tokens like "deny" or "sandbox" is not mis-flagged.
             violation = None
-            if (
-                self._process.returncode != 0
-                and _SEATBELT_VIOLATION_RE.search(stderr)
-            ):
+            if self._process.returncode != 0 and _SEATBELT_VIOLATION_RE.search(stderr):
                 violation = stderr.strip()
 
             return ExecutionResult(

@@ -6,6 +6,7 @@ Two backend modes via ``SIPChannelConfig.sip_mode``:
 * ``"dev"``     -- **PyVoIPBackend**: pure-Python pyVoIP.
 * ``"livekit"`` -- **LiveKitBackend**: LiveKit SIP Server.
 """
+
 from __future__ import annotations
 
 import asyncio
@@ -84,8 +85,7 @@ class SIPChannel(BaseChannel):
         instance = cls(
             process,
             on_reply_sent,
-            display_config=display_config
-            or ChannelDisplayConfig.from_config(config),
+            display_config=display_config or ChannelDisplayConfig.from_config(config),
             no_text_debounce=no_text_debounce,
         )
         instance._config = config
@@ -518,8 +518,7 @@ class SIPChannel(BaseChannel):
                     consecutive_errors += 1
                     if consecutive_errors >= max_consecutive:
                         logger.warning(
-                            "feed_audio: %d consecutive errors, "
-                            "stopping STT for %s",
+                            "feed_audio: %d consecutive errors, " "stopping STT for %s",
                             consecutive_errors,
                             call_id,
                         )
@@ -656,9 +655,7 @@ def _extract_text(event: Any) -> str:
     if hasattr(event, "get_text_content"):
         parts = event.get_text_content()
         if parts:
-            text = " ".join(
-                p.text for p in parts if hasattr(p, "text") and p.text
-            )
+            text = " ".join(p.text for p in parts if hasattr(p, "text") and p.text)
             if text:
                 return text
     content = getattr(event, "content", None) or []

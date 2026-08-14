@@ -5,6 +5,7 @@ Used after the user explicitly trusts a foreign or legacy backup. Rewriting
 meta.json with a local signature turns that one archive into a locally trusted
 backup without weakening signature checks for future imports/restores.
 """
+
 from __future__ import annotations
 
 import zipfile
@@ -52,11 +53,14 @@ def replace_meta_with_local_signature(
     meta = meta.model_copy(update={"signature": signature})
 
     try:
-        with zipfile.ZipFile(src_zip, "r") as src, zipfile.ZipFile(
-            tmp,
-            "w",
-            zipfile.ZIP_DEFLATED,
-        ) as out:
+        with (
+            zipfile.ZipFile(src_zip, "r") as src,
+            zipfile.ZipFile(
+                tmp,
+                "w",
+                zipfile.ZIP_DEFLATED,
+            ) as out,
+        ):
             out.writestr(META_FILE, meta.model_dump_json(indent=2))
             for info in src.infolist():
                 _copy_entry(src, out, info)

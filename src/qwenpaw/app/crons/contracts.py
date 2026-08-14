@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """Backend-neutral declarations for service-contributed cron jobs."""
+
 from __future__ import annotations
 
 from collections.abc import Awaitable, Callable

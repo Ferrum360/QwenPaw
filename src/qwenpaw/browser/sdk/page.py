@@ -131,9 +131,7 @@ class Page:
             raise BrowserError(
                 category=ErrorCategory.FATAL,
                 cause=ErrorCause.API_MISUSE,
-                suggested_action=(
-                    "Use one of: load, domcontentloaded, networkidle."
-                ),
+                suggested_action=("Use one of: load, domcontentloaded, networkidle."),
                 reason=f"unknown load state {state!r}",
             )
         await self._engine._wait_for_load_state(self.id, state, timeout)

@@ -6,7 +6,6 @@ from __future__ import annotations
 from collections.abc import Mapping
 from typing import Any, Optional
 
-
 _CHANNEL_IDENTITY_FIELDS: dict[str, tuple[str, ...]] = {
     "discord": ("bot_token",),
     "telegram": ("bot_token",),

@@ -13,7 +13,6 @@ import os
 from typing import Any, Dict, List, Optional, Tuple
 from urllib.parse import urlparse
 
-
 # ── Session identifiers ──
 
 
@@ -81,9 +80,7 @@ def is_slack_host(url: str) -> bool:
     host = (urlparse(url).hostname or "").lower()
     if not host:
         return False
-    return any(
-        host == s[1:] or host.endswith(s) for s in SLACK_SSRF_ALLOWED_SUFFIXES
-    )
+    return any(host == s[1:] or host.endswith(s) for s in SLACK_SSRF_ALLOWED_SUFFIXES)
 
 
 # ── Retry helpers ──
@@ -190,13 +187,8 @@ def _resolve_slack_proxy_url(
 
     no_proxy = os.getenv("NO_PROXY") or ""
     if no_proxy:
-        patterns = [
-            p.strip().lower() for p in no_proxy.split(",") if p.strip()
-        ]
-        if any(
-            _host_matches_no_proxy(host, patterns)
-            for host in _SLACK_PROXY_HOSTS
-        ):
+        patterns = [p.strip().lower() for p in no_proxy.split(",") if p.strip()]
+        if any(_host_matches_no_proxy(host, patterns) for host in _SLACK_PROXY_HOSTS):
             return None, "no_proxy_bypass"
 
     return proxy_url, None

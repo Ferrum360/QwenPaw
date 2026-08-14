@@ -100,10 +100,7 @@ class SyncReport:
         return sum(
             f.rows_inserted
             for f in self.files
-            if not f.skipped
-            and not f.orphaned
-            and not f.blocked
-            and not f.errored
+            if not f.skipped and not f.orphaned and not f.blocked and not f.errored
         )
 
     @property
@@ -111,10 +108,7 @@ class SyncReport:
         return sum(
             1
             for f in self.files
-            if not f.skipped
-            and not f.orphaned
-            and not f.blocked
-            and not f.errored
+            if not f.skipped and not f.orphaned and not f.blocked and not f.errored
         )
 
     @property
@@ -379,9 +373,7 @@ def _sync_file(
 
     if not dry_run:
         dedup_keys = {
-            str(dedup_key)
-            for _entry, dedup_key in pending_entries
-            if dedup_key
+            str(dedup_key) for _entry, dedup_key in pending_entries if dedup_key
         }
         (
             res.rows_rekeyed,
@@ -395,8 +387,7 @@ def _sync_file(
         )
         if res.rows_rekeyed or res.rows_deduplicated:
             logger.info(
-                "session-sync: reconciled %s -> %s "
-                "(%d moved, %d deduplicated)",
+                "session-sync: reconciled %s -> %s " "(%d moved, %d deduplicated)",
                 sorted(source_ids),
                 session_id,
                 res.rows_rekeyed,
@@ -524,8 +515,7 @@ def _load_chat_session_id_map(
 
     if ambiguous:
         logger.warning(
-            "session-sync: ignored %d ambiguous chat/session filename(s) "
-            "in %s",
+            "session-sync: ignored %d ambiguous chat/session filename(s) " "in %s",
             len(ambiguous),
             path,
         )
@@ -549,11 +539,7 @@ def preflight_sessions(
         return SyncPreflight(session_files=session_files)
     registry = _load_chat_session_id_map(chats_path)
     registry_error = registry.error
-    if (
-        registry.available
-        and session_files
-        and not registry.has_registered_chats
-    ):
+    if registry.available and session_files and not registry.has_registered_chats:
         registry_error = f"chat registry {chats_path} has no registered chats"
         logger.error(
             "session-sync: found %d legacy session file(s), but %s; "
@@ -609,9 +595,7 @@ def sync_sessions_to_history(
         return report
 
     cutoff = (
-        (
-            datetime.now(timezone.utc) - timedelta(days=retention_days)
-        ).isoformat()
+        (datetime.now(timezone.utc) - timedelta(days=retention_days)).isoformat()
         if retention_days > 0
         else None
     )
@@ -750,9 +734,7 @@ def _purge_old_history(
     """
     if retention_days <= 0:
         return
-    cutoff = (
-        datetime.now(timezone.utc) - timedelta(days=retention_days)
-    ).isoformat()
+    cutoff = (datetime.now(timezone.utc) - timedelta(days=retention_days)).isoformat()
     try:
         removed = history.purge(before=cutoff)
     except Exception as exc:  # noqa: BLE001 - retention must never break boot

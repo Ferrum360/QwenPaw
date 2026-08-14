@@ -121,9 +121,7 @@ class ApprovalService:
                 return
             channel_meta = (pending.extra or {}).get("channel_meta")
             delivery_session_id = (
-                pending.root_session_id
-                if is_spawn_child
-                else pending.session_id
+                pending.root_session_id if is_spawn_child else pending.session_id
             )
             await channel_instance.send_approval_notification(
                 session_id=delivery_session_id,
@@ -341,10 +339,7 @@ class ApprovalService:
         """
         async with self._lock:
             for pending in self._pending.values():
-                if (
-                    pending.session_id == session_id
-                    and pending.status == "pending"
-                ):
+                if pending.session_id == session_id and pending.status == "pending":
                     return pending
         return None
 
@@ -398,8 +393,7 @@ class ApprovalService:
             result = [
                 p
                 for p in self._pending.values()
-                if p.root_session_id == root_session_id
-                and p.status == "pending"
+                if p.root_session_id == root_session_id and p.status == "pending"
             ]
             return sorted(result, key=lambda p: p.created_at)
 
@@ -523,8 +517,7 @@ class ApprovalService:
             to_cancel = [
                 k
                 for k, p in self._pending.items()
-                if p.root_session_id == root_session_id
-                and p.status == "pending"
+                if p.root_session_id == root_session_id and p.status == "pending"
             ]
             for k in to_cancel:
                 pending = self._pending.pop(k)
@@ -537,9 +530,7 @@ class ApprovalService:
             logger.info(
                 "Cancelled %d pending approval(s) for root session %s",
                 cancelled,
-                root_session_id[:8]
-                if len(root_session_id) >= 8
-                else root_session_id,
+                root_session_id[:8] if len(root_session_id) >= 8 else root_session_id,
             )
         return cancelled
 

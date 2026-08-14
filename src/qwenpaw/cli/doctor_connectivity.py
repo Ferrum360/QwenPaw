@@ -5,6 +5,7 @@ Failures are reported as non-fatal notes (firewalls and offline use are
 common). Built-in probes live here; custom channels can override
 :class:`~qwenpaw.app.channels.base.BaseChannel`.doctor_connectivity_notes.
 """
+
 from __future__ import annotations
 
 import socket
@@ -224,15 +225,11 @@ def _probe_xiaoyi(
         host = parsed.hostname
         if not host:
             continue
-        port = parsed.port or (
-            443 if parsed.scheme in ("wss", "https") else 80
-        )
+        port = parsed.port or (443 if parsed.scheme in ("wss", "https") else 80)
         err = _tcp_check(host, port, timeout)
         if err:
             notes.append(
-                f"{agent_id}: xiaoyi: "
-                f"TCP {host}:{port} ({label}) "
-                f"\u2014 {err}",
+                f"{agent_id}: xiaoyi: " f"TCP {host}:{port} ({label}) " f"\u2014 {err}",
             )
     return notes
 
@@ -306,9 +303,7 @@ def collect_deep_channel_connectivity_notes(
                         sub,
                         timeout=timeout,
                     )
-                except (
-                    Exception
-                ) as exc:  # pylint: disable=broad-exception-caught
+                except Exception as exc:  # pylint: disable=broad-exception-caught
                     custom_lines = [
                         f"{agent_id}: {name}: "
                         f"doctor_connectivity_notes error: {exc}",
@@ -354,8 +349,7 @@ def collect_deep_channel_connectivity_notes(
                 )
             except Exception as exc:  # pylint: disable=broad-exception-caught
                 notes.append(
-                    f"{agent_id}: {key}: doctor_connectivity_notes error: "
-                    f"{exc}",
+                    f"{agent_id}: {key}: doctor_connectivity_notes error: " f"{exc}",
                 )
 
     return notes

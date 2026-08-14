@@ -183,9 +183,7 @@ async def _get_runner_state(
 
 async def _set_runner_state(state: _RunnerState) -> None:
     async with _runner_state_lock:
-        _runner_states[
-            _task_key(state.agent_id, state.chat_id, state.runner)
-        ] = state
+        _runner_states[_task_key(state.agent_id, state.chat_id, state.runner)] = state
 
 
 async def _append_runner_state_content(
@@ -245,9 +243,7 @@ def _format_task_state_text(
         lines.append("task: none")
     else:
         effective_status = (
-            "permission_required"
-            if pending_permission is not None
-            else state.status
+            "permission_required" if pending_permission is not None else state.status
         )
         lines.extend(
             [
@@ -518,9 +514,7 @@ async def _stream_action_responses(
         nonlocal header_sent
         if not pending_items:
             return
-        snapshot = [
-            item.strip() for item in pending_items if item and item.strip()
-        ]
+        snapshot = [item.strip() for item in pending_items if item and item.strip()]
         pending_items.clear()
         if not snapshot:
             return

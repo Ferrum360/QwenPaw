@@ -14,6 +14,7 @@ Usage (embedded)::
 
 Adapted from ``tests/mini_sip_server.py``.
 """
+
 from __future__ import annotations
 
 import asyncio
@@ -157,9 +158,7 @@ class _SIPProxy(asyncio.DatagramProtocol):
         dest, _expires_at = registration
 
         call_id = _hdr(msg, "Call-ID")
-        if call_id and (
-            method == "INVITE" or call_id not in self.transactions
-        ):
+        if call_id and (method == "INVITE" or call_id not in self.transactions):
             self.transactions[call_id] = (
                 addr,
                 time.monotonic() + _TRANSACTION_TTL_S,

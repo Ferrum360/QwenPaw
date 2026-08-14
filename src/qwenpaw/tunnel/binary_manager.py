@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """Auto-download cloudflared binary if not in PATH."""
+
 from __future__ import annotations
 
 import hashlib
@@ -101,9 +102,7 @@ class BinaryManager:
             return path
 
         bin_name = (
-            "cloudflared.exe"
-            if platform.system() == "Windows"
-            else "cloudflared"
+            "cloudflared.exe" if platform.system() == "Windows" else "cloudflared"
         )
         local = self._bin_dir / bin_name
         if local.is_file() and os.access(str(local), os.X_OK):
@@ -122,8 +121,7 @@ class BinaryManager:
         if actual != expected:
             os.unlink(path)
             raise RuntimeError(
-                f"SHA256 mismatch for {path}: "
-                f"expected {expected}, got {actual}",
+                f"SHA256 mismatch for {path}: " f"expected {expected}, got {actual}",
             )
 
     async def _download(self) -> str:
@@ -174,8 +172,7 @@ class BinaryManager:
                         )
                         if member is None:
                             raise RuntimeError(
-                                "Archive does not contain a "
-                                "cloudflared binary",
+                                "Archive does not contain a " "cloudflared binary",
                             )
                         if not member.isfile():
                             raise RuntimeError(

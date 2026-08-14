@@ -94,9 +94,7 @@ async def append_trace_events(
             continue
         normalized_events.append(
             {
-                "at": item.get("at")
-                if item.get("at") is not None
-                else time.time(),
+                "at": item.get("at") if item.get("at") is not None else time.time(),
                 "event": _to_jsonable(item.get("event")),
             },
         )

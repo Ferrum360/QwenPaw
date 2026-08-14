@@ -48,9 +48,7 @@ logger = logging.getLogger(__name__)
 
 TELEGRAM_MAX_MESSAGE_LENGTH = 4096
 TELEGRAM_SEND_CHUNK_SIZE = 4000
-TELEGRAM_MAX_FILE_SIZE_BYTES = (
-    50 * 1024 * 1024
-)  # 50 MB – Telegram bot upload limit
+TELEGRAM_MAX_FILE_SIZE_BYTES = 50 * 1024 * 1024  # 50 MB – Telegram bot upload limit
 
 _DEFAULT_MEDIA_DIR = WORKING_DIR / "media" / "telegram"
 _TYPING_TIMEOUT_S = 180
@@ -192,9 +190,7 @@ async def _build_content_parts_from_message(
         return [], False, False
 
     content_parts: list[Any] = []
-    text = (
-        getattr(message, "text", None) or getattr(message, "caption") or ""
-    ).strip()
+    text = (getattr(message, "text", None) or getattr(message, "caption") or "").strip()
 
     entities = (
         getattr(message, "entities", None)
@@ -521,8 +517,7 @@ class TelegramChannel(BaseChannel):
             self._polling_network_error_count = 0
             attempt = self._polling_conflict_count
             delay = min(
-                _POLLING_CONFLICT_RETRY_BASE_S
-                * (_RECONNECT_FACTOR ** (attempt - 1)),
+                _POLLING_CONFLICT_RETRY_BASE_S * (_RECONNECT_FACTOR ** (attempt - 1)),
                 _POLLING_CONFLICT_RETRY_MAX_S,
             )
             return attempt, delay
@@ -639,8 +634,7 @@ class TelegramChannel(BaseChannel):
             http_proxy_auth=_get_str("http_proxy_auth"),
             bot_prefix=_get_str("bot_prefix"),
             on_reply_sent=on_reply_sent,
-            display_config=display_config
-            or ChannelDisplayConfig.from_config(config),
+            display_config=display_config or ChannelDisplayConfig.from_config(config),
             no_text_debounce=no_text_debounce,
             workspace_dir=workspace_dir,
             show_typing=show_typing,
@@ -957,11 +951,7 @@ class TelegramChannel(BaseChannel):
         use_html: bool = False,
     ) -> bool:
         """Edit an existing message; return True on success."""
-        bot = (
-            getattr(self._application, "bot", None)
-            if self._application
-            else None
-        )
+        bot = getattr(self._application, "bot", None) if self._application else None
         if not bot:
             return False
         # Telegram rejects empty text
@@ -1061,14 +1051,10 @@ class TelegramChannel(BaseChannel):
         if not chat_id:
             return
         prefix = "💭 " if stream_type == "reasoning" else ""
-        display_text = (
-            f"{prefix}{accumulated_text}" if prefix else accumulated_text
-        )
+        display_text = f"{prefix}{accumulated_text}" if prefix else accumulated_text
         # If text exceeds Telegram limit, show only the tail portion
         if len(display_text) > TELEGRAM_MAX_MESSAGE_LENGTH:
-            display_text = (
-                "..." + display_text[-(TELEGRAM_MAX_MESSAGE_LENGTH - 4) :]
-            )
+            display_text = "..." + display_text[-(TELEGRAM_MAX_MESSAGE_LENGTH - 4) :]
         await self._edit_stream_message(
             chat_id,
             msg_id,
@@ -1096,9 +1082,7 @@ class TelegramChannel(BaseChannel):
         if not chat_id:
             return
         prefix = "💭 " if stream_type == "reasoning" else ""
-        final_text = (
-            f"{prefix}{accumulated_text}" if prefix else accumulated_text
-        )
+        final_text = f"{prefix}{accumulated_text}" if prefix else accumulated_text
 
         # If placeholder was never sent (e.g. API error), fall back to
         # normal send so the reply is not silently lost.
@@ -1303,10 +1287,7 @@ class TelegramChannel(BaseChannel):
         self._reconnect_event.clear()
 
         def _on_poll_error(exc) -> None:
-            if (
-                self._polling_error_task
-                and not self._polling_error_task.done()
-            ):
+            if self._polling_error_task and not self._polling_error_task.done():
                 return
             if self._looks_like_polling_conflict(exc):
                 self._polling_error_task = app.create_task(

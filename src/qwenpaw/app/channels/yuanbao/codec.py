@@ -57,11 +57,7 @@ def _resolve_field_type(
     if type_name in scalar_map:
         return scalar_map[type_name], None
 
-    fqn = (
-        f".{package}.{type_name}"
-        if not type_name.startswith(".")
-        else type_name
-    )
+    fqn = f".{package}.{type_name}" if not type_name.startswith(".") else type_name
     if fqn in known_enums or type_name in known_enums:
         return FieldDescriptor.TYPE_ENUM, fqn
     return FieldDescriptor.TYPE_MESSAGE, fqn
@@ -103,11 +99,7 @@ def _build_file_descriptor(
     while len(current) == 1:
         key = next(iter(current))
         child = current[key]
-        if (
-            "nested" in child
-            and "fields" not in child
-            and "values" not in child
-        ):
+        if "nested" in child and "fields" not in child and "values" not in child:
             package_parts.append(key)
             current = child["nested"]
         else:

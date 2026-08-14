@@ -164,12 +164,10 @@ _BLOCK_LADDER = (
     "them."
 )
 _RETURN_PHRASES = {
-    "Observation": "observation (read .text; .match_count when you pass a "
-    "query)",
+    "Observation": "observation (read .text; .match_count when you pass a " "query)",
     "CurrentSurface": "surface facts (.url, .title, .load_state)",
     "PageRef": "page ref (.id, .url, .title, .active)",
-    "SessionStatus": "session status (.owner, .variant, .context, "
-    ".connected)",
+    "SessionStatus": "session status (.owner, .variant, .context, " ".connected)",
     "LocatorView": "locator",
     "FrameLocatorView": "frame locator",
     "_Input": "coordinate/keyboard input surface (see methods below)",
@@ -214,9 +212,7 @@ def _render_method(prefix: str, name: str, member: object) -> list[str]:
         )
         header = f"{prefix}.{name} -> {_render_return(annotation)}"
         doc = inspect.getdoc(member) or ""
-        return [header] + [
-            f"    {line}" if line else "" for line in doc.splitlines()
-        ]
+        return [header] + [f"    {line}" if line else "" for line in doc.splitlines()]
 
     if isinstance(member, (staticmethod, classmethod)):
         member = member.__func__
@@ -248,9 +244,7 @@ def _render_method(prefix: str, name: str, member: object) -> list[str]:
         f"-> {_render_return(signature.return_annotation)}"
     )
     doc = inspect.getdoc(member) or ""
-    return [header] + [
-        f"    {line}" if line else "" for line in doc.splitlines()
-    ]
+    return [header] + [f"    {line}" if line else "" for line in doc.splitlines()]
 
 
 class Browser:
@@ -292,9 +286,7 @@ class Browser:
                     f"await Browser.connect(identity='{identity}')"
                 ),
                 reason="another browser identity is already active",
-                detail=(
-                    f"active identity is '{active}', requested '{identity}'"
-                ),
+                detail=(f"active identity is '{active}', requested '{identity}'"),
             )
         if ctx is not None and ctx.browser_connecting is not None:
             browser = await ctx.browser_connecting
@@ -310,9 +302,7 @@ class Browser:
                     f"await Browser.connect(identity='{identity}')"
                 ),
                 reason="another browser identity is already active",
-                detail=(
-                    f"active identity is '{active}', requested '{identity}'"
-                ),
+                detail=(f"active identity is '{active}', requested '{identity}'"),
             )
         owner = (
             ctx.owner
@@ -323,9 +313,7 @@ class Browser:
             )
         )
         connecting = (
-            asyncio.get_running_loop().create_future()
-            if ctx is not None
-            else None
+            asyncio.get_running_loop().create_future() if ctx is not None else None
         )
         if ctx is not None:
             ctx.browser_connecting = connecting
@@ -445,9 +433,7 @@ def _build_manual_text() -> str:
     for name in _ORCHESTRATION_API:
         member = inspect.getattr_static(Browser, name)
         prefix = (
-            "Browser"
-            if isinstance(member, (staticmethod, classmethod))
-            else "browser"
+            "Browser" if isinstance(member, (staticmethod, classmethod)) else "browser"
         )
         lines += _render_method(prefix, name, member)
     lines.append("")

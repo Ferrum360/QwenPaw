@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """CLI commands for managing LLM providers."""
+
 from __future__ import annotations
 
 import asyncio
@@ -185,8 +186,7 @@ def configure_provider_api_key_interactive(
     else:
         # Prompt for base_url whenever it is editable (freeze_url is False).
         azure_hint = (
-            "Azure endpoint "
-            "(e.g. https://<resource>.openai.azure.com/openai/v1)"
+            "Azure endpoint " "(e.g. https://<resource>.openai.azure.com/openai/v1)"
         )
         url_hint = (
             azure_hint
@@ -214,9 +214,7 @@ def configure_provider_api_key_interactive(
     prefixes = (
         defn.api_key_prefixes
         if defn.api_key_prefixes
-        else [defn.api_key_prefix]
-        if defn.api_key_prefix
-        else []
+        else [defn.api_key_prefix] if defn.api_key_prefix else []
     )
     hint = f"prefix: {', '.join(prefixes)}" if prefixes else "optional"
     api_key = click.prompt(
@@ -331,11 +329,7 @@ def _filter_eligible(all_providers: list[Provider]) -> list[Provider]:
 
 def _select_llm_model(defn, pid, current_slot, *, use_defaults):
     """Pick a model for the given provider. Returns model id."""
-    cur = (
-        current_slot.model
-        if current_slot and current_slot.provider_id == pid
-        else ""
-    )
+    cur = current_slot.model if current_slot and current_slot.provider_id == pid else ""
 
     extra = list(defn.extra_models)
     all_models = list(defn.models) + extra
@@ -492,13 +486,7 @@ def list_cmd() -> None:
     for defn in _all_provider_objects(manager):
         cur_url, cur_key = defn.base_url, defn.api_key
 
-        tag = (
-            " [custom]"
-            if defn.is_custom
-            else " [local]"
-            if defn.is_local
-            else ""
-        )
+        tag = " [custom]" if defn.is_custom else " [local]" if defn.is_local else ""
         click.echo(f"\n{'─' * 44}")
         click.echo(f"  {defn.name} ({defn.id}){tag}")
         click.echo(f"{'─' * 44}")
@@ -515,15 +503,12 @@ def list_cmd() -> None:
         else:
             click.echo(f"  {'base_url':16s}: {cur_url or '(not set)'}")
             click.echo(
-                f"  {'api_key':16s}: "
-                f"{_mask_api_key(cur_key) or '(not set)'}",
+                f"  {'api_key':16s}: " f"{_mask_api_key(cur_key) or '(not set)'}",
             )
             prefixes = (
                 defn.api_key_prefixes
                 if defn.api_key_prefixes
-                else [defn.api_key_prefix]
-                if defn.api_key_prefix
-                else []
+                else [defn.api_key_prefix] if defn.api_key_prefix else []
             )
             if prefixes:
                 click.echo(
@@ -600,8 +585,7 @@ def add_provider_cmd(
         click.echo(click.style(f"Error: {exc}", fg="red"))
         raise SystemExit(1) from exc
     click.echo(
-        "✓ Custom provider "
-        f"'{provider_info.name}' ({provider_info.id}) created.",
+        "✓ Custom provider " f"'{provider_info.name}' ({provider_info.id}) created.",
     )
     if provider_info.id != provider_id:
         click.echo(f"  requested id: {provider_id}")
@@ -777,9 +761,7 @@ def download_cmd(
 
     local_path = str(progress.get("local_path") or "")
     raw_downloaded_bytes = progress.get("downloaded_bytes")
-    size_bytes = (
-        raw_downloaded_bytes if isinstance(raw_downloaded_bytes, int) else 0
-    )
+    size_bytes = raw_downloaded_bytes if isinstance(raw_downloaded_bytes, int) else 0
     size_mb = size_bytes / (1024 * 1024)
     click.echo(f"Done! Model saved to: {local_path}")
     click.echo(f"  Size: {size_mb:.1f} MB")

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """JSON-based chat repository."""
+
 from __future__ import annotations
 
 import json
@@ -133,8 +134,7 @@ def migrate_legacy_weixin_chats_file(chats_path: Path | str) -> None:
         # supported platforms (POSIX rename + Windows ReplaceFile).
         os.replace(tmp_path, path)
         logger.warning(
-            "Migrated legacy 'weixin' chat entries -> 'wechat' in %s "
-            "(backup: %s)",
+            "Migrated legacy 'weixin' chat entries -> 'wechat' in %s " "(backup: %s)",
             path,
             backup_path,
         )

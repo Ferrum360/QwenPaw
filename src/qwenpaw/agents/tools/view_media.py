@@ -123,8 +123,7 @@ def _validate_media_path(
             content=[
                 TextBlock(
                     type="text",
-                    text=f"Error: {file_path} does not exist "
-                    "or is not a file.",
+                    text=f"Error: {file_path} does not exist " "or is not a file.",
                 ),
             ],
         )
@@ -283,8 +282,7 @@ def _check_multimodal_support(media_type: str = "image") -> bool:
             return model_info.supports_video is True
         # image: True if supports_image or the combined supports_multimodal
         return (
-            model_info.supports_image is True
-            or model_info.supports_multimodal is True
+            model_info.supports_image is True or model_info.supports_multimodal is True
         )
     except Exception:
         return True
@@ -392,9 +390,7 @@ async def view_image(image_path: str) -> ToolChunk:
         if err is not None:
             return err
         text_msg = (
-            fallback_hint
-            if fallback_hint
-            else f"Image loaded from URL: {image_path}"
+            fallback_hint if fallback_hint else f"Image loaded from URL: {image_path}"
         )
         return ToolChunk(
             is_last=True,
@@ -423,9 +419,7 @@ async def view_image(image_path: str) -> ToolChunk:
             ],
         )
 
-    text_msg = (
-        fallback_hint if fallback_hint else f"Image loaded: {resolved.name}"
-    )
+    text_msg = fallback_hint if fallback_hint else f"Image loaded: {resolved.name}"
     return ToolChunk(
         is_last=True,
         state=ToolResultState.SUCCESS,
@@ -482,9 +476,7 @@ async def view_video(video_path: str) -> ToolChunk:
         if err is not None:
             return err
         text_msg = (
-            fallback_hint
-            if fallback_hint
-            else f"Video loaded from URL: {video_path}"
+            fallback_hint if fallback_hint else f"Video loaded from URL: {video_path}"
         )
         return ToolChunk(
             is_last=True,
@@ -504,9 +496,7 @@ async def view_video(video_path: str) -> ToolChunk:
         return err
 
     file_url = _path_to_file_url(str(resolved))
-    text_msg = (
-        fallback_hint if fallback_hint else f"Video loaded: {resolved.name}"
-    )
+    text_msg = fallback_hint if fallback_hint else f"Video loaded: {resolved.name}"
     return ToolChunk(
         is_last=True,
         state=ToolResultState.SUCCESS,

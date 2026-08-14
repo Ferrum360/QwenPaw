@@ -188,8 +188,7 @@ def _parse_xml_tool_call(raw_text: str) -> ParsedToolCall | None:
 
     if not arguments:
         logger.debug(
-            "Lenient XML parse found function '%s' but no parameters; "
-            "discarding.",
+            "Lenient XML parse found function '%s' but no parameters; " "discarding.",
             name,
         )
         return None

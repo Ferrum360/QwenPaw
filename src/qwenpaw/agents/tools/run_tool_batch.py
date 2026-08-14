@@ -273,11 +273,7 @@ def _lookup_step_ref(
     """Look up the latest result for one action-index reference."""
     step_index = int(step_index_text)
     current: Any = next(
-        (
-            result
-            for result in reversed(results)
-            if result.get("step") == step_index
-        ),
+        (result for result in reversed(results) if result.get("step") == step_index),
         None,
     )
     if current is None:
@@ -982,9 +978,7 @@ def _should_include_last_text_block(
 
 def _block_text(block: Any) -> Any:
     return (
-        block.get("text")
-        if isinstance(block, dict)
-        else getattr(block, "text", None)
+        block.get("text") if isinstance(block, dict) else getattr(block, "text", None)
     )
 
 

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """CLI entry for Mission Mode — ``qwenpaw mission``."""
+
 from __future__ import annotations
 
 import click

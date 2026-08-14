@@ -7,6 +7,7 @@ paired and ordered to prevent API errors.
 Supports both dict blocks (1.x ``type="tool_use"``) and Pydantic
 ``ToolCallBlock``/``ToolResultBlock`` objects (2.0 ``type="tool_call"``).
 """
+
 import json
 import logging
 from typing import Any
@@ -379,9 +380,7 @@ def _repair_empty_tool_inputs(
                 if not input_field and raw_input and raw_input != "{}":
                     try:
                         raw_str = (
-                            raw_input
-                            if isinstance(raw_input, str)
-                            else str(raw_input)
+                            raw_input if isinstance(raw_input, str) else str(raw_input)
                         )
                         try:
                             parsed = json.loads(raw_str)

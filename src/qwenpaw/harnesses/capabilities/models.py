@@ -43,16 +43,11 @@ class HarnessMCPServerDefinition(BaseModel):
 
     def revealed_env(self) -> dict[str, str]:
         """Return environment values at the Provider process boundary."""
-        return {
-            key: value.get_secret_value() for key, value in self.env.items()
-        }
+        return {key: value.get_secret_value() for key, value in self.env.items()}
 
     def revealed_headers(self) -> dict[str, str]:
         """Return header values at the Provider process boundary."""
-        return {
-            key: value.get_secret_value()
-            for key, value in self.headers.items()
-        }
+        return {key: value.get_secret_value() for key, value in self.headers.items()}
 
     def fingerprint_payload(self) -> dict[str, object]:
         """Return stable non-secret data used for client isolation."""

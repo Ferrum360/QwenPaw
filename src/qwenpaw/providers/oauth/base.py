@@ -96,9 +96,7 @@ class OAuthFlow(ABC):
 
 def generate_code_verifier() -> str:
     """Generate a PKCE code_verifier (RFC 7636)."""
-    return (
-        base64.urlsafe_b64encode(secrets.token_bytes(32)).rstrip(b"=").decode()
-    )
+    return base64.urlsafe_b64encode(secrets.token_bytes(32)).rstrip(b"=").decode()
 
 
 def generate_code_challenge(verifier: str) -> str:

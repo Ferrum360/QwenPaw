@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """Message conversion between AgentRequest and agentscope Msg."""
+
 from __future__ import annotations
 
 import logging

@@ -202,9 +202,7 @@ class SandboxCapability:
     supported: bool
     mode: SandboxMode
     reason: str  # Human-readable reason
-    landlock_abi_version: int = (
-        0  # Linux only: Landlock ABI version (0=unsupported)
-    )
+    landlock_abi_version: int = 0  # Linux only: Landlock ABI version (0=unsupported)
 
 
 # Constraints whose silent omission creates a false sense of protection:
@@ -266,9 +264,7 @@ def _requested_constraints(config: SandboxConfig) -> Dict[str, str]:
     # including the ``[]`` block-all default -- is a real request.
     if list(config.network_allow) != ["*"]:
         requested["network_allow"] = (
-            "block all"
-            if not config.network_allow
-            else ", ".join(config.network_allow)
+            "block all" if not config.network_allow else ", ".join(config.network_allow)
         )
     if config.network_ports:
         requested["network_ports"] = f"{len(config.network_ports)} rule(s)"
@@ -314,11 +310,7 @@ def report_unenforced_config(
             continue
         hint = (hints or {}).get(name, "")
         logger.log(
-            (
-                logging.WARNING
-                if name in _SECURITY_BOUNDARY_FIELDS
-                else logging.DEBUG
-            ),
+            (logging.WARNING if name in _SECURITY_BOUNDARY_FIELDS else logging.DEBUG),
             "%s does not enforce %s=%s; the constraint is IGNORED.%s",
             backend,
             name,
@@ -430,9 +422,7 @@ def _probe_linux_landlock() -> (  # pylint: disable=too-many-return-statements
             return SandboxCapability(
                 supported=False,
                 mode=SandboxMode.NONE,
-                reason=(
-                    f"landlock_create_ruleset syscall failed, errno={errno}"
-                ),
+                reason=(f"landlock_create_ruleset syscall failed, errno={errno}"),
             )
 
         return SandboxCapability(
@@ -593,9 +583,7 @@ def _probe_linux_bubblewrap() -> SandboxCapability:
         return SandboxCapability(
             supported=False,
             mode=SandboxMode.NONE,
-            reason=(
-                f"bwrap probe failed (rc={result.returncode}): {stderr[:200]}"
-            ),
+            reason=(f"bwrap probe failed (rc={result.returncode}): {stderr[:200]}"),
         )
     except subprocess.TimeoutExpired:
         return SandboxCapability(

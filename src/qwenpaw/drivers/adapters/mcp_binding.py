@@ -193,8 +193,7 @@ def binding_to_response(
                 result[str(key)] = str(spec)
         return result
     result = {
-        str(key): str(value)
-        for key, value in dict(binding.get("public") or {}).items()
+        str(key): str(value) for key, value in dict(binding.get("public") or {}).items()
     }
     secrets = credential.secrets if credential else {}
     for output_name, secret_key in dict(
@@ -228,8 +227,7 @@ def binding_plain_keys(
                 result[str(key)] = str(spec)
         return result
     result = {
-        str(key): str(value)
-        for key, value in dict(binding.get("public") or {}).items()
+        str(key): str(value) for key, value in dict(binding.get("public") or {}).items()
     }
     for key in dict(binding.get("secret_refs") or {}):
         result[str(key)] = ""

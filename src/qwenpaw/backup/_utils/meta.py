@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """Backup metadata helpers: system info collection and zip meta reading."""
+
 from __future__ import annotations
 
 import platform

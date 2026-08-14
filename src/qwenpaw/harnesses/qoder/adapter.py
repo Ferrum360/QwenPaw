@@ -128,10 +128,7 @@ class QoderAdapter(HarnessAdapter):
         """Start Qoder's browser login command in the background."""
         del device_code
         resolution = self._require_resolution()
-        if (
-            self._login_process is None
-            or self._login_process.returncode is not None
-        ):
+        if self._login_process is None or self._login_process.returncode is not None:
             self._login_process = await asyncio.create_subprocess_exec(
                 str(resolution.path),
                 "login",
@@ -303,8 +300,7 @@ class QoderAdapter(HarnessAdapter):
             if attachment.kind == HarnessAttachmentKind.IMAGE:
                 image_data = await read_bytes_async(attachment.path)
                 media_type = (
-                    mimetypes.guess_type(attachment.path.name)[0]
-                    or "image/png"
+                    mimetypes.guess_type(attachment.path.name)[0] or "image/png"
                 )
                 content.append(
                     {
@@ -322,9 +318,7 @@ class QoderAdapter(HarnessAdapter):
             file_references.append(
                 self._file_reference(attachment.path, cwd),
             )
-        text = "\n".join(
-            part for part in (" ".join(file_references), prompt) if part
-        )
+        text = "\n".join(part for part in (" ".join(file_references), prompt) if part)
         if text:
             content.insert(0, {"type": "text", "text": text})
         yield {
@@ -434,10 +428,7 @@ class QoderAdapter(HarnessAdapter):
         )
         async with self._session_lock:
             existing = self._clients.get(session_id)
-            if (
-                existing is not None
-                and self._client_keys.get(session_id) == key
-            ):
+            if existing is not None and self._client_keys.get(session_id) == key:
                 return existing
             if existing is not None:
                 await existing.disconnect()
@@ -633,9 +624,7 @@ class QoderAdapter(HarnessAdapter):
             return {}
         if not isinstance(raw, dict):
             return {}
-        return {
-            str(key): str(value) for key, value in raw.items() if key and value
-        }
+        return {str(key): str(value) for key, value in raw.items() if key and value}
 
     @staticmethod
     def _status_fields(output: str) -> dict[str, str]:

@@ -829,11 +829,7 @@ class OpenAIChatModelCompat(OpenAIChatModel):
                 b
                 for b in parsed.content
                 if not (
-                    (
-                        b.get("type")
-                        if isinstance(b, dict)
-                        else getattr(b, "type", None)
-                    )
+                    (b.get("type") if isinstance(b, dict) else getattr(b, "type", None))
                     in _tool_types
                     and (
                         not isinstance(
@@ -878,11 +874,7 @@ class OpenAIChatModelCompat(OpenAIChatModel):
                         )
 
             has_tool_use = any(
-                (
-                    b.get("type")
-                    if isinstance(b, dict)
-                    else getattr(b, "type", None)
-                )
+                (b.get("type") if isinstance(b, dict) else getattr(b, "type", None))
                 in _tool_types
                 for b in parsed.content
             )
@@ -948,8 +940,6 @@ class OpenAIChatModelCompat(OpenAIChatModel):
                     parsed.content = [b for b in new_content if b is not None]
 
                 if recovered_tool_calls:
-                    parsed.content = (
-                        list(parsed.content) + recovered_tool_calls
-                    )
+                    parsed.content = list(parsed.content) + recovered_tool_calls
 
             yield parsed

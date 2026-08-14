@@ -104,14 +104,9 @@ class AsMsgHandler:
                         source,
                     )
                     if not (
-                        isinstance(source, dict)
-                        and source.get("type") == "base64"
+                        isinstance(source, dict) and source.get("type") == "base64"
                     ):
-                        url = (
-                            source.get("url", "")
-                            if isinstance(source, dict)
-                            else ""
-                        )
+                        url = source.get("url", "") if isinstance(source, dict) else ""
                         display_type = block_type
                         if block_type == "data" and isinstance(source, dict):
                             mt = source.get("media_type", "")

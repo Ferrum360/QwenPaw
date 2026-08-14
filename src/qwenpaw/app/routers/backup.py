@@ -174,10 +174,7 @@ async def _handle_fresh_upload(
     ):
         raise HTTPException(
             status_code=400,
-            detail=(
-                "Expected a zip file, got"
-                f" content-type: {file.content_type}"
-            ),
+            detail=("Expected a zip file, got" f" content-type: {file.content_type}"),
         )
 
     suffix = upload_suffix_for_trust_mode(trust_mode)
@@ -275,9 +272,7 @@ async def restore_backup(
             # Contractual order: stop agent, browsers, then replace files.
             stop_browsers_fn=shutdown_browsers_for_workspace_dirs,
             preload_agent_fn=manager.preload_agent if manager else None,
-            list_running_agent_ids_fn=(
-                manager.list_loaded_agents if manager else None
-            ),
+            list_running_agent_ids_fn=(manager.list_loaded_agents if manager else None),
         )
     except FileNotFoundError as exc:
         raise HTTPException(

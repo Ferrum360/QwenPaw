@@ -14,6 +14,7 @@ Adding a new card kind: drop a module exposing ``NAME`` /
 ``MESSAGE_TYPE`` / ``TASK_ID_PREFIX`` plus ``render`` / ``handle``,
 then register it in :meth:`_register_kinds`.
 """
+
 from __future__ import annotations
 
 import asyncio
@@ -91,8 +92,7 @@ class WecomCardHandler:
             )
         if kind.task_id_prefix in self._by_task_id_prefix:
             logger.warning(
-                "wecom card: task_id_prefix %r already registered,"
-                " overriding",
+                "wecom card: task_id_prefix %r already registered," " overriding",
                 kind.task_id_prefix,
             )
         self._by_message_type[kind.message_type] = kind

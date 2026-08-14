@@ -118,10 +118,7 @@ class MCPConfigService:
     async def list_clients(self) -> list[MCPClientInfo]:
         return list(
             await asyncio.gather(
-                *[
-                    self.build_info_from_card(card)
-                    for card in await self.list_cards()
-                ],
+                *[self.build_info_from_card(card) for card in await self.list_cards()],
             ),
         )
 
@@ -153,8 +150,7 @@ class MCPConfigService:
             MCPToolInfo(
                 name=capability.name,
                 description=capability.description,
-                enabled=whitelist_set is None
-                or capability.name in whitelist_set,
+                enabled=whitelist_set is None or capability.name in whitelist_set,
                 input_schema=capability.input_schema,
             )
             for capability in capabilities
@@ -307,10 +303,8 @@ class MCPConfigService:
             ),
             client_key=client_key,
         )
-        existing_credential = (
-            await self._driver_config.load_optional_credential(
-                mcp_credential_ref(client_key),
-            )
+        existing_credential = await self._driver_config.load_optional_credential(
+            mcp_credential_ref(client_key),
         )
         credential = build_mcp_credential_record(
             client_key,
@@ -410,11 +404,7 @@ def merge_update_with_existing(
     data.pop("access_summary", None)
     update_data = updates.model_dump(exclude_unset=True)
     data.update(
-        {
-            key: value
-            for key, value in update_data.items()
-            if value is not None
-        },
+        {key: value for key, value in update_data.items() if value is not None},
     )
     return MCPClientCreateRequest.model_validate(data)
 
@@ -436,9 +426,7 @@ def mcp_access_policy_from_card(card: DriverCard) -> MCPAccessPolicy:
         if (override := _mcp_tool_override_from_rule(rule)) is not None
     ]
     unmanaged_rules_count = sum(
-        1
-        for rule in card.policy.rules
-        if not _is_console_managed_mcp_policy_rule(rule)
+        1 for rule in card.policy.rules if not _is_console_managed_mcp_policy_rule(rule)
     )
     return MCPAccessPolicy(
         default_effect=card.policy.default_effect,
@@ -454,9 +442,7 @@ def driver_policy_from_mcp_access_update(
     access: MCPAccessPolicy,
 ) -> DriverPolicy:
     unmanaged_rules = [
-        rule
-        for rule in existing.rules
-        if not _is_console_managed_mcp_policy_rule(rule)
+        rule for rule in existing.rules if not _is_console_managed_mcp_policy_rule(rule)
     ]
     seen_rules: set[tuple[str, str, str, str, str]] = set()
     seen_defaults: set[str] = set()
@@ -477,22 +463,15 @@ def driver_policy_from_mcp_access_update(
             ),
         )
     for target_name, override in [
-        (POLICY_TARGET_WILDCARD, override)
-        for override in access.client_overrides
-    ] + [
-        (override.tool_name.strip(), override)
-        for override in access.tool_overrides
-    ]:
+        (POLICY_TARGET_WILDCARD, override) for override in access.client_overrides
+    ] + [(override.tool_name.strip(), override) for override in access.tool_overrides]:
         if not target_name:
             raise HTTPException(400, detail="MCP tool override name is empty")
         source_value = override.source_value.strip()
         subject_value = override.subject_value.strip()
         if not source_value:
             raise HTTPException(400, detail="MCP policy source value is empty")
-        if (
-            override.subject_type == PRINCIPAL_SUBJECT_USER
-            and not subject_value
-        ):
+        if override.subject_type == PRINCIPAL_SUBJECT_USER and not subject_value:
             raise HTTPException(400, detail="MCP policy user value is empty")
         if override.subject_type == PRINCIPAL_SUBJECT_ALL:
             subject_value = ""
@@ -628,9 +607,7 @@ def _legacy_subject_access_rule(
     if subject.startswith("channel:"):
         return MCPAccessRule(
             source_type=PRINCIPAL_SOURCE_CHANNEL,
-            source_value=(
-                subject.removeprefix("channel:") or POLICY_TARGET_WILDCARD
-            ),
+            source_value=(subject.removeprefix("channel:") or POLICY_TARGET_WILDCARD),
             subject_type=PRINCIPAL_SUBJECT_ALL,
             subject_value="",
             effect=rule.effect,

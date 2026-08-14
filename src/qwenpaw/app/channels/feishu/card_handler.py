@@ -24,6 +24,7 @@ Adding a new card kind only needs:
 The two public entry-points (:meth:`try_send_card_for_event`,
 :meth:`handle_card_action`) stay untouched.
 """
+
 from __future__ import annotations
 
 import asyncio

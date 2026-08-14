@@ -54,9 +54,7 @@ def _resolve_driver_execution_level(
         return ToolExecutionLevel.from_config(str(raw))
 
     agent_id = str(
-        request_context.get("agent_id")
-        or request_context.get("root_agent_id")
-        or "",
+        request_context.get("agent_id") or request_context.get("root_agent_id") or "",
     ).strip()
     if not agent_id:
         try:
@@ -118,12 +116,10 @@ class DriverHandler(ABC):
                 await provider.close()
 
     @abstractmethod
-    async def _setup(self) -> None:
-        ...
+    async def _setup(self) -> None: ...
 
     @abstractmethod
-    async def _teardown(self) -> None:
-        ...
+    async def _teardown(self) -> None: ...
 
     async def list_capabilities(
         self,
@@ -223,10 +219,7 @@ class DriverHandler(ABC):
 
     def sync_runtime_metadata(self, card: DriverCard) -> None:
         """Refresh DriverCard fields that do not require reconnecting."""
-        if (
-            card.name != self._card.name
-            or card.protocol != self._card.protocol
-        ):
+        if card.name != self._card.name or card.protocol != self._card.protocol:
             return
         self._card.config = dict(card.config)
         self._card.policy = coerce_driver_policy(card.policy)

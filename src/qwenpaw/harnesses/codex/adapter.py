@@ -490,9 +490,7 @@ class CodexAdapter(HarnessAdapter):
             params = {
                 "cwd": str(cwd),
                 "sandbox": settings.get("sandbox") or "workspace-write",
-                "approvalPolicy": (
-                    settings.get("approval_policy") or "on-request"
-                ),
+                "approvalPolicy": (settings.get("approval_policy") or "on-request"),
             }
             if settings.get("model"):
                 params["model"] = settings["model"]
@@ -623,9 +621,7 @@ class CodexAdapter(HarnessAdapter):
             }
         return {
             "decision": (
-                "accept"
-                if decision == ApprovalDecision.APPROVED
-                else "decline"
+                "accept" if decision == ApprovalDecision.APPROVED else "decline"
             ),
         }
 
@@ -692,11 +688,7 @@ class CodexAdapter(HarnessAdapter):
             return {}
         if not isinstance(payload, dict):
             return {}
-        return {
-            str(key): str(value)
-            for key, value in payload.items()
-            if key and value
-        }
+        return {str(key): str(value) for key, value in payload.items() if key and value}
 
     async def _interrupt_turn(
         self,
@@ -845,11 +837,7 @@ class CodexAdapter(HarnessAdapter):
                 ),
             ]
         if item_type in {"reasoning", "plan"}:
-            values = (
-                item.get("summary")
-                or item.get("content")
-                or [item.get("text")]
-            )
+            values = item.get("summary") or item.get("content") or [item.get("text")]
             text = "\n".join(str(value) for value in values if value)
             return (
                 [
@@ -894,8 +882,7 @@ class CodexAdapter(HarnessAdapter):
             return "apply_patch"
         if item_type in {"mcpToolCall", "dynamicToolCall"}:
             parts = [
-                str(item.get(key) or "")
-                for key in ("server", "namespace", "tool")
+                str(item.get(key) or "") for key in ("server", "namespace", "tool")
             ]
             return ".".join(part for part in parts if part) or item_type
         if item_type == "collabAgentToolCall":

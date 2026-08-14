@@ -30,23 +30,19 @@ def _parse_date(s: str | None) -> date | None:
     description="Return aggregated token usage by date, model, and provider",
 )
 async def get_token_usage(
-    start_date: str
-    | None = Query(
+    start_date: str | None = Query(
         None,
         description="Start date YYYY-MM-DD (inclusive). Default: 30 days ago",
     ),
-    end_date: str
-    | None = Query(
+    end_date: str | None = Query(
         None,
         description="End date YYYY-MM-DD (inclusive). Default: today",
     ),
-    model: str
-    | None = Query(
+    model: str | None = Query(
         None,
         description="Filter by model name",
     ),
-    provider: str
-    | None = Query(
+    provider: str | None = Query(
         None,
         description="Filter by provider ID",
     ),
@@ -71,23 +67,19 @@ async def get_token_usage(
     description="Return raw token usage records for frontend aggregation",
 )
 async def get_token_usage_details(
-    start_date: str
-    | None = Query(
+    start_date: str | None = Query(
         None,
         description="Start date YYYY-MM-DD (inclusive). Default: 30 days ago",
     ),
-    end_date: str
-    | None = Query(
+    end_date: str | None = Query(
         None,
         description="End date YYYY-MM-DD (inclusive). Default: today",
     ),
-    model: str
-    | None = Query(
+    model: str | None = Query(
         None,
         description="Filter by model name",
     ),
-    provider: str
-    | None = Query(
+    provider: str | None = Query(
         None,
         description="Filter by provider ID",
     ),

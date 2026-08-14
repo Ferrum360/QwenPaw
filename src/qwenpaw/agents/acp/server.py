@@ -344,9 +344,7 @@ class QwenPawACPAgent(Agent):
         ):
             info[ACP_EPHEMERAL_META_KEY] = True
         if self._runtime_provider is not None:
-            info[
-                _ACP_RUNTIME_MODEL_SLOT_KEY
-            ] = self._runtime_provider.model_slot
+            info[_ACP_RUNTIME_MODEL_SLOT_KEY] = self._runtime_provider.model_slot
         return info
 
     async def _install_runtime_provider(self) -> None:
@@ -426,9 +424,7 @@ class QwenPawACPAgent(Agent):
 
         return WorkspaceBootstrapFactory.build_bootstrap_kwargs(
             app_services,
-            extra_command_specs=extra_command_specs
-            if extra_command_specs
-            else None,
+            extra_command_specs=extra_command_specs if extra_command_specs else None,
         )
 
     async def _ensure_workspace(self) -> Any:
@@ -465,8 +461,7 @@ class QwenPawACPAgent(Agent):
             self._workspace = workspace
             self._workspace_ready = True
             logger.info(
-                "QwenPaw ACP Agent workspace started:"
-                " agent_id=%s workspace=%s",
+                "QwenPaw ACP Agent workspace started:" " agent_id=%s workspace=%s",
                 agent_id,
                 workspace_dir,
             )
@@ -852,11 +847,7 @@ class QwenPawACPAgent(Agent):
 
         prompt_task = self._prompt_tasks.get(session_id)
         current_task = asyncio.current_task()
-        if (
-            prompt_task is None
-            or prompt_task is current_task
-            or prompt_task.done()
-        ):
+        if prompt_task is None or prompt_task is current_task or prompt_task.done():
             return
 
         prompt_task.cancel()
@@ -1006,8 +997,7 @@ class QwenPawACPAgent(Agent):
                         pending_future,
                     )
                     logger.info(
-                        "ACP approval request %s before client response: "
-                        "request=%s",
+                        "ACP approval request %s before client response: " "request=%s",
                         cancel_reason,
                         pending.request_id[:8],
                     )
@@ -1520,8 +1510,7 @@ class QwenPawACPAgent(Agent):
                 )
             if not provider.has_model(model_id):
                 raise ValueError(
-                    f"Model {model_id!r} not found in "
-                    f"provider {provider_id!r}",
+                    f"Model {model_id!r} not found in " f"provider {provider_id!r}",
                 )
         else:
             all_infos = await manager.list_provider_info()

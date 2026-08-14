@@ -16,7 +16,6 @@ from .llamacpp import LlamaCppBackend, LlamaCppServerSetupResult
 from .model_manager import LocalModelInfo as RecommendedLocalModelInfo
 from .model_manager import ModelManager, DownloadSource
 
-
 logger = logging.getLogger(__name__)
 
 
@@ -30,9 +29,7 @@ class LocalModelConfig(BaseModel):
     )
     port: int | None = Field(
         default=None,
-        description=(
-            "Optional fixed port for llama.cpp startup. Null means auto."
-        ),
+        description=("Optional fixed port for llama.cpp startup. Null means auto."),
         ge=1,
         le=65535,
     )

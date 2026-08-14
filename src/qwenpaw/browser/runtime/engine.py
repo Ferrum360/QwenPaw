@@ -29,9 +29,7 @@ def _resolve_context(link: Any, context: str) -> str:
                 "Use context='profile', or switch the browser backend to "
                 "playwright/cdp for incognito."
             ),
-            reason=(
-                f"variant {link.variant} does not support context '{context}'"
-            ),
+            reason=(f"variant {link.variant} does not support context '{context}'"),
             detail=context,
         )
     return context
@@ -140,9 +138,7 @@ class Engine:
             raise BrowserError(
                 category=ErrorCategory.RETRYABLE,
                 cause=ErrorCause.STATE_STALE,
-                suggested_action=(
-                    "Reconnect first: browser = await Browser.connect()"
-                ),
+                suggested_action=("Reconnect first: browser = await Browser.connect()"),
                 reason="browser session is closed",
                 detail="this session was closed earlier in the chat",
             )

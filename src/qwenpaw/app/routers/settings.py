@@ -4,6 +4,7 @@
 Persisted in ``WORKING_DIR/settings.json``, independent of
 per-agent configuration.  All endpoints are public (no auth required).
 """
+
 from __future__ import annotations
 
 from fastapi import APIRouter, Body, HTTPException, Request
@@ -61,8 +62,7 @@ async def put_language(
     if language not in _VALID_LANGUAGES:
         raise HTTPException(
             status_code=400,
-            detail=f"Invalid language, must be one of "
-            f"{sorted(_VALID_LANGUAGES)}",
+            detail=f"Invalid language, must be one of " f"{sorted(_VALID_LANGUAGES)}",
         )
     async with get_path_lock(_SETTINGS_FILE):
         data = await _load()

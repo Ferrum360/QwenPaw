@@ -241,10 +241,7 @@ class _MCPClientMixin:
             asyncio.TimeoutError: If the connection is not established
                 within *timeout* seconds.
         """
-        has_task = (
-            self._lifecycle_task is not None
-            and not self._lifecycle_task.done()
-        )
+        has_task = self._lifecycle_task is not None and not self._lifecycle_task.done()
         if self.is_connected or has_task:
             raise RuntimeError(
                 f"MCP client '{self.name}' is already connected or a "
@@ -295,8 +292,7 @@ class _MCPClientMixin:
         """
         if not self.is_connected:
             raise RuntimeError(
-                f"MCP client '{self.name}' is not connected. "
-                f"Call connect() first.",
+                f"MCP client '{self.name}' is not connected. " f"Call connect() first.",
             )
 
         logger.info(f"Triggering reload for MCP client: {self.name}")
@@ -632,8 +628,7 @@ class _MCPClientMixin:
         """
         if not self.is_connected:
             raise RuntimeError(
-                f"MCP client '{self.name}' is not connected. "
-                f"Call connect() first.",
+                f"MCP client '{self.name}' is not connected. " f"Call connect() first.",
             )
 
         if not self.session:
@@ -782,8 +777,7 @@ class HttpStatefulClient(_MCPClientMixin):
             )
         if transport not in ["streamable_http", "sse"]:
             raise ValueError(
-                f"transport must be 'streamable_http' or 'sse', "
-                f"got {transport!r}",
+                f"transport must be 'streamable_http' or 'sse', " f"got {transport!r}",
             )
         if not isinstance(url, str):
             raise TypeError(f"url must be str, got {type(url).__name__}")

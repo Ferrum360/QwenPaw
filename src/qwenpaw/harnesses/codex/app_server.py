@@ -108,9 +108,7 @@ class CodexAppServerClient:
             and self._runtime_environment == next_environment
         ):
             return False
-        was_running = (
-            self._process is not None and self._process.returncode is None
-        )
+        was_running = self._process is not None and self._process.returncode is None
         if was_running:
             await self.stop()
         self._config_overrides = config_overrides

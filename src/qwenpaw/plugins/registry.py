@@ -301,9 +301,7 @@ class PluginRegistry:  # pylint:disable=too-many-public-methods
             return
 
         to_drop = [
-            reg
-            for reg in self._http_router_registrations
-            if reg.plugin_id == plugin_id
+            reg for reg in self._http_router_registrations if reg.plugin_id == plugin_id
         ]
         routes = http_app.router.routes
         for reg in to_drop:
@@ -320,9 +318,7 @@ class PluginRegistry:  # pylint:disable=too-many-public-methods
                     )
 
         self._http_router_registrations = [
-            r
-            for r in self._http_router_registrations
-            if r.plugin_id != plugin_id
+            r for r in self._http_router_registrations if r.plugin_id != plugin_id
         ]
 
     def register_provider(
@@ -693,8 +689,7 @@ class PluginRegistry:  # pylint:disable=too-many-public-methods
 
         if normalized_after not in PromptBuilder.HOST_ANCHORS:
             raise ValueError(
-                f"Prompt section after='{after}' must reference a"
-                " host anchor",
+                f"Prompt section after='{after}' must reference a" " host anchor",
             )
         registration = PromptSectionRegistration(
             plugin_id=plugin_id,
@@ -849,8 +844,7 @@ class PluginRegistry:  # pylint:disable=too-many-public-methods
             doc_url=doc_url or "",
         )
         logger.info(
-            f"Registered channel '{normalized_key}' from plugin "
-            f"'{plugin_id}'",
+            f"Registered channel '{normalized_key}' from plugin " f"'{plugin_id}'",
         )
 
     def get_registered_channels(self) -> Dict[str, ChannelRegistration]:
@@ -884,15 +878,12 @@ class PluginRegistry:  # pylint:disable=too-many-public-methods
         (schedule_agent_reload), which rebuilds the ChannelManager.
         """
         to_remove = [
-            key
-            for key, reg in self._channels.items()
-            if reg.plugin_id == plugin_id
+            key for key, reg in self._channels.items() if reg.plugin_id == plugin_id
         ]
         for key in to_remove:
             del self._channels[key]
             logger.info(
-                f"Unregistered channel '{key}' (plugin '{plugin_id}' "
-                f"unloaded)",
+                f"Unregistered channel '{key}' (plugin '{plugin_id}' " f"unloaded)",
             )
 
     def register_plugin_manifest(
@@ -958,9 +949,7 @@ class PluginRegistry:  # pylint:disable=too-many-public-methods
         self._plugin_manifests.pop(plugin_id, None)
 
         providers_to_remove = [
-            pid
-            for pid, reg in self._providers.items()
-            if reg.plugin_id == plugin_id
+            pid for pid, reg in self._providers.items() if reg.plugin_id == plugin_id
         ]
         for pid in providers_to_remove:
             del self._providers[pid]
@@ -978,17 +967,13 @@ class PluginRegistry:  # pylint:disable=too-many-public-methods
             h for h in self._uninstall_hooks if h.plugin_id != plugin_id
         ]
         self._workspace_created_hooks = [
-            h
-            for h in self._workspace_created_hooks
-            if h.plugin_id != plugin_id
+            h for h in self._workspace_created_hooks if h.plugin_id != plugin_id
         ]
         self._control_commands = [
             c for c in self._control_commands if c.plugin_id != plugin_id
         ]
         self._middleware_registrations = [
-            r
-            for r in self._middleware_registrations
-            if r.plugin_id != plugin_id
+            r for r in self._middleware_registrations if r.plugin_id != plugin_id
         ]
         removed_sections = [
             s for s in self._prompt_sections if s.plugin_id == plugin_id
@@ -1020,10 +1005,7 @@ class PluginRegistry:  # pylint:disable=too-many-public-methods
             tools = meta.get("tools", [])
             if isinstance(tools, list):
                 for tool in tools:
-                    if (
-                        isinstance(tool, dict)
-                        and tool.get("name") == tool_name
-                    ):
+                    if isinstance(tool, dict) and tool.get("name") == tool_name:
                         return plugin_id
         return None
 

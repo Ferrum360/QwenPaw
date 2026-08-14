@@ -10,6 +10,7 @@ all live here; the dispatcher reads the module-level metadata
 Refs: https://developer.work.weixin.qq.com/document/path/101032
       https://developer.work.weixin.qq.com/document/path/101027
 """
+
 from __future__ import annotations
 
 import json
@@ -210,9 +211,7 @@ def parse_card_event(
         "tool_name": str(ctx.get("tool") or ""),
         "severity": str(ctx.get("sev") or "medium"),
         "session_ctx": {
-            k: v
-            for k, v in ctx.items()
-            if k not in ("a", "rid", "tool", "sev")
+            k: v for k, v in ctx.items() if k not in ("a", "rid", "tool", "sev")
         },
         "user_id": str(from_info.get("userid") or ""),
     }

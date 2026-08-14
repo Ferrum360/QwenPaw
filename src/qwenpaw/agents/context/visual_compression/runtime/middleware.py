@@ -74,9 +74,7 @@ def _without_recovery_tool(
         if not isinstance(tool, dict):
             return False
         function = tool.get("function")
-        function_name = (
-            function.get("name") if isinstance(function, dict) else None
-        )
+        function_name = function.get("name") if isinstance(function, dict) else None
         return (
             function_name == "recover_visual_context"
             or tool.get("name") == "recover_visual_context"
@@ -100,9 +98,7 @@ class VisualCompressionMiddleware(MiddlewareBase):
         self._enabled = bool(config.enabled)
         self._effort_preset = effort_preset(str(config.effort))
         self._recovery_store = (
-            recovery_store
-            if recovery_store is not None
-            else TurnRecoveryStore()
+            recovery_store if recovery_store is not None else TurnRecoveryStore()
         )
 
     def _log_skipped(
@@ -196,8 +192,7 @@ class VisualCompressionMiddleware(MiddlewareBase):
         request["tools"] = transformed_tools
         saved_tokens = max(
             0,
-            receipt.source_estimated_tokens
-            - receipt.replacement_estimated_tokens,
+            receipt.source_estimated_tokens - receipt.replacement_estimated_tokens,
         )
         savings_ratio = (
             saved_tokens / receipt.source_estimated_tokens

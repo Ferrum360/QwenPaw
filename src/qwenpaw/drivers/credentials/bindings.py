@@ -52,8 +52,7 @@ def resolve_binding(
         "prefer source=literal or source=credential entries.",
     )
     result = {
-        str(key): str(value)
-        for key, value in dict(binding.get("public") or {}).items()
+        str(key): str(value) for key, value in dict(binding.get("public") or {}).items()
     }
     for output_name, secret_key in dict(
         binding.get("secret_refs") or {},
@@ -149,11 +148,7 @@ def _resolve_value_source(
 
     alias = str(spec.get("credential") or CREDENTIAL_ALIAS_DEFAULT)
     field = str(spec.get("field") or "")
-    value = (
-        lookup_credential_value(credentials, f"{alias}.{field}")
-        if field
-        else None
-    )
+    value = lookup_credential_value(credentials, f"{alias}.{field}") if field else None
     if value is None:
         return None
 

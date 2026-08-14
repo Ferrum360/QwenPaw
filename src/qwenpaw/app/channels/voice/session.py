@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """Call session management for the Voice channel."""
+
 from __future__ import annotations
 
 import logging

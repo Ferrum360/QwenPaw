@@ -314,7 +314,6 @@ class PawApp:
         logger.info(
             "PawApp '%s' registered via PluginApi (routes=%d, tools=%d)",
             self.app_id or self.name,
-            len(self._router.routes)
-            + sum(len(r.routes) for r in self._routers),
+            len(self._router.routes) + sum(len(r.routes) for r in self._routers),
             len(self._tools),
         )

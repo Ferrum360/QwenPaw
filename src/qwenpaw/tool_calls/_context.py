@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """Per-call runtime handle for tool execution lifecycle."""
+
 from __future__ import annotations
 
 import asyncio

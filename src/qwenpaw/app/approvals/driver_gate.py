@@ -41,8 +41,7 @@ class QwenPawDriverApprovalGate:
             )
         else:
             result_summary = (
-                f"Driver '{driver_ref}' requires approval for "
-                f"{context.operation}."
+                f"Driver '{driver_ref}' requires approval for " f"{context.operation}."
             )
         if not session_id:
             raise ApprovalRequiredError(

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """STT/TTS factory functions for the SIP voice channel."""
+
 from __future__ import annotations
 
 import asyncio

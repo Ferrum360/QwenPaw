@@ -47,8 +47,7 @@ _EMAIL = re.compile(
 )
 _IBAN = re.compile(r"^[A-Z]{2}\d{2}[A-Z0-9]{8,30}$")
 _CURRENCY = re.compile(
-    r"^(?:[$€£¥]|(?:USD|EUR|GBP|CAD|AUD|CHF|JPY))"
-    r"\d(?:[\d,_]*\d)?(?:\.\d{2})?$",
+    r"^(?:[$€£¥]|(?:USD|EUR|GBP|CAD|AUD|CHF|JPY))" r"\d(?:[\d,_]*\d)?(?:\.\d{2})?$",
 )
 _HEX = re.compile(r"^(?=[0-9a-fA-F]*\d)[0-9a-fA-F]{7,40}$")
 _CONST = re.compile(r"^[A-Z][A-Z0-9]{2,}(?:_[A-Z0-9]+)+$")
@@ -63,8 +62,7 @@ _ASSIGNMENT = re.compile(
 )
 _PATTERNS: tuple[re.Pattern[str], ...] = (
     re.compile(
-        rf"\b[A-Z][A-Z0-9_]{{2,}}="
-        rf"[^{re.escape(_CONTEXT_WHITESPACE)})\"'<>]+",
+        rf"\b[A-Z][A-Z0-9_]{{2,}}=" rf"[^{re.escape(_CONTEXT_WHITESPACE)})\"'<>]+",
         re.ASCII,
     ),
     re.compile(
@@ -84,8 +82,7 @@ _PATTERNS: tuple[re.Pattern[str], ...] = (
     ),
     re.compile(r"\b[A-Z]{2}\d{2}[A-Z0-9]{8,30}\b", re.ASCII),
     re.compile(
-        r"(?:[$€£¥]|(?:USD|EUR|GBP|CAD|AUD|CHF|JPY))"
-        r"\d(?:[\d,_]*\d)?(?:\.\d{2})?\b",
+        r"(?:[$€£¥]|(?:USD|EUR|GBP|CAD|AUD|CHF|JPY))" r"\d(?:[\d,_]*\d)?(?:\.\d{2})?\b",
         re.ASCII,
     ),
     re.compile(r"(?:[\w@~+-]+)?(?:/[\w.@+-]+)+\.[A-Za-z]\w{0,8}\b", re.ASCII),
@@ -199,9 +196,7 @@ def extract_fact_entries(
         start = page * FACTSHEET_PAGE_CHARS
         chunk = text[start : start + FACTSHEET_PAGE_CHARS]
         for entry in _extract_page(chunk, limit):
-            merged_counts[entry.value] = (
-                merged_counts.get(entry.value, 0) + entry.count
-            )
+            merged_counts[entry.value] = merged_counts.get(entry.value, 0) + entry.count
     return _select(merged_counts, limit)
 
 
@@ -216,8 +211,7 @@ def factsheet_text(text: str, limit: int = FACTSHEET_MAX_ENTRIES) -> str:
         "versions, numbers) — quote these verbatim instead of transcribing "
         "them from the image"
         + (
-            "; ×N marks a token that occurs N times within the imaged "
-            "content: "
+            "; ×N marks a token that occurs N times within the imaged " "content: "
             if repeated
             else ": "
         )

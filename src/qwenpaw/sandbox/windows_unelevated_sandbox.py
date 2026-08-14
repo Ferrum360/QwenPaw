@@ -320,9 +320,7 @@ def _try_decode_utf16le(raw: bytes) -> Optional[str]:
             return None
     if len(raw) >= 4:
         sample = raw[: min(64, len(raw))]
-        null_at_odd = sum(
-            1 for i in range(1, len(sample), 2) if sample[i] == 0
-        )
+        null_at_odd = sum(1 for i in range(1, len(sample), 2) if sample[i] == 0)
         total_odd = len(sample) // 2
         if total_odd > 0 and null_at_odd > total_odd * 0.25:
             try:
@@ -920,9 +918,7 @@ def _build_shell_command_line(
     Returns:
         Complete command line string ready for CreateProcess.
     """
-    name = (
-        os.path.basename(shell_executable).lower() if shell_executable else ""
-    )
+    name = os.path.basename(shell_executable).lower() if shell_executable else ""
     if shell_executable and name in _WC.POWERSHELL_NAMES:
         ps_cmd = cmd.replace('"', '\\"')
         return (
@@ -1058,9 +1054,7 @@ def _create_job_object() -> Optional[ctypes.wintypes.HANDLE]:
         return None
 
     info = _JOBOBJECT_EXTENDED_LIMIT_INFORMATION()
-    info.BasicLimitInformation.LimitFlags = (
-        _WC.JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE
-    )
+    info.BasicLimitInformation.LimitFlags = _WC.JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE
     ok = kernel32.SetInformationJobObject(
         h_job,
         _WC.JobObjectExtendedLimitInformation,
@@ -1786,11 +1780,7 @@ def _create_process_as_user(
     cl_buf = ctypes.create_unicode_buffer(command_line)
 
     pi = _PROCESS_INFORMATION()
-    flags = (
-        _WC.CREATE_UNICODE_ENVIRONMENT
-        | _WC.CREATE_NO_WINDOW
-        | _WC.CREATE_SUSPENDED
-    )
+    flags = _WC.CREATE_UNICODE_ENVIRONMENT | _WC.CREATE_NO_WINDOW | _WC.CREATE_SUSPENDED
 
     ok = advapi32.CreateProcessAsUserW(
         h_token,
@@ -1908,8 +1898,7 @@ def _compute_config_fingerprint(
             os.path.normpath(os.path.expanduser(p)) for p in config.deny_paths
         ),
         "mounts": sorted(
-            (os.path.normpath(m.path), m.writable, m.executable)
-            for m in config.mounts
+            (os.path.normpath(m.path), m.writable, m.executable) for m in config.mounts
         ),
         "network_allow": sorted(config.network_allow),
     }
@@ -2127,8 +2116,7 @@ class WindowsUnelevatedSandbox(WindowsSandboxBase):
                 )
                 if not ok:
                     raise OSError(
-                        "OpenProcessToken failed: "
-                        f"error={ctypes.get_last_error()}",
+                        "OpenProcessToken failed: " f"error={ctypes.get_last_error()}",
                     )
                 try:
                     self._h_token, self._cap_psid = _create_restricted_token(

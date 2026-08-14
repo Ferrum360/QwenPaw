@@ -253,9 +253,7 @@ _workspace_states: dict[str, dict[str, Any]] = {}
 def _make_fresh_state(workspace_id: str, workspace_dir: str) -> dict[str, Any]:
     """Create a fresh browser state dict for a workspace."""
     user_data_dir = (
-        str(Path(workspace_dir) / "browser" / "user_data")
-        if workspace_dir
-        else ""
+        str(Path(workspace_dir) / "browser" / "user_data") if workspace_dir else ""
     )
     return {
         "playwright": None,
@@ -1827,14 +1825,11 @@ async def _action_start(
     # Check browser state based on mode
     if _USE_SYNC_PLAYWRIGHT:
         browser_exists = (
-            state["_sync_browser"] is not None
-            or state["_sync_context"] is not None
+            state["_sync_browser"] is not None or state["_sync_context"] is not None
         )
         current_headless = bool(state.get("_sync_headless", True))
     else:
-        browser_exists = (
-            state["browser"] is not None or state["context"] is not None
-        )
+        browser_exists = state["browser"] is not None or state["context"] is not None
         current_headless = bool(state["headless"])
 
     # If user asks for visible window (headed=True)
@@ -1975,9 +1970,7 @@ async def _action_start(
                     # launch_persistent_context returns context directly; no separate browser object
                     _attach_context_listeners(state, context)
                     state["playwright"] = pw
-                    state[
-                        "browser"
-                    ] = None  # not needed for persistent context
+                    state["browser"] = None  # not needed for persistent context
                     state["context"] = context
                 else:
                     launch_kwargs = {"headless": state["headless"]}
@@ -2050,9 +2043,7 @@ async def _action_start(
         )
         if cdp_url:
             result["cdp_url"] = cdp_url
-            result["message"] = (
-                msg + f" with CDP port {cdp_url.rsplit(':', 1)[-1]}"
-            )
+            result["message"] = msg + f" with CDP port {cdp_url.rsplit(':', 1)[-1]}"
         return _tool_response(
             json.dumps(result, ensure_ascii=False, indent=2),
         )
@@ -2322,16 +2313,12 @@ async def _action_screenshot(
                 await _run_sync(
                     locator.screenshot,
                     path=path,
-                    type=(
-                        screenshot_type if screenshot_type == "jpeg" else "png"
-                    ),
+                    type=(screenshot_type if screenshot_type == "jpeg" else "png"),
                 )
             else:
                 await locator.screenshot(
                     path=path,
-                    type=(
-                        screenshot_type if screenshot_type == "jpeg" else "png"
-                    ),
+                    type=(screenshot_type if screenshot_type == "jpeg" else "png"),
                 )
         else:
             if frame_selector and frame_selector.strip():
@@ -2341,20 +2328,12 @@ async def _action_screenshot(
                     await _run_sync(
                         locator.screenshot,
                         path=path,
-                        type=(
-                            screenshot_type
-                            if screenshot_type == "jpeg"
-                            else "png"
-                        ),
+                        type=(screenshot_type if screenshot_type == "jpeg" else "png"),
                     )
                 else:
                     await locator.screenshot(
                         path=path,
-                        type=(
-                            screenshot_type
-                            if screenshot_type == "jpeg"
-                            else "png"
-                        ),
+                        type=(screenshot_type if screenshot_type == "jpeg" else "png"),
                     )
             else:
                 if _USE_SYNC_PLAYWRIGHT:
@@ -2362,21 +2341,13 @@ async def _action_screenshot(
                         page.screenshot,
                         path=path,
                         full_page=full_page,
-                        type=(
-                            screenshot_type
-                            if screenshot_type == "jpeg"
-                            else "png"
-                        ),
+                        type=(screenshot_type if screenshot_type == "jpeg" else "png"),
                     )
                 else:
                     await page.screenshot(
                         path=path,
                         full_page=full_page,
-                        type=(
-                            screenshot_type
-                            if screenshot_type == "jpeg"
-                            else "png"
-                        ),
+                        type=(screenshot_type if screenshot_type == "jpeg" else "png"),
                     )
         return _tool_response(
             json.dumps(
@@ -2470,9 +2441,7 @@ async def _action_click(  # pylint: disable=too-many-branches,too-many-return-st
         if not isinstance(mods, list):
             mods = []
         click_kwargs = {
-            "button": (
-                button if button in ("left", "right", "middle") else "left"
-            ),
+            "button": (button if button in ("left", "right", "middle") else "left"),
         }
         if mods:
             click_kwargs["modifiers"] = [
@@ -2874,9 +2843,7 @@ async def _action_snapshot(
             compact=False,
         )
         state["refs"][page_id] = refs
-        state["refs_frame"][page_id] = (
-            frame_selector.strip() if frame_selector else ""
-        )
+        state["refs_frame"][page_id] = frame_selector.strip() if frame_selector else ""
         out = {
             "ok": True,
             "snapshot": snapshot,
@@ -3089,9 +3056,7 @@ async def _action_console_messages(
         )
     logs = state["console_logs"].get(page_id, [])
     filtered = (
-        [m for m in logs if order.index(m["level"]) <= idx]
-        if level in order
-        else logs
+        [m for m in logs if order.index(m["level"]) <= idx] if level in order else logs
     )
     lines = [f"[{m['level']}] {m['text']}" for m in filtered]
     text = "\n".join(lines)
@@ -3263,9 +3228,7 @@ async def _download_context_url(
         )
     head_headers = head_response.headers
     raw_content_length = (
-        head_headers.get("content-length")
-        or head_headers.get("Content-Length")
-        or ""
+        head_headers.get("content-length") or head_headers.get("Content-Length") or ""
     )
     if not raw_content_length:
         raise DirectUrlDownloadRejectedError(
@@ -3297,9 +3260,7 @@ async def _download_context_url(
     if not response.ok:
         return status, ""
     headers = response.headers
-    content_type = (
-        headers.get("content-type") or headers.get("Content-Type") or ""
-    )
+    content_type = headers.get("content-type") or headers.get("Content-Type") or ""
     if _USE_SYNC_PLAYWRIGHT:
         body = await _run_sync(response.body)
     else:
@@ -3596,9 +3557,7 @@ async def _file_download_click_fallback(
                 "url": current_url,
                 "status": status,
                 "content_type": content_type,
-                "download_method": (
-                    "browser_context_request_after_inline_navigation"
-                ),
+                "download_method": ("browser_context_request_after_inline_navigation"),
                 "note": (
                     "The click navigated to an inline resource instead of "
                     "firing a browser download event."
@@ -3974,9 +3933,7 @@ async def _action_drag(
             json.dumps(
                 {
                     "ok": False,
-                    "error": (
-                        "drag needs (start_ref,end_ref) or (start_sel,end_sel)"
-                    ),
+                    "error": ("drag needs (start_ref,end_ref) or (start_sel,end_sel)"),
                 },
                 ensure_ascii=False,
                 indent=2,
@@ -4223,10 +4180,7 @@ async def _action_tabs(  # pylint: disable=too-many-return-statements
             if not state["_sync_context"]:
                 ok = await _ensure_browser(state)
                 if not ok:
-                    err = (
-                        state.get("_last_browser_error")
-                        or "Browser not started"
-                    )
+                    err = state.get("_last_browser_error") or "Browser not started"
                     return _tool_response(
                         json.dumps(
                             {"ok": False, "error": err},
@@ -4238,10 +4192,7 @@ async def _action_tabs(  # pylint: disable=too-many-return-statements
             if not state["context"]:
                 ok = await _ensure_browser(state)
                 if not ok:
-                    err = (
-                        state.get("_last_browser_error")
-                        or "Browser not started"
-                    )
+                    err = state.get("_last_browser_error") or "Browser not started"
                     return _tool_response(
                         json.dumps(
                             {"ok": False, "error": err},
@@ -4717,9 +4668,7 @@ async def _action_batch(  # pylint: disable=too-many-nested-blocks
                 )
 
             else:
-                step_result[
-                    "error"
-                ] = f"Unknown batch sub-action: {sub_action}"
+                step_result["error"] = f"Unknown batch sub-action: {sub_action}"
 
             # Parse helper response into step_result
             if resp is not None and resp.content:
@@ -4730,9 +4679,7 @@ async def _action_batch(  # pylint: disable=too-many-nested-blocks
                     if isinstance(resp_data, dict):
                         step_result.update(resp_data)
                 except (json.JSONDecodeError, AttributeError, IndexError):
-                    step_result[
-                        "error"
-                    ] = "Failed to parse sub-action response"
+                    step_result["error"] = "Failed to parse sub-action response"
 
         except Exception as e:
             step_result["error"] = str(e)
@@ -5009,8 +4956,7 @@ async def stop_browsers_for_workspace_dirs(
                 await _action_stop(state)
             except Exception as e:
                 logger.error(
-                    "Failed to stop browser for workspace %s before "
-                    "restore: %s",
+                    "Failed to stop browser for workspace %s before " "restore: %s",
                     state.get("workspace_id", "unknown"),
                     e,
                 )

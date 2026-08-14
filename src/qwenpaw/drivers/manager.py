@@ -143,8 +143,7 @@ class DriverManager:
             await self._shutdown_handlers(built.values())
             names = ", ".join(sorted(collisions))
             raise ValueError(
-                f"Persistent Drivers collide with transient Drivers: "
-                f"{names}",
+                f"Persistent Drivers collide with transient Drivers: " f"{names}",
             )
 
         await self._shutdown_handlers(old_handlers)
@@ -306,8 +305,7 @@ class DriverManager:
         names = [card.name for card in cards]
         if len(names) != len(set(names)):
             raise ValueError(
-                f"Transient Driver names must be unique in scope "
-                f"'{scope_id}'",
+                f"Transient Driver names must be unique in scope " f"'{scope_id}'",
             )
 
         built: dict[str, DriverHandler] = {}
@@ -524,9 +522,7 @@ class DriverManager:
         ]
         if protocol is not None:
             handlers = [
-                handler
-                for handler in handlers
-                if handler.card.protocol == protocol
+                handler for handler in handlers if handler.card.protocol == protocol
             ]
         return sorted(handlers, key=lambda handler: handler.name)
 
@@ -616,10 +612,7 @@ class DriverManager:
 
     async def _shutdown_handlers(self, handlers) -> None:
         results = await asyncio.gather(
-            *[
-                self._shutdown_handler_with_timeout(handler)
-                for handler in handlers
-            ],
+            *[self._shutdown_handler_with_timeout(handler) for handler in handlers],
             return_exceptions=True,
         )
         for result in results:

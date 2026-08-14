@@ -188,10 +188,7 @@ class UnifiedQueueManager:
                     session_id,
                     priority_level,
                 ),
-                name=(
-                    f"consumer_{channel_id}_"
-                    f"{session_id[:20]}_{priority_level}"
-                ),
+                name=(f"consumer_{channel_id}_" f"{session_id[:20]}_{priority_level}"),
             )
 
             # Create state
@@ -345,9 +342,7 @@ class UnifiedQueueManager:
 
         # Cancel all consumer tasks
         async with self._lock:
-            consumer_tasks = [
-                state.consumer_task for state in self._queues.values()
-            ]
+            consumer_tasks = [state.consumer_task for state in self._queues.values()]
             queue_count = len(self._queues)
 
         if consumer_tasks:
@@ -363,8 +358,7 @@ class UnifiedQueueManager:
 
             if pending:
                 logger.warning(
-                    f"stop_all: {len(pending)} consumer(s) "
-                    f"still pending after 5s",
+                    f"stop_all: {len(pending)} consumer(s) " f"still pending after 5s",
                 )
 
         # Clear queues dict

@@ -303,9 +303,7 @@ class FeishuChannel(BaseChannel):
         """SDK base URL: custom http(s) gateway, or the lark/feishu enum."""
         if str(self.domain).startswith("http"):
             return str(self.domain)
-        return (
-            lark.LARK_DOMAIN if self.domain == "lark" else lark.FEISHU_DOMAIN
-        )
+        return lark.LARK_DOMAIN if self.domain == "lark" else lark.FEISHU_DOMAIN
 
     @classmethod
     def from_env(
@@ -337,9 +335,7 @@ class FeishuChannel(BaseChannel):
             deny_message=os.getenv("FEISHU_DENY_MESSAGE", ""),
             require_mention=os.getenv("FEISHU_REQUIRE_MENTION", "0") == "1",
             domain=os.getenv("FEISHU_DOMAIN", "feishu"),
-            streaming_enabled=(
-                os.getenv("FEISHU_STREAMING_ENABLED", "0") == "1"
-            ),
+            streaming_enabled=(os.getenv("FEISHU_STREAMING_ENABLED", "0") == "1"),
             share_session_in_group=(
                 os.getenv("FEISHU_SHARE_SESSION_IN_GROUP", "0") == "1"
             ),
@@ -366,8 +362,7 @@ class FeishuChannel(BaseChannel):
             media_dir=config.media_dir or "",
             workspace_dir=workspace_dir,
             on_reply_sent=on_reply_sent,
-            display_config=display_config
-            or ChannelDisplayConfig.from_config(config),
+            display_config=display_config or ChannelDisplayConfig.from_config(config),
             no_text_debounce=no_text_debounce,
             dm_policy=config.dm_policy or "open",
             group_policy=config.group_policy or "open",
@@ -400,9 +395,7 @@ class FeishuChannel(BaseChannel):
         chat_type = (meta.get("feishu_chat_type") or "p2p").strip()
         if chat_type == "group" and chat_id:
             # Include app_id suffix to distinguish multiple bots in same group
-            app_suffix = (
-                self.app_id[-4:] if len(self.app_id) >= 4 else self.app_id
-            )
+            app_suffix = self.app_id[-4:] if len(self.app_id) >= 4 else self.app_id
             return f"{app_suffix}_{short_session_id_from_full_id(chat_id)}"
         if sender_id:
             return short_session_id_from_full_id(sender_id)
@@ -433,9 +426,7 @@ class FeishuChannel(BaseChannel):
         )
         # Prefer real open_id from meta for user_id so to_handle is
         # feishu:sw:{session_id}; fallback to sender_id for display.
-        user_id = (
-            meta.get("feishu_sender_id") or payload.get("user_id") or sender_id
-        )
+        user_id = meta.get("feishu_sender_id") or payload.get("user_id") or sender_id
         request = self.build_agent_request_from_user_content(
             channel_id=channel_id,
             sender_id=user_id,
@@ -573,8 +564,7 @@ class FeishuChannel(BaseChannel):
             resp = self._client.contact.v3.user.get(req)
             if not resp.success():
                 logger.info(
-                    "feishu get user name api error: open_id=%s code=%s "
-                    "msg=%s",
+                    "feishu get user name api error: open_id=%s code=%s " "msg=%s",
                     open_id[:20],
                     getattr(resp, "code", ""),
                     getattr(resp, "msg", ""),
@@ -700,9 +690,7 @@ class FeishuChannel(BaseChannel):
                 return
 
             nickname = (
-                getattr(sender, "name", None)
-                or getattr(sender, "nickname", None)
-                or ""
+                getattr(sender, "name", None) or getattr(sender, "nickname", None) or ""
             )
             nickname = nickname.strip() if isinstance(nickname, str) else ""
             if not nickname:
@@ -830,9 +818,7 @@ class FeishuChannel(BaseChannel):
             # When message is in a topic thread, override user_id to the
             # thread_id so all members in the same topic share one session.
             if thread_id:
-                thread_uid = (
-                    f"thread:{short_session_id_from_full_id(thread_id)}"
-                )
+                thread_uid = f"thread:{short_session_id_from_full_id(thread_id)}"
                 native["user_id"] = thread_uid
                 meta["feishu_sender_id"] = thread_uid
             # When share_session_in_group is enabled (and no thread), set
@@ -913,8 +899,7 @@ class FeishuChannel(BaseChannel):
                 return None
             ext = detect_file_ext(data, default="jpg")
             safe_key = (
-                "".join(c for c in image_key if c.isalnum() or c in "-_.")
-                or "img"
+                "".join(c for c in image_key if c.isalnum() or c in "-_.") or "img"
             )
             self._media_dir.mkdir(parents=True, exist_ok=True)
             path = self._media_dir / f"{message_id}_{safe_key}.{ext}"
@@ -1210,11 +1195,7 @@ class FeishuChannel(BaseChannel):
             quoted_lines.append(f"[quoted {label}]")
         for hint in error_hints:
             quoted_lines.append(
-                (
-                    f"[quoted {hint[1:]}"
-                    if hint.startswith("[")
-                    else f"[quoted {hint}]"
-                ),
+                (f"[quoted {hint[1:]}" if hint.startswith("[") else f"[quoted {hint}]"),
             )
         # Prepend all quoted lines before existing text_parts.
         text_parts[:0] = quoted_lines
@@ -1297,11 +1278,7 @@ class FeishuChannel(BaseChannel):
             self._receive_id_store[session_id] = (receive_id_type, receive_id)
             # Also key by open_id so cron can resolve when session_id is full
             # open_id or when lookup uses open_id as key
-            if (
-                receive_id_type == "open_id"
-                and receive_id
-                and receive_id != session_id
-            ):
+            if receive_id_type == "open_id" and receive_id and receive_id != session_id:
                 self._receive_id_store[receive_id] = (
                     receive_id_type,
                     receive_id,
@@ -1489,8 +1466,7 @@ class FeishuChannel(BaseChannel):
         if not self._client:
             return None
         logger.info(
-            "feishu _send_message: msg_type=%s receive_id_type=%s "
-            "content_len=%s",
+            "feishu _send_message: msg_type=%s receive_id_type=%s " "content_len=%s",
             msg_type,
             receive_id_type,
             len(content),
@@ -1516,9 +1492,7 @@ class FeishuChannel(BaseChannel):
                     getattr(resp, "msg", ""),
                 )
                 return None
-            msg_id = (
-                getattr(resp.data, "message_id", None) if resp.data else None
-            )
+            msg_id = getattr(resp.data, "message_id", None) if resp.data else None
             logger.info(
                 "feishu _send_message ok: msg_type=%s msg_id=%s",
                 msg_type,
@@ -1543,8 +1517,7 @@ class FeishuChannel(BaseChannel):
         if not self._client or not message_id:
             return None
         logger.info(
-            "feishu _reply_in_thread: msg_type=%s message_id=%s "
-            "content_len=%s",
+            "feishu _reply_in_thread: msg_type=%s message_id=%s " "content_len=%s",
             msg_type,
             message_id[:20],
             len(content),
@@ -1571,9 +1544,7 @@ class FeishuChannel(BaseChannel):
                     getattr(resp, "msg", ""),
                 )
                 return None
-            msg_id = (
-                getattr(resp.data, "message_id", None) if resp.data else None
-            )
+            msg_id = getattr(resp.data, "message_id", None) if resp.data else None
             logger.info(
                 "feishu _reply_in_thread ok: msg_id=%s",
                 (msg_id or "")[:24],
@@ -1635,11 +1606,7 @@ class FeishuChannel(BaseChannel):
         else:
             b64 = None
         if b64:
-            raw = (
-                b64.split("base64,", 1)[-1].strip()
-                if isinstance(b64, str)
-                else b64
-            )
+            raw = b64.split("base64,", 1)[-1].strip() if isinstance(b64, str) else b64
             try:
                 data = base64.b64decode(raw)
                 return (data, filename)
@@ -1728,19 +1695,11 @@ class FeishuChannel(BaseChannel):
         url = (url or "").strip() if isinstance(url, str) else ""
         filename = getattr(part, "filename", None) or "file.bin"
         b64 = None
-        if (
-            isinstance(url, str)
-            and url.startswith("data:")
-            and "base64," in url
-        ):
+        if isinstance(url, str) and url.startswith("data:") and "base64," in url:
             b64 = url
             url = ""
         if b64:
-            raw = (
-                b64.split("base64,", 1)[-1].strip()
-                if isinstance(b64, str)
-                else b64
-            )
+            raw = b64.split("base64,", 1)[-1].strip() if isinstance(b64, str) else b64
             try:
                 data = base64.b64decode(raw)
             except Exception as e:
@@ -1838,8 +1797,7 @@ class FeishuChannel(BaseChannel):
         route = self._route_from_handle(to_handle)
         session_key = route.get("session_key")
         logger.info(
-            "feishu _get_receive_for_send: to_handle=%s route=%s "
-            "session_key=%s",
+            "feishu _get_receive_for_send: to_handle=%s route=%s " "session_key=%s",
             (to_handle or "")[:60],
             list(route.keys()) if route else [],
             (session_key or "")[:40] if session_key else None,
@@ -1889,8 +1847,7 @@ class FeishuChannel(BaseChannel):
         recv = await self._load_receive_id(to_handle)
         if recv is None:
             logger.warning(
-                "feishu _get_receive_for_send: _load_receive_id(%s) returned "
-                "None",
+                "feishu _get_receive_for_send: _load_receive_id(%s) returned " "None",
                 (to_handle or "")[:40],
             )
         return recv
@@ -2092,9 +2049,7 @@ class FeishuChannel(BaseChannel):
                 )
                 return None
             card_id = (
-                getattr(create_resp.data, "card_id", None)
-                if create_resp.data
-                else None
+                getattr(create_resp.data, "card_id", None) if create_resp.data else None
             )
             if not card_id:
                 logger.warning("feishu create streaming card: no card_id")
@@ -2564,13 +2519,9 @@ class FeishuChannel(BaseChannel):
                         if self._stop_event.is_set() or self._closed:
                             break
                         ws = self._ws_client
-                        if (
-                            ws is not None
-                            and getattr(ws, "_conn", True) is None
-                        ):
+                        if ws is not None and getattr(ws, "_conn", True) is None:
                             logger.warning(
-                                "feishu WebSocket conn lost, "
-                                "forcing reconnect...",
+                                "feishu WebSocket conn lost, " "forcing reconnect...",
                             )
                             if self._ws_loop and not self._ws_loop.is_closed():
                                 self._ws_loop.stop()
@@ -2585,10 +2536,7 @@ class FeishuChannel(BaseChannel):
                                     "for %.0fs, forcing reconnect...",
                                     silent_seconds,
                                 )
-                                if (
-                                    self._ws_loop
-                                    and not self._ws_loop.is_closed()
-                                ):
+                                if self._ws_loop and not self._ws_loop.is_closed():
                                     self._ws_loop.stop()
                                 break
 
@@ -2664,9 +2612,7 @@ class FeishuChannel(BaseChannel):
                                     exc_info=True,
                                 )
                         pending = [
-                            t
-                            for t in asyncio.all_tasks(self._ws_loop)
-                            if not t.done()
+                            t for t in asyncio.all_tasks(self._ws_loop) if not t.done()
                         ]
                         for task in pending:
                             task.cancel()
@@ -2719,9 +2665,7 @@ class FeishuChannel(BaseChannel):
         issues = []
         if self._client is None:
             issues.append("Feishu SDK client not initialized")
-        ws_thread_alive = (
-            self._ws_thread is not None and self._ws_thread.is_alive()
-        )
+        ws_thread_alive = self._ws_thread is not None and self._ws_thread.is_alive()
         if not ws_thread_alive:
             issues.append("WebSocket thread is not running")
         if issues:

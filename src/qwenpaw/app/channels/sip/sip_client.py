@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """SIP outbound call management."""
+
 from __future__ import annotations
 
 import logging

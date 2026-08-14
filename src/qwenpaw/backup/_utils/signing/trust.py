@@ -6,6 +6,7 @@ already signed by this instance, or it requires an explicit user trust action
 before being re-signed with the local key. Keeping that decision in the signing
 package prevents import and restore from drifting apart.
 """
+
 from __future__ import annotations
 
 import logging

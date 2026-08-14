@@ -203,9 +203,7 @@ def _make_control_adapter(
             except Exception:
                 pass
 
-        full_query = (
-            f"/{command_name} {args}".strip() if args else f"/{command_name}"
-        )
+        full_query = f"/{command_name} {args}".strip() if args else f"/{command_name}"
         parsed_args = parse_args(
             full_query,
             f"/{command_name}",
@@ -620,11 +618,7 @@ async def _skill_fallback_handler(
 
     skills_dir = get_workspace_skills_dir(Path(workspace_dir))
     skill_dir = next(
-        (
-            skills_dir / sn
-            for sn in effective_skills
-            if sn.lower() == skill_name
-        ),
+        (skills_dir / sn for sn in effective_skills if sn.lower() == skill_name),
         None,
     )
     if skill_dir is None or not skill_dir.exists():

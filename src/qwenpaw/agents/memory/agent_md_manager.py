@@ -67,8 +67,7 @@ class AgentMdManager:
         for part in parts:
             if part == "..":
                 raise ValueError(
-                    f"Invalid md_name '{md_name}':"
-                    " path traversal is not allowed",
+                    f"Invalid md_name '{md_name}':" " path traversal is not allowed",
                 )
 
         # Keep only the final component so that any remaining "/" is stripped
@@ -284,9 +283,7 @@ class AgentMdManager:
                     else:
                         continue
                 stat = file_path.stat()
-                filename = (
-                    f"{prefix}{file_path.relative_to(root_dir).as_posix()}"
-                )
+                filename = f"{prefix}{file_path.relative_to(root_dir).as_posix()}"
                 result.append(
                     self._memory_file_info(file_path, filename, stat),
                 )

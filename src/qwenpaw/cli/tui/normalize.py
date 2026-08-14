@@ -261,8 +261,7 @@ def normalize_update(update: Any) -> list[TuiEvent]:
                 title=getattr(update, "title", None) or "",
                 kind=getattr(update, "kind", None),
                 status=getattr(update, "status", None),
-                output=_tool_output_text(getattr(update, "content", None))
-                or None,
+                output=_tool_output_text(getattr(update, "content", None)) or None,
                 params=tool_input_text(_raw_input(update)) or None,
                 links=_tool_links(getattr(update, "content", None)),
             ),

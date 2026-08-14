@@ -10,6 +10,7 @@ A module-level pool keyed by ``(project_dir, language_id)`` keeps one
 server alive per project so repeated calls share the same process.
 ``shutdown_all`` is registered with :mod:`atexit`.
 """
+
 from __future__ import annotations
 
 import atexit
@@ -29,9 +30,7 @@ LOGGER = logging.getLogger(__name__)
 
 # Hide Windows console window when spawning the server.
 _SUBPROCESS_FLAGS = (
-    getattr(subprocess, "CREATE_NO_WINDOW", 0)
-    if sys.platform == "win32"
-    else 0
+    getattr(subprocess, "CREATE_NO_WINDOW", 0) if sys.platform == "win32" else 0
 )
 
 _DEFAULT_TIMEOUT = 15.0
@@ -144,16 +143,14 @@ class LspClient:  # pylint: disable=too-many-instance-attributes
             if self._proc is not None:
                 return
             try:
-                self._proc = (
-                    subprocess.Popen(  # pylint: disable=consider-using-with
-                        self._argv,
-                        cwd=str(self._project_dir),
-                        stdin=subprocess.PIPE,
-                        stdout=subprocess.PIPE,
-                        stderr=subprocess.DEVNULL,
-                        bufsize=0,
-                        creationflags=_SUBPROCESS_FLAGS,
-                    )
+                self._proc = subprocess.Popen(  # pylint: disable=consider-using-with
+                    self._argv,
+                    cwd=str(self._project_dir),
+                    stdin=subprocess.PIPE,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.DEVNULL,
+                    bufsize=0,
+                    creationflags=_SUBPROCESS_FLAGS,
                 )
             except (OSError, FileNotFoundError) as exc:
                 raise LspError(

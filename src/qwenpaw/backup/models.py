@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """Backup data models."""
+
 from __future__ import annotations
 
 from datetime import datetime, timezone

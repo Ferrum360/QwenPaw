@@ -15,6 +15,7 @@ Subclasses implement:
     - ``_is_complete(state_dir)`` -> bool
     - ``build_continuation()`` -> str
 """
+
 from __future__ import annotations
 
 import logging
@@ -81,9 +82,7 @@ class FileLoopGate(LoopGate):
             self.deactivate()
             return StopHandlerResult(
                 action=StopAction.TERMINATE,
-                reason=(
-                    f"{self.name} max iterations " f"({self._MAX_ITERATIONS})"
-                ),
+                reason=(f"{self.name} max iterations " f"({self._MAX_ITERATIONS})"),
             )
 
         state_dir = self._build_state_dir(

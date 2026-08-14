@@ -33,8 +33,7 @@ def _clear_stale_marker(marker: Path) -> str | None:
                 detail=str(read_exc),
             ) from read_exc
         logger.warning(
-            "DevToolsActivePort could not be removed; waiting for it to "
-            "change: %s",
+            "DevToolsActivePort could not be removed; waiting for it to " "change: %s",
             exc,
         )
         return stale_content

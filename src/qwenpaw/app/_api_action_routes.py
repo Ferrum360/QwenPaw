@@ -231,8 +231,7 @@ def collect_slash_specs_from_api_actions(
                     handler=_adapter,
                     category="auto",
                     help_text=(
-                        f"Auto-generated from "
-                        f"{mgr_cls.__name__}.{action_spec.name}"
+                        f"Auto-generated from " f"{mgr_cls.__name__}.{action_spec.name}"
                     ),
                 ),
             )

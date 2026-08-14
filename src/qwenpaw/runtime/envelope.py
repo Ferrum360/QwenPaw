@@ -158,9 +158,7 @@ class Envelope:
     # ------------------------------------------------------------------
 
     def _should_finalize_text_message(self) -> bool:
-        return (
-            self._message_started and len(self._completed_message.content) > 0
-        )
+        return self._message_started and len(self._completed_message.content) > 0
 
     async def _finalize_text_message(self) -> AsyncGenerator[Any, None]:
         """Finalize the current text message before a tool call starts."""
@@ -708,8 +706,7 @@ class Envelope:
         ):
             source = getattr(event, "source", None) or ""
             logger.warning(
-                "HintBlockEvent received but not rendered: "
-                "block_id=%s source=%s",
+                "HintBlockEvent received but not rendered: " "block_id=%s source=%s",
                 getattr(event, "block_id", "?"),
                 source,
             )
@@ -793,9 +790,7 @@ class Envelope:
 
         self._completed_message.content.append(tc)
         self._completed_message.status = RunStatus.Completed
-        self._completed_message.metadata = (
-            getattr(cmd_msg, "metadata", None) or {}
-        )
+        self._completed_message.metadata = getattr(cmd_msg, "metadata", None) or {}
         self._response.output.append(self._completed_message)
         yield self._tag_seq(self._completed_message)
 

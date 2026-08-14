@@ -44,18 +44,11 @@ def default_install_candidates(
     if platform_value == "win32":
         local_app_data = environment.get("LOCALAPPDATA")
         install_root = (
-            Path(local_app_data)
-            if local_app_data
-            else user_home / "AppData" / "Local"
+            Path(local_app_data) if local_app_data else user_home / "AppData" / "Local"
         )
         return (
             (
-                install_root
-                / "Programs"
-                / "OpenAI"
-                / "Codex"
-                / "bin"
-                / "codex.exe",
+                install_root / "Programs" / "OpenAI" / "Codex" / "bin" / "codex.exe",
                 "standalone",
             ),
         )

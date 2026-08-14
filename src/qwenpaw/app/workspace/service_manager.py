@@ -4,6 +4,7 @@
 Provides unified registration, lifecycle management, and dependency handling
 for all workspace services (MemoryManager, ChatManager, etc.).
 """
+
 from __future__ import annotations
 
 import asyncio
@@ -102,8 +103,7 @@ class ServiceManager:
         """
         if descriptor.name in self.descriptors:
             logger.warning(
-                f"Service '{descriptor.name}' already registered, "
-                f"overwriting",
+                f"Service '{descriptor.name}' already registered, " f"overwriting",
             )
         self.descriptors[descriptor.name] = descriptor
         logger.debug(f"Registered service: {descriptor.name}")
@@ -127,8 +127,7 @@ class ServiceManager:
         descriptor = self.descriptors[name]
         if not descriptor.reusable:
             logger.warning(
-                f"Service '{name}' is not marked as reusable "
-                f"in its descriptor",
+                f"Service '{name}' is not marked as reusable " f"in its descriptor",
             )
             return
 
@@ -211,8 +210,7 @@ class ServiceManager:
 
         elapsed = time.perf_counter() - t0
         logger.debug(
-            f"All services started for {self.workspace.agent_id} "
-            f"in {elapsed:.3f}s",
+            f"All services started for {self.workspace.agent_id} " f"in {elapsed:.3f}s",
         )
 
     async def _start_service(self, descriptor: ServiceDescriptor) -> None:
@@ -398,8 +396,7 @@ class ServiceManager:
             await asyncio.to_thread(start_fn)
 
         logger.debug(
-            f"Service '{descriptor.name}' started for "
-            f"{self.workspace.agent_id}",
+            f"Service '{descriptor.name}' started for " f"{self.workspace.agent_id}",
         )
 
     async def stop_all(self, final: bool = False) -> None:
@@ -425,10 +422,7 @@ class ServiceManager:
 
             # Stop all services in this priority group concurrently
             results = await asyncio.gather(
-                *[
-                    self._stop_service(desc, final=final)
-                    for desc in descriptors
-                ],
+                *[self._stop_service(desc, final=final) for desc in descriptors],
                 return_exceptions=True,
             )
 
@@ -484,8 +478,7 @@ class ServiceManager:
                     else:
                         stop_fn()
                     logger.debug(
-                        f"Service '{name}' stopped "
-                        f"for {self.workspace.agent_id}",
+                        f"Service '{name}' stopped " f"for {self.workspace.agent_id}",
                     )
         except Exception as e:
             logger.warning(

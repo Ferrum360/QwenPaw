@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """ACP client adapter built on the official Python SDK."""
+
 from __future__ import annotations
 
 import asyncio
@@ -57,9 +58,7 @@ class ACPHostedClient:
         self._emitted_assistant_text = ""
         self._thinking_active = False
         self._pending_permission: SuspendedPermission | None = None
-        self._permission_future: asyncio.Future[
-            RequestPermissionResponse
-        ] | None = None
+        self._permission_future: asyncio.Future[RequestPermissionResponse] | None = None
         self._permission_requested = asyncio.Event()
 
     @property
@@ -218,14 +217,16 @@ class ACPHostedClient:
     async def session_update(
         self,
         session_id: str,
-        update: UserMessageChunk
-        | AgentMessageChunk
-        | AgentThoughtChunk
-        | ToolCallStart
-        | ToolCallProgress
-        | AgentPlanUpdate
-        | AvailableCommandsUpdate
-        | CurrentModeUpdate,
+        update: (
+            UserMessageChunk
+            | AgentMessageChunk
+            | AgentThoughtChunk
+            | ToolCallStart
+            | ToolCallProgress
+            | AgentPlanUpdate
+            | AvailableCommandsUpdate
+            | CurrentModeUpdate
+        ),
         **_: Any,
     ) -> None:
         if isinstance(update, AgentMessageChunk):
@@ -366,9 +367,7 @@ class ACPHostedClient:
             return str(content.text)
         if hasattr(content, "name") and hasattr(content, "uri"):
             return str(
-                getattr(content, "name", None)
-                or getattr(content, "uri", None)
-                or "",
+                getattr(content, "name", None) or getattr(content, "uri", None) or "",
             )
         if hasattr(content, "resource"):
             resource = getattr(content, "resource", None)
@@ -447,10 +446,7 @@ class ACPHostedClient:
         update: ToolCallStart | ToolCallProgress,
         state: ToolCallView | None,
     ) -> str:
-        if (
-            isinstance(update, ToolCallStart)
-            or self.tool_parse_mode == "update_detail"
-        ):
+        if isinstance(update, ToolCallStart) or self.tool_parse_mode == "update_detail":
             return "tool_start"
         status = str(
             getattr(state, "status", None)
@@ -546,6 +542,4 @@ class ACPHostedClient:
     def _stringify_summary(self, value: Any) -> str | None:
         if value is None:
             return None
-        return (
-            self._string_value(value) if isinstance(value, str) else str(value)
-        )
+        return self._string_value(value) if isinstance(value, str) else str(value)

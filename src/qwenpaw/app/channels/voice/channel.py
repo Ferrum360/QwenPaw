@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """Voice Channel: Twilio ConversationRelay + Cloudflare Tunnel."""
+
 from __future__ import annotations
 
 import collections
@@ -61,8 +62,7 @@ class VoiceChannel(BaseChannel):
         instance = cls(
             process,
             on_reply_sent,
-            display_config=display_config
-            or ChannelDisplayConfig.from_config(config),
+            display_config=display_config or ChannelDisplayConfig.from_config(config),
             no_text_debounce=no_text_debounce,
         )
         instance._config = config

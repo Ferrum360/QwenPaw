@@ -32,9 +32,7 @@ def _nm_host_path() -> Path:
 
 
 def _asset_manifest_path() -> Path:
-    return (
-        Path.home() / ".qwenpaw/chrome-extension/qwenpaw-chrome/manifest.json"
-    )
+    return Path.home() / ".qwenpaw/chrome-extension/qwenpaw-chrome/manifest.json"
 
 
 def probe_nm_host(path: Path | None = None) -> dict[str, Any]:
@@ -46,9 +44,11 @@ def probe_nm_host(path: Path | None = None) -> dict[str, Any]:
         "passed": present,
         "status": "passed" if present else "failed",
         "code": "nm_host_present" if present else "nm_host_missing",
-        "message": "Native Messaging host is installed."
-        if present
-        else "Native Messaging host is missing.",
+        "message": (
+            "Native Messaging host is installed."
+            if present
+            else "Native Messaging host is missing."
+        ),
         "repair_action": "none" if present else "reinstall_nm_host",
         "metadata": {"path": str(path)},
     }
@@ -59,9 +59,7 @@ def probe_extension_assets(
     last_seen_version: str = "",
 ) -> dict[str, Any]:
     """Compare the read-only unpacked asset version with last connection."""
-    manifest_path = (
-        _asset_manifest_path() if manifest_path is None else manifest_path
-    )
+    manifest_path = _asset_manifest_path() if manifest_path is None else manifest_path
     if not last_seen_version:
         return {
             "name": "extension_assets",
@@ -69,8 +67,7 @@ def probe_extension_assets(
             "status": "unknown",
             "code": "extension_version_unknown",
             "message": (
-                "Extension has not connected yet; asset version cannot be "
-                "compared."
+                "Extension has not connected yet; asset version cannot be " "compared."
             ),
             "repair_action": "wait_or_restart_chrome",
             "metadata": {"path": str(manifest_path)},
@@ -86,9 +83,7 @@ def probe_extension_assets(
         "name": "extension_assets",
         "passed": passed,
         "status": "passed" if passed else "failed",
-        "code": "extension_assets_match"
-        if passed
-        else "extension_assets_mismatch",
+        "code": "extension_assets_match" if passed else "extension_assets_mismatch",
         "message": (
             f"Extension asset version {disk_version} vs last connected "
             f"version {last_seen_version}."
@@ -198,9 +193,11 @@ def probe_bridge_lifecycle(
         "passed": connected,
         "status": "passed" if connected else "pending",
         "code": "bridge_connected" if connected else BRIDGE_DISCONNECTED,
-        "message": "Bridge is connected."
-        if connected
-        else "Bridge is disconnected; wait for reconnect or restart Chrome.",
+        "message": (
+            "Bridge is connected."
+            if connected
+            else "Bridge is disconnected; wait for reconnect or restart Chrome."
+        ),
         "repair_action": "none" if connected else "wait_or_restart_chrome",
         "metadata": {
             "last_disconnected_at": _iso_or_none(
@@ -342,9 +339,7 @@ def chrome_connection_status() -> dict[str, Any]:
         "connected_since": (
             _iso_or_none(snapshot["connected_since"]) if connected else None
         ),
-        "extension_version": (
-            str(snapshot["extension_version"]) if connected else ""
-        ),
+        "extension_version": (str(snapshot["extension_version"]) if connected else ""),
         "bridge_lifecycle": _bridge_lifecycle(snapshot),
         "last_extension_disconnect": snapshot.get(
             "last_extension_disconnect",

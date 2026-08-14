@@ -84,9 +84,7 @@ def _overflow_result(result: ExecResult) -> ExecResult:
     else:
         error["reason"] = "result_too_large"
         error["detail"] = "the returned value exceeds the single-frame limit"
-        error[
-            "teaching"
-        ] = "Return a small summary instead of the whole object."
+        error["teaching"] = "Return a small summary instead of the whole object."
     return ExecResult(request_id=result.request_id, error=error)
 
 
@@ -138,9 +136,9 @@ class RemoteControlLink:
             )
         self._next_call_id += 1
         call_id = str(self._next_call_id)
-        future: asyncio.Future[
-            Mapping[str, Any]
-        ] = asyncio.get_running_loop().create_future()
+        future: asyncio.Future[Mapping[str, Any]] = (
+            asyncio.get_running_loop().create_future()
+        )
         self._pending[call_id] = future
         try:
             frame = await encode_frame_async(
@@ -172,9 +170,9 @@ class RemoteControlLink:
             raise WireProtocolError("approval transport is unavailable")
         self._next_approval_id += 1
         request_id = f"approval-{self._next_approval_id}"
-        future: asyncio.Future[
-            Mapping[str, Any]
-        ] = asyncio.get_running_loop().create_future()
+        future: asyncio.Future[Mapping[str, Any]] = (
+            asyncio.get_running_loop().create_future()
+        )
         self._pending_approvals[request_id] = future
         try:
             frame = await encode_frame_async(
@@ -509,8 +507,7 @@ def _api_misuse_teaching(exc: BaseException) -> str:
     if isinstance(exc, AttributeError) and obj is not None and name:
         negation = f"{type(obj).__name__} has no attribute {name!r}."
         surface = (
-            f"\nAvailable on {type(obj).__name__.lower()}: "
-            f"{_public_surface(obj)}."
+            f"\nAvailable on {type(obj).__name__.lower()}: " f"{_public_surface(obj)}."
         )
     return (
         f"{_IDENTITY_ANCHOR}\n{negation}{surface}\n"

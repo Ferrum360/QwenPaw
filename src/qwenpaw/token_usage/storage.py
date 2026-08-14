@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-"""File I/O for token usage data with atomic writes.
-"""
+"""File I/O for token usage data with atomic writes."""
 
 import json
 import logging

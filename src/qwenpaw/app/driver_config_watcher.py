@@ -84,9 +84,7 @@ class DriverConfigWatcher:
 
         removed_paths = sorted(set(old) - set(current))
         changed_paths = sorted(
-            path_id
-            for path_id, state in current.items()
-            if old.get(path_id) != state
+            path_id for path_id, state in current.items() if old.get(path_id) != state
         )
         current_names = {state[0] for state in current.values()}
         removed_names = {

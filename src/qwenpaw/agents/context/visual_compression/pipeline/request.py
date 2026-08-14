@@ -34,8 +34,7 @@ def _is_external_user(message: Msg) -> bool:
     metadata = message.metadata if isinstance(message.metadata, dict) else {}
     return (
         message.role == "user"
-        and metadata.get(QWENPAW_MESSAGE_TAG_KEY)
-        == EXTERNAL_USER_QUERY_MESSAGE_TAG
+        and metadata.get(QWENPAW_MESSAGE_TAG_KEY) == EXTERNAL_USER_QUERY_MESSAGE_TAG
     )
 
 
@@ -85,13 +84,9 @@ def transform_model_request(
 ) -> tuple[list[Msg], list[dict] | None, CompressionReceipt]:
     """Apply the provider-independent production compression pipeline."""
     receipt = CompressionReceipt()
-    cloned = [
-        Msg.model_validate(msg.model_dump(mode="json")) for msg in messages
-    ]
+    cloned = [Msg.model_validate(msg.model_dump(mode="json")) for msg in messages]
     copied_tools = (
-        json.loads(json.dumps(tools, ensure_ascii=False))
-        if tools is not None
-        else None
+        json.loads(json.dumps(tools, ensure_ascii=False)) if tools is not None else None
     )
     # Native images are correctness-owned by QwenPaw's normal formatter. They
     # are never removed to make room for synthetic pages; an already-oversized

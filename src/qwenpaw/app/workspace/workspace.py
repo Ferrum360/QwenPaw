@@ -10,6 +10,7 @@ Each Workspace represents a standalone agent workspace with its own:
 
 Request processing is handled by ``Runtime`` (see ``stream_query``).
 """
+
 import logging
 from pathlib import Path
 from typing import Any, AsyncGenerator, Iterable, Optional
@@ -437,7 +438,7 @@ class Workspace:
                     "working_dir": str(ws.workspace_dir),
                     "agent_id": ws.agent_id,
                     "title_refresh_callback": make_auto_title_refresh_callback(
-ws,
+                        ws,
                     ),
                 },
                 start_method="start",
@@ -633,8 +634,7 @@ ws,
             )
         except Exception as exc:
             logger.warning(
-                "weixin->wechat chats.json migration failed for "
-                "agent %s: %s",
+                "weixin->wechat chats.json migration failed for " "agent %s: %s",
                 self.agent_id,
                 exc,
             )
@@ -645,8 +645,7 @@ ws,
             )
         except Exception as exc:
             logger.warning(
-                "weixin->wechat jobs.json migration failed for "
-                "agent %s: %s",
+                "weixin->wechat jobs.json migration failed for " "agent %s: %s",
                 self.agent_id,
                 exc,
             )
@@ -706,11 +705,3 @@ ws,
             f"workspace={self.workspace_dir}, "
             f"status={status})"
         )
-
-
-
-
-
-
-
-

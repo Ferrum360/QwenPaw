@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Skill Market HTTP routes.
-"""
+"""Skill Market HTTP routes."""
 
 from __future__ import annotations
 
@@ -16,7 +15,6 @@ from ...market import (
     search_market,
 )
 from ...market.providers import PROVIDERS
-
 
 router = APIRouter(prefix="/market", tags=["market"])
 

@@ -4,6 +4,7 @@
 * Configuration resolution – which tools to guard and which to deny.
 * Structured logging for guard findings.
 """
+
 from __future__ import annotations
 
 import logging
@@ -196,9 +197,7 @@ def log_findings(tool_name: str, result: "ToolGuardResult") -> None:
         )
 
     summary_fn = (
-        logger.warning
-        if result.max_severity in _HIGH_SEVERITIES
-        else logger.info
+        logger.warning if result.max_severity in _HIGH_SEVERITIES else logger.info
     )
     summary_fn(
         "[TOOL GUARD] Summary for tool '%s': %d finding(s), "

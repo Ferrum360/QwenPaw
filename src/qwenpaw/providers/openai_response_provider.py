@@ -99,18 +99,12 @@ class OpenAIResponseModelCompat(OpenAIResponseModel):
         **generate_kwargs: Any,
     ) -> Any:
         max_tokens = generate_kwargs.pop("max_tokens", None)
-        if (
-            max_tokens is not None
-            and "max_output_tokens" not in generate_kwargs
-        ):
+        if max_tokens is not None and "max_output_tokens" not in generate_kwargs:
             generate_kwargs["max_output_tokens"] = max_tokens
         merged = {**self._extra_generate_kwargs, **generate_kwargs}
         disable_thinking = merged.pop("disable_thinking", False)
         inherited_max_tokens = merged.pop("max_tokens", None)
-        if (
-            inherited_max_tokens is not None
-            and "max_output_tokens" not in merged
-        ):
+        if inherited_max_tokens is not None and "max_output_tokens" not in merged:
             merged["max_output_tokens"] = inherited_max_tokens
         if disable_thinking:
             merged.pop("reasoning", None)
@@ -223,8 +217,7 @@ class OpenAIResponseProvider(OpenAIProvider):
                             {
                                 "type": "input_image",
                                 "image_url": (
-                                    "data:image/png;base64,"
-                                    f"{_PROBE_IMAGE_B64}"
+                                    "data:image/png;base64," f"{_PROBE_IMAGE_B64}"
                                 ),
                             },
                             {

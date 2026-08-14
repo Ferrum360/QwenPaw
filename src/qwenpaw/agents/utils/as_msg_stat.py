@@ -87,9 +87,7 @@ class AsBlockStat(BaseModel):
         if self.block_type == "tool_result":
             if not self.tool_output:
                 return ""
-            display_output = self.tool_output.split(TRUNCATION_NOTICE_MARKER)[
-                0
-            ]
+            display_output = self.tool_output.split(TRUNCATION_NOTICE_MARKER)[0]
             content = (
                 f"{self.tool_name} output="
                 f"{self._truncate(display_output, max_length)}"
@@ -125,8 +123,5 @@ class AsMsgStat(BaseModel):
         """Format message to string representation."""
         time_str = f"[{self.timestamp}] " if self.timestamp else ""
         header = f"{time_str}{self.name or self.role}:"
-        blocks = [
-            block.format(max_length, include_thinking)
-            for block in self.content
-        ]
+        blocks = [block.format(max_length, include_thinking) for block in self.content]
         return "\n".join([header] + [b for b in blocks if b])

@@ -244,10 +244,7 @@ class LlamaCppBackend:
             resolved_mmproj_path=resolved_mmproj_path,
         )
 
-        if (
-            model_name == self._server_model_name
-            and self._server_process is not None
-        ):
+        if model_name == self._server_model_name and self._server_process is not None:
             if self._server_process.returncode is None and (
                 port is None or port == self._server_port
             ):
@@ -724,8 +721,7 @@ class LlamaCppBackend:
                         return True
 
                     logger.info(
-                        "llama.cpp health check returned %s while "
-                        "waiting for %s",
+                        "llama.cpp health check returned %s while " "waiting for %s",
                         response.status_code,
                         health_url,
                     )
@@ -820,8 +816,7 @@ class LlamaCppBackend:
         for item in source_root.iterdir():
             if not item.is_file():
                 raise RuntimeError(
-                    "Unexpected directory structure in llama.cpp archive: "
-                    f"{item}",
+                    "Unexpected directory structure in llama.cpp archive: " f"{item}",
                 )
             shutil.copy2(item, dest_dir / item.name)
 
@@ -875,9 +870,7 @@ class LlamaCppBackend:
 
         if macos_version < self._MIN_MACOS_VERSION:
             current_version = ".".join(str(part) for part in macos_version)
-            min_version = ".".join(
-                str(part) for part in self._MIN_MACOS_VERSION
-            )
+            min_version = ".".join(str(part) for part in self._MIN_MACOS_VERSION)
             return (
                 False,
                 f"Unsupported macOS version: {current_version} "
@@ -927,8 +920,7 @@ class LlamaCppBackend:
                         "Windows CUDA package is only supported for x64.",
                     )
                 return (
-                    f"llama-{tag}-bin-win-cuda-"
-                    f"{self.cuda_version}-{self.arch}.zip"
+                    f"llama-{tag}-bin-win-cuda-" f"{self.cuda_version}-{self.arch}.zip"
                 )
             return f"llama-{tag}-bin-win-cpu-{self.arch}.zip"
 

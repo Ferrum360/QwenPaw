@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """API router for sending messages to channels."""
+
 from __future__ import annotations
 
 import logging
@@ -45,9 +46,7 @@ class SendMessageRequest(BaseModel):
 
     channel: str = Field(
         ...,
-        description=(
-            "Target channel (e.g., console, dingtalk, feishu, discord)"
-        ),
+        description=("Target channel (e.g., console, dingtalk, feishu, discord)"),
     )
     target_user: str = Field(
         ...,

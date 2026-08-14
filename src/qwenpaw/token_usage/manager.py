@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Token usage manager — thin orchestrator.
-"""
+"""Token usage manager — thin orchestrator."""
 
 import logging
 import threading
@@ -222,9 +221,7 @@ class TokenUsageManager:
             total_calls += calls
 
             # Aggregate by model
-            model_key = (
-                f"{r.provider_id}:{r.model}" if r.provider_id else r.model
-            )
+            model_key = f"{r.provider_id}:{r.model}" if r.provider_id else r.model
             bm = by_model_raw.setdefault(
                 model_key,
                 {

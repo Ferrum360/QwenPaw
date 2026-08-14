@@ -4,6 +4,7 @@
 Inherits LoopGate for per-session state isolation.
 Includes inline sliding-window similarity detection.
 """
+
 from __future__ import annotations
 
 import hashlib

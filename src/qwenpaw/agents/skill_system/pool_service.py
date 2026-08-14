@@ -148,9 +148,7 @@ class SkillPoolService:
         pool_dir = get_skill_pool_dir()
         skills: list[SkillInfo] = []
         for skill_name, entry in sorted(manifest.get("skills", {}).items()):
-            skill_dir = resolve_pool_skill_dir(skill_name) or (
-                pool_dir / skill_name
-            )
+            skill_dir = resolve_pool_skill_dir(skill_name) or (pool_dir / skill_name)
             skill = read_skill_from_dir(
                 skill_dir,
                 entry.get("source", "customized"),
@@ -257,10 +255,7 @@ class SkillPoolService:
                         ),
                     )
                 found = [(found[0][0], normalized_target)]
-            found = [
-                (d, normalize_skill_dir_name(renames.get(n, n)))
-                for d, n in found
-            ]
+            found = [(d, normalize_skill_dir_name(renames.get(n, n))) for d, n in found]
             manifest = read_skill_pool_manifest()
             existing_pool_names = (
                 set(
@@ -297,9 +292,7 @@ class SkillPoolService:
                 existing = manifest.get("skills", {}).get(
                     skill_name,
                 )
-                occupied = (
-                    existing is not None or (pool_dir / skill_name).exists()
-                )
+                occupied = existing is not None or (pool_dir / skill_name).exists()
                 if occupied:
                     conflicts.append(
                         build_import_conflict(
@@ -379,8 +372,7 @@ class SkillPoolService:
         except Exception as exc:
             raise SkillsError(
                 message=(
-                    "Skill pool files were deleted, but manifest update "
-                    "failed."
+                    "Skill pool files were deleted, but manifest update " "failed."
                 ),
                 details={
                     "skill_name": skill_name,
@@ -556,9 +548,7 @@ class SkillPoolService:
             get_skill_pool_dir(),
             skill_name,
         )
-        new_config = (
-            config if config is not None else entry.get("config") or {}
-        )
+        new_config = config if config is not None else entry.get("config") or {}
         old_md = (
             (skill_dir / "SKILL.md").read_text(encoding="utf-8")
             if (skill_dir / "SKILL.md").exists()
@@ -586,11 +576,7 @@ class SkillPoolService:
                 encoding="utf-8",
             )
 
-        source = (
-            "customized"
-            if content_changed
-            else entry.get("source", "customized")
-        )
+        source = "customized" if content_changed else entry.get("source", "customized")
 
         def _update(payload: dict[str, Any]) -> None:
             current_entry = payload["skills"].get(skill_name) or entry or {}
@@ -642,9 +628,7 @@ class SkillPoolService:
         if old_skill_dir.exists():
             shutil.rmtree(old_skill_dir)
 
-        new_config = (
-            config if config is not None else entry.get("config") or {}
-        )
+        new_config = config if config is not None else entry.get("config") or {}
 
         def _update(payload: dict[str, Any]) -> None:
             current_entry = payload["skills"].get(skill_name) or entry or {}
@@ -701,9 +685,7 @@ class SkillPoolService:
             return {"renamed": [], "overwritten": []}
 
         pinned = (
-            {str(t) for t in targets}
-            if isinstance(targets, list) and targets
-            else None
+            {str(t) for t in targets} if isinstance(targets, list) and targets else None
         )
         renamed: list[str] = []
         overwritten: list[str] = []
@@ -872,10 +854,7 @@ class SkillPoolService:
             return None
         ws_id = workspace_identity["workspace_id"]
         ws_name = workspace_identity["workspace_name"]
-        if (
-            entry.get("source") == "builtin"
-            and existing.get("source") == "builtin"
-        ):
+        if entry.get("source") == "builtin" and existing.get("source") == "builtin":
             pool_ver = entry.get("version_text", "")
             ws_ver = (existing.get("metadata") or {}).get(
                 "version_text",
@@ -900,8 +879,7 @@ class SkillPoolService:
                     }
                 if pool_lang and not ws_lang:
                     pool_md = (
-                        safe_skill_dir(get_skill_pool_dir(), final_name)
-                        / "SKILL.md"
+                        safe_skill_dir(get_skill_pool_dir(), final_name) / "SKILL.md"
                     )
                     ws_md = (
                         safe_skill_dir(
@@ -1037,9 +1015,7 @@ class SkillPoolService:
             metadata = build_skill_metadata(
                 final_name,
                 target_dir,
-                source="builtin"
-                if entry.get("source") == "builtin"
-                else "customized",
+                source="builtin" if entry.get("source") == "builtin" else "customized",
                 protected=False,
             )
             ws_entry: dict[str, Any] = {
@@ -1047,9 +1023,7 @@ class SkillPoolService:
                 "channels": prior.get("channels") or ["all"],
                 "source": metadata["source"],
                 "installed_from": pool_installed_from,
-                "config": prior["config"]
-                if "config" in prior
-                else pool_config,
+                "config": prior["config"] if "config" in prior else pool_config,
                 "metadata": metadata,
                 "requirements": metadata["requirements"],
                 "updated_at": metadata["updated_at"],

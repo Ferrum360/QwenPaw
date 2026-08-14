@@ -59,7 +59,9 @@ def check_skill_status() -> ToolChunk:
 
     # Context usage summary (Phase 2C)
     if usage and usage.total_bytes > 0:
-        lines.append(f"**Context Usage:** {usage.total_bytes:,} bytes (~{usage.total_tokens_estimated:,} tokens)")
+        lines.append(
+            f"**Context Usage:** {usage.total_bytes:,} bytes (~{usage.total_tokens_estimated:,} tokens)"
+        )
         lines.append("")
 
     # Core skills
@@ -75,7 +77,11 @@ def check_skill_status() -> ToolChunk:
     for skill_info in result.lazy_skills:
         status_icon = "✅" if skill_info.loaded else "⏳"
         size_str = f" ({skill_info.content_size:,} bytes)" if skill_info.loaded else ""
-        triggers_str = f" | Triggers: {', '.join(skill_info.triggers)}" if skill_info.triggers else ""
+        triggers_str = (
+            f" | Triggers: {', '.join(skill_info.triggers)}"
+            if skill_info.triggers
+            else ""
+        )
         lines.append(f"- {status_icon} `{skill_info.name}`{size_str}{triggers_str}")
     lines.append("")
 

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """Agent-native completion rubric gate."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -96,10 +97,7 @@ class CompletionRubricGate(LoopGate):
         state.continuation = self._evaluation_prompt()
         return StopHandlerResult(
             action=StopAction.INTERRUPT_AND_CONTINUE,
-            reason=(
-                f"completion rubric requested evaluation "
-                f"{state.evaluations}"
-            ),
+            reason=(f"completion rubric requested evaluation " f"{state.evaluations}"),
             reset_peers=True,
             continuation_metadata={
                 QWENPAW_MESSAGE_TAG_KEY: RUBRIC_EVALUATION_MESSAGE_TAG,

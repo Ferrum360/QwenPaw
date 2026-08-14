@@ -7,6 +7,7 @@ Context compaction is handled natively by AgentScope's
 ``ToolResultPruningMiddleware``. This class only manages long-term
 memory storage and retrieval.
 """
+
 import asyncio
 import logging
 from collections.abc import Callable
@@ -72,8 +73,7 @@ class ADBPGMemoryManager(BaseMemoryManager):
 
         if not self._adbpg_config:
             logger.warning(
-                "No adbpg_memory_config for agent '%s'. "
-                "Long-term memory DISABLED.",
+                "No adbpg_memory_config for agent '%s'. " "Long-term memory DISABLED.",
                 self.agent_id,
             )
             self._client = None
@@ -81,9 +81,7 @@ class ADBPGMemoryManager(BaseMemoryManager):
 
         # Resolve isolation modes
         cfg = self._adbpg_config
-        self._effective_agent_id = (
-            self.agent_id if cfg.memory_isolation else "shared"
-        )
+        self._effective_agent_id = self.agent_id if cfg.memory_isolation else "shared"
 
         try:
             if not cfg.rest_base_url.strip():

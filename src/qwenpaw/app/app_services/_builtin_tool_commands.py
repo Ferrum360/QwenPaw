@@ -38,9 +38,7 @@ async def _handle_tools(
             try:
                 import asyncio
 
-                elapsed_s = (
-                    asyncio.get_running_loop().time() - e.ctx.started_at
-                )
+                elapsed_s = asyncio.get_running_loop().time() - e.ctx.started_at
                 elapsed = f" {elapsed_s:.1f}s"
             except Exception:
                 pass

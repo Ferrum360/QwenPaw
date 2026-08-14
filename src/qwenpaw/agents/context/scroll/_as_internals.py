@@ -13,6 +13,7 @@ manager's hot path.
 Public 2.0 surface (``agent.model.count_tokens``, ``agent.state.context``,
 ``agent.context_config``) is intentionally NOT wrapped.
 """
+
 from __future__ import annotations
 
 from typing import Any

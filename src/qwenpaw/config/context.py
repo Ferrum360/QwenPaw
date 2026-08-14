@@ -5,6 +5,7 @@ This module provides a context variable to pass the agent's workspace
 directory to tool functions, allowing them to resolve relative paths
 correctly in a multi-agent environment.
 """
+
 from __future__ import annotations
 
 from contextvars import ContextVar

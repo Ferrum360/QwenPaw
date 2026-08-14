@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Market search service.
-"""
+"""Market search service."""
 
 from __future__ import annotations
 
@@ -12,7 +11,6 @@ from typing import Any
 from .categories import resolve as resolve_category
 from .providers import PROVIDERS
 from .schema import MarketResult, MarketSearchError, ProviderInfo
-
 
 logger = logging.getLogger(__name__)
 
@@ -69,9 +67,7 @@ async def search_market(
             continue
         sub_results, sub_has_more, sub_total = outcome
         results.extend(sub_results)
-        total = (
-            sub_total if isinstance(sub_total, int) and sub_total > 0 else 0
-        )
+        total = sub_total if isinstance(sub_total, int) and sub_total > 0 else 0
         by_provider[key] = (sub_has_more, total)
     return results, errors, by_provider
 

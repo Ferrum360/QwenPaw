@@ -18,6 +18,7 @@ LoopGate handles:
 
 Subclasses MUST still implement ``name``, ``check()``.
 """
+
 from __future__ import annotations
 
 import logging

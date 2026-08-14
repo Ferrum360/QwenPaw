@@ -284,8 +284,7 @@ def collect_coding_tools(
         return []
 
     project_dir = Path(
-        getattr(agent_config, "project_dir", None)
-        or str(workspace_dir or WORKING_DIR),
+        getattr(agent_config, "project_dir", None) or str(workspace_dir or WORKING_DIR),
     )
     result: list = []
 

@@ -126,9 +126,7 @@ class MultiAgentManager:
                 agent_ref = config.agents.profiles[agent_id]
                 event = asyncio.Event()
                 self._pending_starts[agent_id] = event
-                self._agent_startup_statuses[
-                    agent_id
-                ] = AgentStartupStatus.STARTING
+                self._agent_startup_statuses[agent_id] = AgentStartupStatus.STARTING
                 should_start = True
 
         if not should_start:
@@ -158,8 +156,7 @@ class MultiAgentManager:
 
             elapsed = time.perf_counter() - t0
             logger.debug(
-                f"Workspace created and started: {agent_id} "
-                f"({elapsed:.3f}s)",
+                f"Workspace created and started: {agent_id} " f"({elapsed:.3f}s)",
             )
 
             # Fire workspace_created hooks so plugins can provision
@@ -181,15 +178,11 @@ class MultiAgentManager:
             async with self._lock:
                 self._pending_starts.pop(agent_id, None)
                 if agent_id in self.agents:
-                    self._agent_startup_statuses[
-                        agent_id
-                    ] = AgentStartupStatus.RUNNING
+                    self._agent_startup_statuses[agent_id] = AgentStartupStatus.RUNNING
                 elif self._agent_startup_statuses.get(agent_id) == (
                     AgentStartupStatus.STARTING
                 ):
-                    self._agent_startup_statuses[
-                        agent_id
-                    ] = AgentStartupStatus.FAILED
+                    self._agent_startup_statuses[agent_id] = AgentStartupStatus.FAILED
             event.set()
 
     @staticmethod
@@ -254,10 +247,8 @@ class MultiAgentManager:
                 When omitted, the method captures the snapshot itself.
         """
         if active_tasks is None:
-            active_tasks = (
-                await old_instance.task_tracker.snapshot_active_tasks(
-                    owner=old_instance,
-                )
+            active_tasks = await old_instance.task_tracker.snapshot_active_tasks(
+                owner=old_instance,
             )
 
         if active_tasks:
@@ -274,11 +265,9 @@ class MultiAgentManager:
                 try:
                     completed = False
                     for _ in range(_OLD_WORKSPACE_TASK_MAX_WAIT_ROUNDS):
-                        completed = (
-                            await old_instance.task_tracker.wait_tasks_done(
-                                list(active_tasks.values()),
-                                timeout=_OLD_WORKSPACE_TASK_WAIT_SECONDS,
-                            )
+                        completed = await old_instance.task_tracker.wait_tasks_done(
+                            list(active_tasks.values()),
+                            timeout=_OLD_WORKSPACE_TASK_WAIT_SECONDS,
                         )
                         if completed:
                             break
@@ -324,8 +313,7 @@ class MultiAgentManager:
                 exc = task.exception()
                 if exc is not None:
                     logger.warning(
-                        f"Error in delayed cleanup task for {agent_id}: "
-                        f"{exc}.",
+                        f"Error in delayed cleanup task for {agent_id}: " f"{exc}.",
                     )
 
             cleanup_task.add_done_callback(_on_cleanup_done)
@@ -369,9 +357,7 @@ class MultiAgentManager:
             instance = self.agents[agent_id]
             await instance.stop()
             del self.agents[agent_id]
-            self._agent_startup_statuses[
-                agent_id
-            ] = AgentStartupStatus.DISABLED
+            self._agent_startup_statuses[agent_id] = AgentStartupStatus.DISABLED
             logger.info(f"Agent stopped and removed: {agent_id}")
             return True
 
@@ -457,8 +443,7 @@ class MultiAgentManager:
         config = load_config()
         if agent_id not in config.agents.profiles:
             logger.error(
-                f"Agent '{agent_id}' not found in configuration "
-                f"during reload",
+                f"Agent '{agent_id}' not found in configuration " f"during reload",
             )
             return False
 
@@ -541,10 +526,8 @@ class MultiAgentManager:
 
         # Snapshot only runs owned by the old workspace. Runs started through
         # the new workspace after the swap must not delay old resource cleanup.
-        old_active_tasks = (
-            await old_instance.task_tracker.snapshot_active_tasks(
-                owner=old_instance,
-            )
+        old_active_tasks = await old_instance.task_tracker.snapshot_active_tasks(
+            owner=old_instance,
         )
 
         # Step 5: Gracefully stop old instance (outside lock)
@@ -568,8 +551,7 @@ class MultiAgentManager:
             return
 
         logger.info(
-            f"Cancelling {len(self._cleanup_tasks)} pending cleanup "
-            f"task(s)...",
+            f"Cancelling {len(self._cleanup_tasks)} pending cleanup " f"task(s)...",
         )
         tasks = list(self._cleanup_tasks)
         self._cleanup_tasks.clear()
@@ -797,9 +779,7 @@ class MultiAgentManager:
             if agent_id in enabled_agents
         ]
         custom_agent_ids = [
-            agent_id
-            for agent_id in agent_ids
-            if agent_id not in core_agent_ids
+            agent_id for agent_id in agent_ids if agent_id not in core_agent_ids
         ]
 
         core_results = await asyncio.gather(
@@ -819,8 +799,7 @@ class MultiAgentManager:
 
         if core_result_map.get("default") is False:
             custom_result_map = {
-                agent_id: agent_id in self.agents
-                for agent_id in custom_agent_ids
+                agent_id: agent_id in self.agents for agent_id in custom_agent_ids
             }
             logger.error(
                 "Default agent failed to start; skipping %d custom agent(s)",

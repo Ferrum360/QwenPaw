@@ -111,12 +111,10 @@ def recalc(filename, timeout=30):
         )
     except subprocess.TimeoutExpired:
         return {
-            "error": (
-                f"LibreOffice recalculation timed out after {timeout} seconds"
-            ),
+            "error": (f"LibreOffice recalculation timed out after {timeout} seconds"),
         }
 
-    if result.returncode != 0 and result.returncode != 124:  
+    if result.returncode != 0 and result.returncode != 124:
         error_msg = result.stderr or "Unknown error during recalculation"
         if "Module1" in error_msg or "RecalculateAndSave" not in error_msg:
             return {"error": "LibreOffice macro not configured properly"}
@@ -161,7 +159,7 @@ def recalc(filename, timeout=30):
             if locations:
                 result["error_summary"][err_type] = {
                     "count": len(locations),
-                    "locations": locations[:20],  
+                    "locations": locations[:20],
                 }
 
         wb_formulas = load_workbook(filename, data_only=False)

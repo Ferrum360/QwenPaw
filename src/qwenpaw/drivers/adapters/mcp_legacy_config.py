@@ -207,9 +207,7 @@ def legacy_mcp_client_to_driver(
     transport = str(getattr(config, "transport", "stdio") or "stdio")
     oauth = getattr(config, "oauth", None)
     credential_alias = (
-        CREDENTIAL_ALIAS_OAUTH
-        if oauth is not None
-        else CREDENTIAL_ALIAS_STATIC
+        CREDENTIAL_ALIAS_OAUTH if oauth is not None else CREDENTIAL_ALIAS_STATIC
     )
     now = time.time()
 
@@ -379,9 +377,7 @@ def _legacy_credential_refs(
 
 def _args_may_contain_secret(args: list[str]) -> bool:
     markers = ("api-key", "apikey", "token", "secret", "password", "auth")
-    return any(
-        any(marker in str(arg).lower() for marker in markers) for arg in args
-    )
+    return any(any(marker in str(arg).lower() for marker in markers) for arg in args)
 
 
 def _write_report(cards_dir: Path, report: LegacyMCPMigrationReport) -> None:
@@ -518,9 +514,7 @@ async def _clear_upgraded_secrets(
         except Exception:
             continue
         remaining = {
-            key: value
-            for key, value in record.secrets.items()
-            if key not in fields
+            key: value for key, value in record.secrets.items() if key not in fields
         }
         if remaining:
             await store.put(
@@ -545,8 +539,7 @@ def _prune_orphan_credential_aliases(
     orphans = [
         alias
         for alias, cred in dict(card.credentials).items()
-        if str(getattr(cred, "ref", "") or "") == store_ref
-        and alias not in referenced
+        if str(getattr(cred, "ref", "") or "") == store_ref and alias not in referenced
     ]
     for alias in orphans:
         card.credentials.pop(alias, None)

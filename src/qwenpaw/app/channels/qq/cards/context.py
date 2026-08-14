@@ -5,6 +5,7 @@
 Covers extracting metadata / body text from runtime Msg objects and
 building stateless routing context for button callbacks.
 """
+
 from __future__ import annotations
 
 import logging

@@ -9,7 +9,6 @@ import subprocess
 import sys
 from typing import Optional
 
-
 _PORT_ARG_PATTERN = re.compile(r"(?:^|\s)--port(?:=|\s+)(\d+)(?=\s|$)")
 
 

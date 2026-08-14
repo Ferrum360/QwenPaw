@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """Token accounting helpers for ``/history`` and context inspection."""
+
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
@@ -22,15 +23,11 @@ async def estimate_context_tokens(
     summary = state.summary if isinstance(state.summary, str) else ""
     summary_tokens = await handler.count_str_token(summary)
 
-    messages_detail = [
-        await handler.stat_message(msg) for msg in state.context
-    ]
+    messages_detail = [await handler.stat_message(msg) for msg in state.context]
     messages_tokens = sum(stat.total_tokens for stat in messages_detail)
     estimated_tokens = messages_tokens + summary_tokens
     usage_ratio = (
-        (estimated_tokens / max_input_length * 100)
-        if max_input_length > 0
-        else 0
+        (estimated_tokens / max_input_length * 100) if max_input_length > 0 else 0
     )
 
     return {
@@ -61,8 +58,7 @@ async def format_history_str(
         blocks_info = ""
         if msg_stat.content:
             block_strs = [
-                f"{b.block_type}(tokens={b.token_count})"
-                for b in msg_stat.content
+                f"{b.block_type}(tokens={b.token_count})" for b in msg_stat.content
             ]
             blocks_info = f"\n    content: [{', '.join(block_strs)}]"
 

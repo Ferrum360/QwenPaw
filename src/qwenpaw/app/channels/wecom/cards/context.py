@@ -8,6 +8,7 @@ callbacks, and draining the active "🤔 Thinking..." stream before
 sending a card.  Each helper takes ``channel`` explicitly so card
 modules don't reach into dispatcher internals.
 """
+
 from __future__ import annotations
 
 import asyncio

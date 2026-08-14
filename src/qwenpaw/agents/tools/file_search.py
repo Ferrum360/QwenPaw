@@ -175,11 +175,7 @@ def _resolve_search_root(
     search_root = (
         Path(_resolve_file_path(path))
         if path
-        else (
-            get_current_project_dir()
-            or get_current_workspace_dir()
-            or WORKING_DIR
-        )
+        else (get_current_project_dir() or get_current_workspace_dir() or WORKING_DIR)
     )
     try:
         exists = search_root.exists()
@@ -344,9 +340,7 @@ def _output_context_for_hit(
     # Find the index of hit_line_no in the buffer for fast slicing
     # hit_idx is always found since hit_line_no was taken from the buffer
     hit_idx = next(
-        idx
-        for idx, (line_no, _) in enumerate(line_buffer)
-        if line_no == hit_line_no
+        idx for idx, (line_no, _) in enumerate(line_buffer) if line_no == hit_line_no
     )
 
     slice_start = max(0, hit_idx - context_lines)
@@ -445,9 +439,7 @@ def _walk_and_grep(  # noqa: C901  pylint: disable=too-many-branches,too-many-lo
             break
 
         display_path = (
-            file_path.name
-            if single_file
-            else _relative_display(file_path, search_root)
+            file_path.name if single_file else _relative_display(file_path, search_root)
         )
 
         # Sliding window holds (line_no, line_content) tuples

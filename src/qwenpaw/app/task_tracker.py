@@ -5,6 +5,7 @@
 event buffer. Reconnects get buffer replay + new events. Cleanup when task
 completes.
 """
+
 from __future__ import annotations
 
 import asyncio
@@ -132,8 +133,7 @@ class TaskTracker:
             return {
                 run_key: state.task
                 for run_key, state in self._runs.items()
-                if not state.task.done()
-                and (owner is None or state.owner is owner)
+                if not state.task.done() and (owner is None or state.owner is owner)
             }
 
     async def wait_tasks_done(
@@ -298,8 +298,7 @@ class TaskTracker:
                 except Exception:
                     logger.exception("run error run_key=%s", run_key)
                     err_sse = (
-                        "data: "
-                        f"{json.dumps({'error': 'internal server error'})}\n\n"
+                        "data: " f"{json.dumps({'error': 'internal server error'})}\n\n"
                     )
                     tracker = tracker_ref()
                     if tracker is not None:

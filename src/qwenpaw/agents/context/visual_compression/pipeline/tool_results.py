@@ -80,8 +80,7 @@ def _ascii_word_boundary_after(text: str, prefix: str) -> bool:
 def _visual_rows(text: str, columns: int) -> int:
     """Estimate wrapped visual rows."""
     return sum(
-        max(1, math.ceil(len(line) / max(1, columns)))
-        for line in text.split("\n")
+        max(1, math.ceil(len(line) / max(1, columns))) for line in text.split("\n")
     )
 
 
@@ -89,12 +88,8 @@ def _classify_content(text: str) -> str:
     """Classify content for structured or head-tail paging."""
     head = text[:4096]
     stripped = _trim_context_start(head)
-    after_object = (
-        _trim_context_start(stripped[1:]) if stripped.startswith("{") else ""
-    )
-    after_array = (
-        _trim_context_start(stripped[1:]) if stripped.startswith("[") else ""
-    )
+    after_object = _trim_context_start(stripped[1:]) if stripped.startswith("{") else ""
+    after_array = _trim_context_start(stripped[1:]) if stripped.startswith("[") else ""
     array_starts_value = bool(after_array) and (
         after_array[0] in {'"', "{", "[", "]"}
         or "0" <= after_array[0] <= "9"
@@ -131,10 +126,7 @@ def _classify_content(text: str) -> str:
             r"\d{4}-\d{2}-\d{2}[T ]?|\d{2}:\d{2}:\d{2}\b)",
             flags=re.ASCII,
         )
-        if (
-            sum(bool(log_line.search(line)) for line in lines) / len(lines)
-            >= 0.3
-        ):
+        if sum(bool(log_line.search(line)) for line in lines) / len(lines) >= 0.3:
             return "log"
     return "other"
 

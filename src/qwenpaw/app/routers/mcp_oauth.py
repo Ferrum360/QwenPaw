@@ -100,9 +100,7 @@ def _purge_expired() -> None:
 
 def _generate_code_verifier() -> str:
     """Generate a cryptographically random PKCE code_verifier (RFC 7636)."""
-    return (
-        base64.urlsafe_b64encode(secrets.token_bytes(32)).rstrip(b"=").decode()
-    )
+    return base64.urlsafe_b64encode(secrets.token_bytes(32)).rstrip(b"=").decode()
 
 
 def _code_challenge(verifier: str) -> str:
@@ -473,14 +471,10 @@ async def oauth_start(
     # -- Resolve client_id -------------------------------------------------
     existing_oauth = await _load_optional_oauth_credential(agent, client_key)
     client_id = body.client_id or (
-        str(existing_oauth.public.get("client_id") or "")
-        if existing_oauth
-        else ""
+        str(existing_oauth.public.get("client_id") or "") if existing_oauth else ""
     )
     if not client_id and registration_endpoint:
-        client_id = (
-            await _dynamic_register(registration_endpoint, redirect_uri) or ""
-        )
+        client_id = await _dynamic_register(registration_endpoint, redirect_uri) or ""
 
     # -- PKCE --------------------------------------------------------------
     verifier = _generate_code_verifier()
@@ -558,8 +552,7 @@ async def _exchange_code_for_tokens(
 
     if resp.status_code not in (200, 201):
         raise ValueError(
-            f"Token exchange failed (HTTP {resp.status_code}): "
-            f"{resp.text[:300]}",
+            f"Token exchange failed (HTTP {resp.status_code}): " f"{resp.text[:300]}",
         )
     return resp.json()
 
@@ -607,8 +600,7 @@ async def _persist_tokens(
     secrets_map = dict(existing.secrets) if existing else {}
     public.update(
         {
-            "client_id": session.client_id
-            or str(public.get("client_id") or ""),
+            "client_id": session.client_id or str(public.get("client_id") or ""),
             "scope": scope,
             "expires_at": expires_at,
             "token_endpoint": session.token_endpoint,

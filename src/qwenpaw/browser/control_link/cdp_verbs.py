@@ -83,10 +83,7 @@ def _normalized_key_parts(key: str) -> tuple[list[str], str]:
     normalized_modifiers: list[str] = []
     for modifier in modifiers:
         normalized = "Meta" if modifier == "Mod" else modifier
-        if (
-            normalized not in _MODIFIER_BITS
-            or normalized in normalized_modifiers
-        ):
+        if normalized not in _MODIFIER_BITS or normalized in normalized_modifiers:
             return [], ""
         normalized_modifiers.append(normalized)
     if len(main_key) == 1 and main_key.isupper():
@@ -98,9 +95,7 @@ def _normalized_key_parts(key: str) -> tuple[list[str], str]:
 def _key_event_frames(key: str) -> list[dict[str, Any]]:
     """Build faithful CDP keyboard frames for the supported press subset."""
     normalized_modifiers, main_key = _normalized_key_parts(key)
-    modifier_bits = sum(
-        _MODIFIER_BITS[modifier] for modifier in normalized_modifiers
-    )
+    modifier_bits = sum(_MODIFIER_BITS[modifier] for modifier in normalized_modifiers)
     named = _NAMED_KEYS.get(main_key)
     if not main_key or (named is None and len(main_key) != 1):
         supported = ", ".join(_NAMED_KEYS)
@@ -165,9 +160,7 @@ def _key_event_frames(key: str) -> list[dict[str, Any]]:
 
 async def persist_screenshot_async(image: bytes) -> dict[str, str]:
     """Write browser PNG bytes to the active workspace and return its path."""
-    directory = get_current_workspace_dir() or (
-        WORKING_DIR / "workspaces" / "default"
-    )
+    directory = get_current_workspace_dir() or (WORKING_DIR / "workspaces" / "default")
     directory = Path(directory).expanduser()
     await make_dirs_async(directory)
     digest = hashlib.sha256(image).hexdigest()
@@ -394,8 +387,7 @@ class CdpVerbsMixin:
                 cause=ErrorCause.STATE_STALE,
                 suggested_action="retry",
                 reason=(
-                    "the cross-origin iframe disappeared before it could "
-                    "be resolved"
+                    "the cross-origin iframe disappeared before it could " "be resolved"
                 ),
             )
         await self._cdp(
@@ -529,10 +521,7 @@ class CdpVerbsMixin:
                 timeout=timeout,
             )
         except ValueError as exc:
-            if (
-                frame_selector is None
-                or "QWENPAW_CROSS_ORIGIN_FRAME:" not in str(exc)
-            ):
+            if frame_selector is None or "QWENPAW_CROSS_ORIGIN_FRAME:" not in str(exc):
                 raise
             return await self._resolve_in_frame(
                 owner,
@@ -574,9 +563,7 @@ class CdpVerbsMixin:
             raise BrowserError(
                 category=ErrorCategory.FATAL,
                 cause=ErrorCause.API_MISUSE,
-                suggested_action=(
-                    "Use one of: load, domcontentloaded, networkidle."
-                ),
+                suggested_action=("Use one of: load, domcontentloaded, networkidle."),
                 reason=f"unknown load state {state!r}",
             )
         deadline = time.monotonic() + (
@@ -736,9 +723,7 @@ class CdpVerbsMixin:
             raise BrowserError(
                 category=ErrorCategory.FATAL,
                 cause=ErrorCause.API_MISUSE,
-                suggested_action=(
-                    "Use one of: attached, visible, hidden, detached."
-                ),
+                suggested_action=("Use one of: attached, visible, hidden, detached."),
                 reason=f"unknown locator wait state {state!r}",
             )
         timeout_ms = float(params.get("timeout", 30_000))
@@ -992,9 +977,7 @@ class CdpVerbsMixin:
         )
         self._invalidate_injected(params.get("page_id"))
         return {
-            "url": (await self._m_current_surface(params, timeout=timeout))[
-                "url"
-            ],
+            "url": (await self._m_current_surface(params, timeout=timeout))["url"],
         }
 
     async def _m_go_back(
@@ -1040,9 +1023,7 @@ class CdpVerbsMixin:
             self._invalidate_injected(page_id)
             return {"url": str(entries[target].get("url", ""))}
         return {
-            "url": (await self._m_current_surface(params, timeout=timeout))[
-                "url"
-            ],
+            "url": (await self._m_current_surface(params, timeout=timeout))["url"],
         }
 
     async def _m_input(

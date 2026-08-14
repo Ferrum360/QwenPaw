@@ -6,6 +6,7 @@ types that ``stream_query`` produces and all channels consume.  These are
 qwenpaw's own envelope protocol — independent of agentscope's internal
 event types.
 """
+
 from __future__ import annotations
 
 from enum import Enum
@@ -13,7 +14,6 @@ from typing import Any, Dict, List, Optional, Union
 from uuid import uuid4
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
-
 
 # ---------------------------------------------------------------------------
 # Enums.

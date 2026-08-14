@@ -10,6 +10,7 @@ Two lookup tables drive the dispatch:
 Public entry-points (called by :class:`~..channel.TelegramChannel`):
 :meth:`try_send_card_for_event` and :meth:`handle_callback_query`.
 """
+
 from __future__ import annotations
 
 import logging

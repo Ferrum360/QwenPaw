@@ -196,8 +196,7 @@ def _try_keyring_get() -> Optional[str]:
         result, timed_out = _call_with_timeout(_get, _KEYRING_TIMEOUT)
         if timed_out:
             logger.debug(
-                "keyring get timed out after %ds, "
-                "falling back to file storage",
+                "keyring get timed out after %ds, " "falling back to file storage",
                 _KEYRING_TIMEOUT,
             )
             return None
@@ -230,8 +229,7 @@ def _try_keyring_set(key_hex: str) -> bool:
         _, timed_out = _call_with_timeout(_set, _KEYRING_TIMEOUT)
         if timed_out:
             logger.debug(
-                "keyring set timed out after %ds, "
-                "falling back to file storage",
+                "keyring set timed out after %ds, " "falling back to file storage",
                 _KEYRING_TIMEOUT,
             )
             return False
@@ -440,11 +438,7 @@ def encrypt_dict_fields(
     """Return a shallow copy of *data* with *secret_fields* encrypted."""
     result = dict(data)
     for field in secret_fields:
-        if (
-            field in result
-            and isinstance(result[field], str)
-            and result[field]
-        ):
+        if field in result and isinstance(result[field], str) and result[field]:
             if not is_encrypted(result[field]):
                 result[field] = encrypt(result[field])
     return result
@@ -457,10 +451,6 @@ def decrypt_dict_fields(
     """Return a shallow copy of *data* with *secret_fields* decrypted."""
     result = dict(data)
     for field in secret_fields:
-        if (
-            field in result
-            and isinstance(result[field], str)
-            and result[field]
-        ):
+        if field in result and isinstance(result[field], str) and result[field]:
             result[field] = decrypt(result[field])
     return result

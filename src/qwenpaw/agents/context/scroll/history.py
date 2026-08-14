@@ -175,8 +175,7 @@ class HistoryStore:
                 "ON conversation_history(agent_id)",
             )
             self._conn.execute(
-                "CREATE INDEX IF NOT EXISTS ch_kind "
-                "ON conversation_history(kind)",
+                "CREATE INDEX IF NOT EXISTS ch_kind " "ON conversation_history(kind)",
             )
             self._conn.execute(
                 "CREATE INDEX IF NOT EXISTS ch_created_at "
@@ -521,9 +520,7 @@ class HistoryStore:
                     ).fetchall()
                     existing_keys = {str(row["dedup_key"]) for row in existing}
                     duplicates = [
-                        row
-                        for row in rows
-                        if str(row["dedup_key"]) in existing_keys
+                        row for row in rows if str(row["dedup_key"]) in existing_keys
                     ]
                     movable = [
                         row

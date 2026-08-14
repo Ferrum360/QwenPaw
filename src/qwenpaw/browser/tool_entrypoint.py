@@ -50,9 +50,7 @@ async def relocate_overflow_output_async(error: dict) -> dict:
             f"{teaching} The full output was lost; re-run this step."
         ).strip()
         return resolved
-    directory = get_current_workspace_dir() or (
-        WORKING_DIR / "workspaces" / "default"
-    )
+    directory = get_current_workspace_dir() or (WORKING_DIR / "workspaces" / "default")
     directory = Path(directory).expanduser()
     await make_dirs_async(directory)
     digest = hashlib.sha256(contents).hexdigest()

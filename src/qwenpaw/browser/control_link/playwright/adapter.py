@@ -98,9 +98,7 @@ def teaching_from_strict_violation(exc: Exception) -> BrowserError | None:
             "Scope to a stable container, then locate its child element."
         ),
         reason=str(exc),
-        example=(
-            'page.get_by_role("dialog").' 'get_by_role("button", name="OK")'
-        ),
+        example=('page.get_by_role("dialog").' 'get_by_role("button", name="OK")'),
     )
 
 
@@ -183,9 +181,7 @@ class PlaywrightControlLink:
             raise BrowserError(
                 category=ErrorCategory.RETRYABLE,
                 cause=ErrorCause.STATE_STALE,
-                suggested_action=(
-                    "Reconnect first: browser = await Browser.connect()"
-                ),
+                suggested_action=("Reconnect first: browser = await Browser.connect()"),
                 reason="browser session is closed",
                 detail="this session was closed earlier in the chat",
             )
@@ -207,9 +203,7 @@ class PlaywrightControlLink:
             raise BrowserError(
                 category=ErrorCategory.RETRYABLE,
                 cause=ErrorCause.STATE_STALE,
-                suggested_action=(
-                    "Open a fresh page with await browser.open(url)"
-                ),
+                suggested_action=("Open a fresh page with await browser.open(url)"),
                 reason="no active page in this session",
                 detail="pages are released when a response cycle ends",
             )
@@ -219,9 +213,7 @@ class PlaywrightControlLink:
             raise BrowserError(
                 category=ErrorCategory.RETRYABLE,
                 cause=ErrorCause.STATE_STALE,
-                suggested_action=(
-                    "Open a fresh page with await browser.open(url)"
-                ),
+                suggested_action=("Open a fresh page with await browser.open(url)"),
                 reason="no active page in this session",
                 detail="pages are released when a response cycle ends",
             ) from exc
@@ -266,8 +258,7 @@ class PlaywrightControlLink:
         fixed_profile = process.get("fixed_profile")
         if (
             fixed_profile is not None
-            and self._fixed_profile_workspaces.get(fixed_profile)
-            == workspace_id
+            and self._fixed_profile_workspaces.get(fixed_profile) == workspace_id
         ):
             self._fixed_profile_workspaces.pop(fixed_profile, None)
 
@@ -319,9 +310,7 @@ class PlaywrightControlLink:
                     fixed_profile = params.get("user_data_dir")
                     if fixed_profile:
                         fixed_profile = str(
-                            pathlib.Path(str(fixed_profile))
-                            .expanduser()
-                            .resolve(),
+                            pathlib.Path(str(fixed_profile)).expanduser().resolve(),
                         )
                         profile_workspace = self._fixed_profile_workspaces.get(
                             fixed_profile,
@@ -344,21 +333,17 @@ class PlaywrightControlLink:
                         if fixed_profile is not None
                         else await self._default_profile_dir()
                     )
-                    context = (
-                        await self._pw.chromium.launch_persistent_context(
-                            user_data_dir,
-                            **launch_kwargs,
-                            **context_kwargs,
-                        )
+                    context = await self._pw.chromium.launch_persistent_context(
+                        user_data_dir,
+                        **launch_kwargs,
+                        **context_kwargs,
                     )
                     self._procs[proc_key] = {
                         "context": context,
                         "fixed_profile": fixed_profile,
                     }
                     if fixed_profile is not None:
-                        self._fixed_profile_workspaces[
-                            fixed_profile
-                        ] = workspace_id
+                        self._fixed_profile_workspaces[fixed_profile] = workspace_id
                 return self._procs[proc_key]["context"]
             if proc_key not in self._procs:
                 browser = await self._pw.chromium.launch(**launch_kwargs)
@@ -394,8 +379,7 @@ class PlaywrightControlLink:
                     "Wait for QwenPaw Desktop to prepare Chromium, then retry."
                 ),
                 reason=(
-                    "Managed Playwright Chromium is downloading in the "
-                    "background."
+                    "Managed Playwright Chromium is downloading in the " "background."
                 ),
                 detail=detail,
             )

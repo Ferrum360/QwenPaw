@@ -422,8 +422,7 @@ def _setup_security_capabilities(
     ):
         kernel32.DeleteProcThreadAttributeList(attr_list)
         raise OSError(
-            f"UpdateProcThreadAttribute failed: "
-            f"error={ctypes.get_last_error()}",
+            f"UpdateProcThreadAttribute failed: " f"error={ctypes.get_last_error()}",
         )
 
     return app_container_psid, cap_psids, sec_cap, attr_list
@@ -612,8 +611,7 @@ def _compute_acl_fingerprint(config: SandboxConfig) -> str:
             os.path.normpath(os.path.expanduser(p)) for p in config.deny_paths
         ),
         "mounts": sorted(
-            (os.path.normpath(m.path), m.writable, m.executable)
-            for m in config.mounts
+            (os.path.normpath(m.path), m.writable, m.executable) for m in config.mounts
         ),
         "network_allow": sorted(config.network_allow),
         "python_dir": os.path.normpath(python_dir) if python_dir else None,
@@ -723,8 +721,7 @@ class WindowsAppContainerSandbox(WindowsSandboxBase):
         self._container_name: Optional[str] = None
         self._container_sid: Optional[str] = None
         self._state_dir = (
-            Path(os.environ.get("USERPROFILE", os.path.expanduser("~")))
-            / ".qwenpaw"
+            Path(os.environ.get("USERPROFILE", os.path.expanduser("~"))) / ".qwenpaw"
         )
 
     async def __aenter__(self):
@@ -881,9 +878,7 @@ class WindowsAppContainerSandbox(WindowsSandboxBase):
 # Shutdown cleanup
 # ═══════════════════════════════════════════════════════════════════════════
 
-_state_dir = (
-    Path(os.environ.get("USERPROFILE", os.path.expanduser("~"))) / ".qwenpaw"
-)
+_state_dir = Path(os.environ.get("USERPROFILE", os.path.expanduser("~"))) / ".qwenpaw"
 
 
 def _move_to_failed_cleanup(

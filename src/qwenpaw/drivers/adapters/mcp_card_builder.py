@@ -215,9 +215,7 @@ def build_mcp_client_info_payload(
         "access_summary": {
             "default_effect": card.policy.default_effect,
             "overrides_count": sum(
-                1
-                for rule in card.policy.rules
-                if _is_tool_access_override(rule)
+                1 for rule in card.policy.rules if _is_tool_access_override(rule)
             ),
         },
     }
@@ -284,9 +282,7 @@ def _is_tool_access_override(rule: Any) -> bool:
         return True
     subject = rule.subject.strip()
     return (
-        subject == "*"
-        or subject.startswith("channel:")
-        or subject.startswith("user:")
+        subject == "*" or subject.startswith("channel:") or subject.startswith("user:")
     )
 
 
@@ -295,9 +291,7 @@ def _oauth_status(record: CredentialRecord | None) -> dict[str, Any] | None:
         return None
     access_token = str(record.secrets.get("access_token") or "")
     expires_at = float(record.public.get("expires_at") or 0.0)
-    authorized = bool(access_token) and (
-        expires_at <= 0 or expires_at > time.time()
-    )
+    authorized = bool(access_token) and (expires_at <= 0 or expires_at > time.time())
     return {
         "authorized": authorized,
         "expires_at": expires_at,

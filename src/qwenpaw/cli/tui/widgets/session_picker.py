@@ -142,14 +142,10 @@ class SessionPicker(ModalScreen[str | None]):
         self.item_sessions = {}
         needle = query.casefold().strip()
         matches = [
-            session
-            for session in self._sessions
-            if needle in session.title.casefold()
+            session for session in self._sessions if needle in session.title.casefold()
         ]
         if not matches:
-            message = (
-                "No sessions match" if needle else "No previous sessions yet"
-            )
+            message = "No sessions match" if needle else "No previous sessions yet"
             return [ListItem(Static(message), disabled=True)]
         items: list[ListItem] = []
         for index, session in enumerate(matches):

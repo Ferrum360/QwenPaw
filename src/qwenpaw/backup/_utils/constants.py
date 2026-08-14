@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """Shared constants and path helpers used across backup sub-modules."""
+
 from __future__ import annotations
 
 import json
@@ -30,8 +31,7 @@ def validate_backup_id(backup_id: str) -> None:
     """Raise ``ValueError`` if *backup_id* contains unsafe characters."""
     if not BACKUP_ID_RE.match(backup_id):
         raise ValueError(
-            f"Invalid backup id {backup_id!r}: "
-            f"must match {BACKUP_ID_RE.pattern}",
+            f"Invalid backup id {backup_id!r}: " f"must match {BACKUP_ID_RE.pattern}",
         )
 
 

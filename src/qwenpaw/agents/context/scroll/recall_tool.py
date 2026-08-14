@@ -52,9 +52,7 @@ _RECALL_IN_FLIGHT_NOTICE = (
     "current user turn. Wait for that result instead of issuing a duplicate "
     "concurrent recall."
 )
-_RECALL_OBSERVATION_TRUNCATED = (
-    "\n[… recall observation truncated to byte limit]"
-)
+_RECALL_OBSERVATION_TRUNCATED = "\n[… recall observation truncated to byte limit]"
 
 
 class RecallSnapshotChangedError(ValueError):
@@ -73,12 +71,7 @@ def _normalize_seq_arg(value: int | str | None, name: str) -> int | None:
         return None
     if type(value) is int:  # ``bool`` is an ``int`` subclass; reject it.
         normalized = value
-    elif (
-        isinstance(value, str)
-        and value
-        and value.isascii()
-        and value.isdecimal()
-    ):
+    elif isinstance(value, str) and value and value.isascii() and value.isdecimal():
         normalized = int(value)
     else:
         raise ValueError(
@@ -117,8 +110,7 @@ def _normalize_expand_args(
         return normalized_lo, normalized_hi
     except ValueError as exc:
         text = _bound_observation(
-            f'RECALL FAILED — invalid op="expand" seq span '
-            f"(ValueError: {exc}).",
+            f'RECALL FAILED — invalid op="expand" seq span ' f"(ValueError: {exc}).",
             max_bytes,
         )
         return ToolChunk(
@@ -465,8 +457,7 @@ def _render_rows(rows: list[dict]) -> str:
     for row in rows:
         if row.get("_truncated"):
             parts.append(
-                f"[… truncated at {row.get('_row_cap')} rows — "
-                "narrow the span]",
+                f"[… truncated at {row.get('_row_cap')} rows — " "narrow the span]",
             )
             continue
         turn = row.get("turn")
@@ -490,11 +481,7 @@ def _render_rows(rows: list[dict]) -> str:
                 header += f" {lineage}"
             rendered_turn = _render_rows(turn)
             matched_row = next(
-                (
-                    item
-                    for item in turn
-                    if item.get("seq") == row.get("match_seq")
-                ),
+                (item for item in turn if item.get("seq") == row.get("match_seq")),
                 None,
             )
             match_content = str(row.get("content") or "").rstrip()
@@ -514,9 +501,7 @@ def _render_rows(rows: list[dict]) -> str:
             )
             continue
         meta = " ".join(
-            f"{k}={row[k]}"
-            for k in _ROW_META_KEYS
-            if row.get(k) not in (None, "")
+            f"{k}={row[k]}" for k in _ROW_META_KEYS if row.get(k) not in (None, "")
         )
         head = f"— seq={row.get('seq')}" + (f" {meta}" if meta else "")
         body = str(row.get("content") or "").rstrip()
@@ -725,8 +710,7 @@ def _run_days_between(
         )
     if cursor is not None:
         return (
-            'RECALL FAILED — op="days_between" does not paginate; omit '
-            "cursor.",
+            'RECALL FAILED — op="days_between" does not paginate; omit ' "cursor.",
             False,
             {},
         )
@@ -742,10 +726,7 @@ def _run_days_between(
 def _execution_error_detail(op: str) -> str:
     """Operation-specific failure wording for tool observations."""
     if op == "days_between":
-        return (
-            "the date difference was NOT computed; fix the parameters and "
-            "retry"
-        )
+        return "the date difference was NOT computed; fix the parameters and " "retry"
     return (
         "the history was NOT read. This is an execution error, not an empty "
         "history: fix the parameters and retry, or say explicitly that you "
@@ -876,8 +857,7 @@ def make_recall_history(
             elif op == "recall_tool":
                 if not (tool_call_id or "").strip():
                     return (
-                        'RECALL FAILED — op="recall_tool" needs a '
-                        "tool_call_id.",
+                        'RECALL FAILED — op="recall_tool" needs a ' "tool_call_id.",
                         False,
                         {},
                     )
@@ -1030,9 +1010,7 @@ def make_recall_history(
             block_target = ok
             return ToolChunk(
                 content=[TextBlock(type="text", text=text)],
-                state=(
-                    ToolResultState.SUCCESS if ok else ToolResultState.ERROR
-                ),
+                state=(ToolResultState.SUCCESS if ok else ToolResultState.ERROR),
                 metadata=metadata,
             )
         finally:

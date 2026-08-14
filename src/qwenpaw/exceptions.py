@@ -3,7 +3,6 @@
 
 from typing import Any, Dict, Optional
 
-
 # ==================== Base Exceptions ====================
 
 
@@ -360,9 +359,7 @@ class SkillScanError(SkillsError):
         skill_name = getattr(result, "skill_name", "unknown")
         max_severity = getattr(result, "max_severity", None)
         max_sev_str = (
-            getattr(max_severity, "value", "UNKNOWN")
-            if max_severity
-            else "UNKNOWN"
+            getattr(max_severity, "value", "UNKNOWN") if max_severity else "UNKNOWN"
         )
 
         def _loc(f: Any) -> str:
@@ -373,9 +370,7 @@ class SkillScanError(SkillsError):
         findings_summary = "; ".join(
             f"[{f.severity.value}] {f.title} {_loc(f)}" for f in findings[:5]
         )
-        truncated = (
-            f" (and {len(findings) - 5} more)" if len(findings) > 5 else ""
-        )
+        truncated = f" (and {len(findings) - 5} more)" if len(findings) > 5 else ""
         msg = (
             f"Security scan of skill '{skill_name}' found "
             f"{len(findings)} issue(s) "
@@ -400,9 +395,7 @@ class CommandExecutionError(AgentRuntimeErrorException):
         stdout: str = "",
         stderr: str = "",
     ) -> None:
-        self.command = (
-            list(command) if not isinstance(command, list) else command
-        )
+        self.command = list(command) if not isinstance(command, list) else command
         self.returncode = returncode
         self.stdout = stdout
         self.stderr = stderr
@@ -426,9 +419,7 @@ class ProcessLaunchError(AgentRuntimeErrorException):
         command: "Any",
         message: str,
     ) -> None:
-        self.command = (
-            list(command) if not isinstance(command, list) else command
-        )
+        self.command = list(command) if not isinstance(command, list) else command
         super().__init__(
             "PROCESS_LAUNCH_ERROR",
             message,

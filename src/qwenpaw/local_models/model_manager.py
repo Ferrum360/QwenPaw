@@ -402,9 +402,12 @@ class ModelManager:
             buffering=1,
             errors="replace",
         ) as sink_stream:
-            with contextlib.redirect_stdout(
-                sink_stream,
-            ), contextlib.redirect_stderr(sink_stream):
+            with (
+                contextlib.redirect_stdout(
+                    sink_stream,
+                ),
+                contextlib.redirect_stderr(sink_stream),
+            ):
                 return ModelManager._get_modelscope_snapshot_download()(
                     model_id=repo_id,
                     local_dir=str(local_dir),
@@ -573,11 +576,7 @@ class ModelManager:
             return 0
         if path.is_file():
             return path.stat().st_size
-        return sum(
-            entry.stat().st_size
-            for entry in path.rglob("*")
-            if entry.is_file()
-        )
+        return sum(entry.stat().st_size for entry in path.rglob("*") if entry.is_file())
 
     @staticmethod
     def _promote_staging_directory(

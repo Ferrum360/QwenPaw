@@ -5,6 +5,7 @@ These functions are free of ``self`` so they can be unit-tested in isolation.
 They hold restore-specific config and workspace decisions so the large restore
 operation remains mostly file staging and commit orchestration.
 """
+
 from __future__ import annotations
 
 import copy
@@ -134,8 +135,7 @@ def rewrite_agent_workspace_dir(dst: Path, aid: str) -> None:
     except Exception as exc:
         tmp_path.unlink(missing_ok=True)
         logger.warning(
-            "Failed to rewrite workspace_dir in agent.json"
-            " for agent '%s': %s: %s",
+            "Failed to rewrite workspace_dir in agent.json" " for agent '%s': %s: %s",
             aid,
             type(exc).__name__,
             exc,
@@ -163,9 +163,7 @@ def handle_master_key_conflict(
     master_key_zip_entry = f"{PREFIX_SECRETS}{_MASTER_KEY}"
     current_master_key = SECRET_DIR / _MASTER_KEY
 
-    if not (
-        current_master_key.is_file() and master_key_zip_entry in zf.namelist()
-    ):
+    if not (current_master_key.is_file() and master_key_zip_entry in zf.namelist()):
         return None
 
     with zf.open(master_key_zip_entry) as f:

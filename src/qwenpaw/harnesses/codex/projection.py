@@ -77,9 +77,7 @@ def project_runtime(
     return CodexRuntimeProjection(
         config_overrides=tuple(overrides),
         environment=environment,
-        skill_roots=tuple(
-            str(skill.directory) for skill in capabilities.skills
-        ),
+        skill_roots=tuple(str(skill.directory) for skill in capabilities.skills),
     )
 
 

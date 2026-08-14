@@ -147,9 +147,7 @@ def _build_safe_filename(
     """
     if filename:
         stem = Path(filename).stem
-        safe_stem = (
-            "".join(c for c in stem if c.isalnum() or c in "-_.()") or "file"
-        )
+        safe_stem = "".join(c for c in stem if c.isalnum() or c in "-_.()") or "file"
     else:
         safe_stem = f"yuanbao_{uuid.uuid4().hex[:12]}"
     candidate = f"{safe_stem}{extension}"

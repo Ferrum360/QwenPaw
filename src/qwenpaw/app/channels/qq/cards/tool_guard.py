@@ -9,6 +9,7 @@ QQ API refs:
   https://bot.q.qq.com/wiki/develop/api-v2/server-inter/message/trans/msg-btn.html
   https://bot.q.qq.com/wiki/develop/api-v2/server-inter/message/send-receive/send.html
 """
+
 from __future__ import annotations
 
 import json
@@ -114,9 +115,7 @@ def build_approval_keyboard(
                                 "type": 1,
                                 "permission": {"type": 2},
                                 "data": approve_data,
-                                "unsupport_tips": (
-                                    "Please use /approval approve"
-                                ),
+                                "unsupport_tips": ("Please use /approval approve"),
                             },
                         },
                         {
@@ -167,8 +166,7 @@ def parse_interaction_event(
     Returns None if the event is not a tool-guard button action.
     """
     data_str = str(
-        event_data.get("data", {}).get("resolved", {}).get("button_data")
-        or "",
+        event_data.get("data", {}).get("resolved", {}).get("button_data") or "",
     )
     if not data_str:
         # Try alternate path: d.data might be the button action data directly
@@ -196,9 +194,7 @@ def parse_interaction_event(
         "tool_name": str(ctx.get("tool") or ""),
         "severity": str(ctx.get("sev") or "medium"),
         "session_ctx": {
-            k: v
-            for k, v in ctx.items()
-            if k not in ("p", "a", "rid", "tool", "sev")
+            k: v for k, v in ctx.items() if k not in ("p", "a", "rid", "tool", "sev")
         },
     }
 
@@ -400,9 +396,7 @@ async def handle(
 
     # 3. Resolve operator display (openid last 6 chars; QQ API doesn't
     #    expose nicknames in group/c2c openid scenarios).
-    operator_display = (
-        operator_member_openid[-6:] if operator_member_openid else ""
-    )
+    operator_display = operator_member_openid[-6:] if operator_member_openid else ""
 
     # 4. Send resolved status message showing who approved/denied
     await _send_resolved_message(

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """Backup restore operations."""
+
 from __future__ import annotations
 
 import asyncio
@@ -364,9 +365,7 @@ def _assert_restore_targets_available(targets: list[Path]) -> None:
                 exc_info=True,
             )
     if busy_paths:
-        locked_paths = [
-            str(path) for path in _dedupe_restore_targets(busy_paths)
-        ]
+        locked_paths = [str(path) for path in _dedupe_restore_targets(busy_paths)]
         raise BackupValidationError(
             "restore_target_busy",
             "Restore target is still in use after closing managed "
@@ -614,8 +613,7 @@ def _merge_profiles_into(
         if aid in backup_profiles:
             merged_profiles[aid] = copy.deepcopy(backup_profiles[aid])
             logger.debug(
-                "Restored agent '%s' profile from backup"
-                " during custom-mode merge",
+                "Restored agent '%s' profile from backup" " during custom-mode merge",
                 aid,
             )
 
@@ -693,8 +691,7 @@ def _stage_global_config(
             with open(tmp, "w", encoding="utf-8") as out:
                 json.dump(merged, out, indent=2, ensure_ascii=False)
             logger.debug(
-                "Staged global config (mode=%s, preserve=%s, "
-                "restore_aids=%s) to %s",
+                "Staged global config (mode=%s, preserve=%s, " "restore_aids=%s) to %s",
                 req.mode,
                 preserve,
                 sorted(restore_aids),

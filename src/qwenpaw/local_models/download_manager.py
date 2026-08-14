@@ -18,7 +18,6 @@ from ..utils.command_runner import (
     start_multiprocessing_process,
 )
 
-
 logger = logging.getLogger(__name__)
 
 
@@ -217,9 +216,7 @@ class DownloadProgressTracker:
         """Update lifecycle status and optional metadata."""
         with self._lock:
             next_total_bytes = (
-                self._progress.total_bytes
-                if total_bytes is None
-                else total_bytes
+                self._progress.total_bytes if total_bytes is None else total_bytes
             )
             next_model_name = (
                 self._progress.model_name if model_name is None else model_name
@@ -314,9 +311,7 @@ class DownloadProgressTracker:
                 else update.model_name
             )
             next_source = (
-                self._progress.source
-                if update.source is None
-                else update.source
+                self._progress.source if update.source is None else update.source
             )
             self._progress = replace(
                 self._progress,
@@ -572,10 +567,7 @@ class ProcessDownloadController:
             current_task = self._task
             if current_task is not None and (
                 current_task is resolved_task
-                or (
-                    resolved_spec is not None
-                    and current_task.spec is resolved_spec
-                )
+                or (resolved_spec is not None and current_task.spec is resolved_spec)
             ):
                 self._task = None
 

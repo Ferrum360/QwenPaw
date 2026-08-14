@@ -99,10 +99,7 @@ class QoderEventMapper:
                 events.extend(
                     _text_event(HarnessEventKind.TEXT_DELTA, block.text),
                 )
-            elif (
-                isinstance(block, ThinkingBlock)
-                and not self._streamed_reasoning
-            ):
+            elif isinstance(block, ThinkingBlock) and not self._streamed_reasoning:
                 events.extend(
                     _text_event(
                         HarnessEventKind.REASONING_DELTA,

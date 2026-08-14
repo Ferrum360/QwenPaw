@@ -114,9 +114,7 @@ class MissingDependencyAdapter(HarnessAdapter):
     def __init__(self, provider_id: str, provider_name: str) -> None:
         self._provider_id = provider_id
         self._provider_name = provider_name
-        self._message = (
-            f"Install qwenpaw[{provider_id}] to enable {provider_name}."
-        )
+        self._message = f"Install qwenpaw[{provider_id}] to enable {provider_name}."
 
     async def status(self) -> HarnessProvider:
         """Return an unavailable status with an actionable install hint."""

@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-"""In-memory write buffer with async producer-consumer for token usage.
-"""
+"""In-memory write buffer with async producer-consumer for token usage."""
 
 import asyncio
 import copy

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """CLI commands for managing agents and inter-agent communication."""
+
 # pylint:disable=too-many-branches,too-many-statements
 from __future__ import annotations
 
@@ -153,16 +154,14 @@ def _validate_chat_parameters(
     if not (background and task_id):
         if not from_agent:
             click.echo(
-                "ERROR: --from-agent is required "
-                "(unless checking task status)",
+                "ERROR: --from-agent is required " "(unless checking task status)",
                 err=True,
             )
             ctx.exit(1)
 
         if not to_agent:
             click.echo(
-                "ERROR: --to-agent is required "
-                "(unless checking task status)",
+                "ERROR: --to-agent is required " "(unless checking task status)",
                 err=True,
             )
             ctx.exit(1)
@@ -522,10 +521,7 @@ def list_agents(ctx: click.Context, base_url: Optional[str]) -> None:
 @click.option(
     "--workspace-dir",
     default=None,
-    help=(
-        "Optional workspace directory. "
-        "Defaults to WORKING_DIR/workspaces/<id>."
-    ),
+    help=("Optional workspace directory. " "Defaults to WORKING_DIR/workspaces/<id>."),
 )
 @click.option(
     "--language",
@@ -936,8 +932,7 @@ def chat_cmd(
 
     if prefix_added:
         click.echo(
-            f"INFO: Auto-added identity prefix: [Agent {from_agent} "
-            "requesting]",
+            f"INFO: Auto-added identity prefix: [Agent {from_agent} " "requesting]",
             err=True,
         )
 

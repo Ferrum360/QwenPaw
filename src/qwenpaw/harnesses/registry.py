@@ -67,8 +67,7 @@ PROVIDER_CATALOG = (
                     id="ask",
                     name="Ask before changes",
                     description=(
-                        "Allow workspace changes and ask before elevated "
-                        "actions."
+                        "Allow workspace changes and ask before elevated " "actions."
                     ),
                     settings={
                         "sandbox": "workspace-write",
@@ -87,9 +86,7 @@ PROVIDER_CATALOG = (
                 HarnessApprovalPreset(
                     id="workspace",
                     name="Workspace access",
-                    description=(
-                        "Allow workspace changes without confirmation."
-                    ),
+                    description=("Allow workspace changes without confirmation."),
                     settings={
                         "sandbox": "workspace-write",
                         "approval_policy": "never",
@@ -99,8 +96,7 @@ PROVIDER_CATALOG = (
                     id="full-access",
                     name="Full access",
                     description=(
-                        "Allow unrestricted local execution without "
-                        "confirmation."
+                        "Allow unrestricted local execution without " "confirmation."
                     ),
                     settings={
                         "sandbox": "danger-full-access",
@@ -143,17 +139,13 @@ PROVIDER_CATALOG = (
                 HarnessApprovalPreset(
                     id="ask",
                     name="Ask before actions",
-                    description=(
-                        "Ask before file changes and command execution."
-                    ),
+                    description=("Ask before file changes and command execution."),
                     settings={"permission_mode": "default"},
                 ),
                 HarnessApprovalPreset(
                     id="accept-edits",
                     name="Accept edits",
-                    description=(
-                        "Allow file edits while keeping other safeguards."
-                    ),
+                    description=("Allow file edits while keeping other safeguards."),
                     settings={"permission_mode": "acceptEdits"},
                 ),
                 HarnessApprovalPreset(
@@ -165,17 +157,13 @@ PROVIDER_CATALOG = (
                 HarnessApprovalPreset(
                     id="auto",
                     name="Automatic",
-                    description=(
-                        "Let Qoder decide which safe actions can run."
-                    ),
+                    description=("Let Qoder decide which safe actions can run."),
                     settings={"permission_mode": "auto"},
                 ),
                 HarnessApprovalPreset(
                     id="full-access",
                     name="Full access",
-                    description=(
-                        "Skip permission checks in a trusted workspace."
-                    ),
+                    description=("Skip permission checks in a trusted workspace."),
                     settings={"permission_mode": "bypassPermissions"},
                 ),
             ],

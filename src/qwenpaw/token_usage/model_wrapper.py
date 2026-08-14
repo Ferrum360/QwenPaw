@@ -29,8 +29,7 @@ class TokenRecordingModelWrapper(ChatModelBase):
         super().__init__(
             credential=getattr(model, "credential", None),
             model=getattr(model, "model", "unknown"),
-            parameters=getattr(model, "parameters", None)
-            or ChatModelBase.Parameters(),
+            parameters=getattr(model, "parameters", None) or ChatModelBase.Parameters(),
             stream=getattr(model, "stream", True),
             context_size=getattr(model, "context_size", 32768),
         )

@@ -84,9 +84,7 @@ class ExpectedCapabilityRegistry:
         provider_id: str,
     ) -> list[ExpectedCapability]:
         """Get all expected capabilities for a given provider."""
-        return [
-            cap for (pid, _), cap in self._data.items() if pid == provider_id
-        ]
+        return [cap for (pid, _), cap in self._data.items() if pid == provider_id]
 
     # ------------------------------------------------------------------
     # Internal
@@ -106,9 +104,7 @@ class ExpectedCapabilityRegistry:
         # 1. ModelScope
         #    https://modelscope.cn/docs/model-service/API-Inference/intro
         # ---------------------------------------------------------------
-        _ms_doc = (
-            "https://modelscope.cn/docs/model-service/API-Inference/intro"
-        )
+        _ms_doc = "https://modelscope.cn/docs/model-service/API-Inference/intro"
         self._register(
             ExpectedCapability(
                 provider_id="modelscope",
@@ -134,9 +130,7 @@ class ExpectedCapabilityRegistry:
         # 2. DashScope
         #    https://help.aliyun.com/zh/model-studio/getting-started/models
         # ---------------------------------------------------------------
-        _ds_doc = (
-            "https://help.aliyun.com/zh/model-studio/getting-started/models"
-        )
+        _ds_doc = "https://help.aliyun.com/zh/model-studio/getting-started/models"
         self._register(
             ExpectedCapability(
                 provider_id="dashscope",
@@ -273,9 +267,7 @@ class ExpectedCapabilityRegistry:
         # ---------------------------------------------------------------
         # Aliyun Token Plan
         # ---------------------------------------------------------------
-        _atp_doc = (
-            "https://help.aliyun.com/zh/model-studio/token-plan-quickstart"
-        )
+        _atp_doc = "https://help.aliyun.com/zh/model-studio/token-plan-quickstart"
         self._register(
             ExpectedCapability(
                 provider_id="aliyun-tokenplan",

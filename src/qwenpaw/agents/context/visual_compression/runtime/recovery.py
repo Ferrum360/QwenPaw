@@ -170,9 +170,7 @@ def _query_excerpt(  # pylint: disable=R0913,R0914
 ) -> str:
     """Return matching whole lines and context with explicit result totals."""
     needle = query.casefold()
-    matched = [
-        idx for idx in range(start - 1, end) if needle in lines[idx].casefold()
-    ]
+    matched = [idx for idx in range(start - 1, end) if needle in lines[idx].casefold()]
     if not matched:
         return (
             f"No exact line containing {query!r} in {block_id} between "
@@ -336,10 +334,7 @@ class TurnRecoveryStore:
                 int(end_line) if end_line is not None else len(lines),
             )
             if search_end < search_start:
-                return (
-                    f"Invalid query line range: "
-                    f"{search_start}..{search_end}"
-                )
+                return f"Invalid query line range: " f"{search_start}..{search_end}"
             return _query_excerpt(
                 block_id,
                 value,
@@ -356,8 +351,7 @@ class TurnRecoveryStore:
             )
             if start > len(lines):
                 return (
-                    f"Invalid start_line: {start}; source has "
-                    f"{len(lines)} lines."
+                    f"Invalid start_line: {start}; source has " f"{len(lines)} lines."
                 )
             end = min(
                 len(lines),
@@ -376,9 +370,7 @@ class TurnRecoveryStore:
             )
         if len(value) <= max_chars:
             return value
-        head = "".join(
-            f"{idx + 1}: {line}" for idx, line in enumerate(lines[:30])
-        )
+        head = "".join(f"{idx + 1}: {line}" for idx, line in enumerate(lines[:30]))
         tail_start = max(30, len(lines) - 15)
         tail = "".join(
             f"{idx + 1}: {lines[idx]}" for idx in range(tail_start, len(lines))

@@ -15,6 +15,7 @@ Adding a new card kind:
    ``ACTION_TYPE`` plus ``render`` coroutine and ``handle`` callable.
 2. Register it in :meth:`.dispatcher.FeishuCardHandler._register_kinds`.
 """
+
 from .dispatcher import CardKind, FeishuCardHandler
 
 __all__ = ["FeishuCardHandler", "CardKind"]

@@ -97,13 +97,7 @@ def _pattern_matches_target(
     if tool_type == "file":
         from wcmatch import glob
 
-        flags = (
-            glob.GLOBSTAR
-            | glob.BRACE
-            | glob.NEGATE
-            | glob.SPLIT
-            | glob.DOTGLOB
-        )
+        flags = glob.GLOBSTAR | glob.BRACE | glob.NEGATE | glob.SPLIT | glob.DOTGLOB
         if glob.globmatch(target, pattern, flags=flags):
             return True
         if pattern.endswith("/**"):
@@ -343,8 +337,7 @@ async def generalize_rule_match(
         )
     except asyncio.TimeoutError:
         logger.warning(
-            "rule generalization timed out after %ss for %s(%s); "
-            "exact match used",
+            "rule generalization timed out after %ss for %s(%s); " "exact match used",
             GENERALIZE_TIMEOUT_SECONDS,
             tool_name,
             target,

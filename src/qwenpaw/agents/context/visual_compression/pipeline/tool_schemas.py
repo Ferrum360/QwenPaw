@@ -61,10 +61,7 @@ def plan_qwenpaw_tool_documentation(
         function = tool.get("function")
         if not isinstance(function, dict):
             continue
-        if (
-            tool.get("defer_loading") is True
-            or function.get("defer_loading") is True
-        ):
+        if tool.get("defer_loading") is True or function.get("defer_loading") is True:
             continue
         parameters = function.get("parameters")
         if (
@@ -93,9 +90,7 @@ def plan_qwenpaw_tool_documentation(
             "token cost. Native tool definitions still carry every tool's "
             "identity, required-parameter guidance, types, defaults, and "
             "structural contract. Read this reference before supplying an "
-            "optional argument.\n\n"
-            + rendered
-            + "\n=== END TOOL REFERENCE ==="
+            "optional argument.\n\n" + rendered + "\n=== END TOOL REFERENCE ==="
         )
     return copied, rendered
 

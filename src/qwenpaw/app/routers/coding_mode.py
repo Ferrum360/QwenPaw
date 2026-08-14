@@ -3,6 +3,7 @@
 
 Provides endpoints for reading and toggling Coding Mode per agent.
 """
+
 from __future__ import annotations
 
 import logging

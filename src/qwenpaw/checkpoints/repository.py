@@ -25,9 +25,7 @@ from .tree_entries import TreeEntry, parse_tree_entries
 
 _GIT_TIMEOUT_SECONDS = 120
 _INDEX_CONTENT_POLICY = "byte-preserving"
-_BYTE_PRESERVING_ATTRIBUTES = (
-    "* -text -eol -filter -ident -working-tree-encoding\n"
-)
+_BYTE_PRESERVING_ATTRIBUTES = "* -text -eol -filter -ident -working-tree-encoding\n"
 
 
 class CheckpointRepository:
@@ -100,11 +98,7 @@ class CheckpointRepository:
                 self._git_command(*args),
                 cwd=str(self.workspace_dir),
                 env=self._git_env(),
-                input=(
-                    input_text.encode("utf-8")
-                    if input_text is not None
-                    else None
-                ),
+                input=(input_text.encode("utf-8") if input_text is not None else None),
                 capture_output=True,
                 check=False,
                 timeout=_GIT_TIMEOUT_SECONDS,
@@ -152,8 +146,7 @@ class CheckpointRepository:
                 raise CheckpointError(GIT_REQUIRED_MESSAGE) from exc
             except subprocess.TimeoutExpired as exc:
                 raise CheckpointError(
-                    "git init timed out after "
-                    f"{_GIT_TIMEOUT_SECONDS} seconds",
+                    "git init timed out after " f"{_GIT_TIMEOUT_SECONDS} seconds",
                 ) from exc
             except subprocess.CalledProcessError as exc:
                 detail = (exc.stderr or exc.stdout or "").strip()
@@ -218,9 +211,7 @@ class CheckpointRepository:
         if self._heads is None:
             self._heads = self._load_heads()
         updated = {
-            key: commit
-            for key, commit in self._heads.items()
-            if key not in keys
+            key: commit for key, commit in self._heads.items() if key not in keys
         }
         if len(updated) == len(self._heads):
             return
@@ -305,17 +296,14 @@ class CheckpointRepository:
             )
         except subprocess.TimeoutExpired as exc:
             raise CheckpointError(
-                "git show-ref timed out after "
-                f"{_GIT_TIMEOUT_SECONDS} seconds",
+                "git show-ref timed out after " f"{_GIT_TIMEOUT_SECONDS} seconds",
             ) from exc
         return proc.returncode == 0
 
     def read_blob(self, commit: str, rel: str) -> bytes:
         return self._read_blob_spec(
             f"{commit}:{rel}",
-            error_message=(
-                f"Checkpoint {commit[:12]} does not contain file {rel}"
-            ),
+            error_message=(f"Checkpoint {commit[:12]} does not contain file {rel}"),
         )
 
     def _read_blob_spec(self, spec: str, *, error_message: str) -> bytes:
@@ -334,8 +322,7 @@ class CheckpointRepository:
             )
         except subprocess.TimeoutExpired as exc:
             raise CheckpointError(
-                "git cat-file timed out after "
-                f"{_GIT_TIMEOUT_SECONDS} seconds",
+                "git cat-file timed out after " f"{_GIT_TIMEOUT_SECONDS} seconds",
             ) from exc
         if proc.returncode != 0:
             detail = proc.stderr.decode(errors="replace").strip()
@@ -421,9 +408,7 @@ class CheckpointRepository:
                 for rel, entry in sorted(entries.items()):
                     with blobs.stream_blob(
                         entry.object_id,
-                        error_message=(
-                            f"Failed to read checkpoint file {rel}"
-                        ),
+                        error_message=(f"Failed to read checkpoint file {rel}"),
                     ) as stream:
                         if not self._workspace_fs.same_tree_entry_stream(
                             rel,

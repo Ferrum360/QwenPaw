@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """Approval helpers for tool-guard mediated tool execution."""
+
 from __future__ import annotations
 
 import json

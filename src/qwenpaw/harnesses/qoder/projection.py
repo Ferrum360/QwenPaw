@@ -42,9 +42,7 @@ def materialize_skill_plugin(
                 {
                     "name": _PLUGIN_NAME,
                     "version": "1.0.0",
-                    "description": (
-                        "QwenPaw-managed Skills for this Harness session"
-                    ),
+                    "description": ("QwenPaw-managed Skills for this Harness session"),
                 },
                 ensure_ascii=True,
                 indent=2,
@@ -100,9 +98,7 @@ def mcp_servers(
             }
         else:
             config = {
-                "type": (
-                    "http" if server.transport == "streamable_http" else "sse"
-                ),
+                "type": ("http" if server.transport == "streamable_http" else "sse"),
                 "url": server.url,
                 "headers": server.revealed_headers(),
             }

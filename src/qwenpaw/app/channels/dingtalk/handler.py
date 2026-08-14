@@ -416,18 +416,12 @@ class DingTalkChannelHandler(dingtalk_stream.ChatbotHandler):
             # placeholder (e.g. "\\n", "//n") so image+text from richText
             # is not overwritten.
             rich_has_text = any(
-                item.type == "text" and (item.text or "").strip()
-                for item in content
+                item.type == "text" and (item.text or "").strip() for item in content
             )
             text_is_placeholder = not (text or "").strip() or (
                 (text or "").strip() in ("\\n", "//n")
             )
-            if (
-                text
-                and content
-                and not rich_has_text
-                and not text_is_placeholder
-            ):
+            if text and content and not rich_has_text and not text_is_placeholder:
                 content.insert(
                     0,
                     TextContent(type=ContentType.TEXT, text=text),

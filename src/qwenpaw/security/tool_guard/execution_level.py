@@ -7,6 +7,7 @@ Defines different approval strategies for tool execution:
 - AUTO: Only guarded_tools require approval (backward compatible)
 - OFF: Tool guard completely disabled
 """
+
 from __future__ import annotations
 
 from enum import Enum

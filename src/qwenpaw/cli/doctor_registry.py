@@ -15,6 +15,7 @@ informational strings (empty if nothing to report).
 Alternatively, call :func:`register_doctor_contribution` at import time
 (e.g. from a channel package).
 """
+
 from __future__ import annotations
 
 import logging

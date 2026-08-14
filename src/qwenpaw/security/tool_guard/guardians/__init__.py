@@ -6,6 +6,7 @@ Every guardian must subclass :class:`BaseToolGuardian` and implement
 detection engines (e.g. LLM-based, semantic analysis) can be added
 as drop-in plugins without touching the guard engine.
 """
+
 from __future__ import annotations
 
 from abc import ABC, abstractmethod

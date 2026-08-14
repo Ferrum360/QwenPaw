@@ -75,9 +75,7 @@ def release_tool_ownership_for_plugin(plugin_id: str) -> None:
     """Drop ownership records and governance identities for *plugin_id*."""
     with _TOOL_PLUGIN_OWNERS_LOCK:
         stale = [
-            name
-            for name, owner in _TOOL_PLUGIN_OWNERS.items()
-            if owner == plugin_id
+            name for name, owner in _TOOL_PLUGIN_OWNERS.items() if owner == plugin_id
         ]
         for name in stale:
             del _TOOL_PLUGIN_OWNERS[name]
@@ -202,9 +200,7 @@ def _bridge_to_runtime(
         funcs = bk.setdefault("builtin_tool_funcs", [])
         if isinstance(funcs, list):
             funcs[:] = [
-                fn
-                for fn in funcs
-                if not _tool_func_matches_name(fn, tool_name)
+                fn for fn in funcs if not _tool_func_matches_name(fn, tool_name)
             ]
             funcs.append(tool_func)
 
@@ -247,9 +243,7 @@ def _unbridge_from_runtime(
                 while tool_func in funcs:
                     funcs.remove(tool_func)
             funcs[:] = [
-                fn
-                for fn in funcs
-                if not _tool_func_matches_name(fn, tool_name)
+                fn for fn in funcs if not _tool_func_matches_name(fn, tool_name)
             ]
 
 
@@ -270,8 +264,7 @@ def _write_tool_config(
     agent_id = get_current_agent_id()
     if not agent_id:
         logger.warning(
-            "No current agent ID; tool '%s' "
-            "will be available after restart",
+            "No current agent ID; tool '%s' " "will be available after restart",
             tool_name,
         )
         return
@@ -386,8 +379,7 @@ class PluginApi:  # pylint: disable=too-many-public-methods
                 metadata=merged_metadata,
             )
             logger.info(
-                f"Plugin '{self.plugin_id}' registered provider "
-                f"'{provider_id}'",
+                f"Plugin '{self.plugin_id}' registered provider " f"'{provider_id}'",
             )
 
     def register_startup_hook(
@@ -707,8 +699,7 @@ class PluginApi:  # pylint: disable=too-many-public-methods
             doc_url=doc_url,
         )
         logger.info(
-            f"Plugin '{self.plugin_id}' registered channel "
-            f"'{channel_key}'",
+            f"Plugin '{self.plugin_id}' registered channel " f"'{channel_key}'",
         )
 
     @property
@@ -844,8 +835,7 @@ class PluginApi:  # pylint: disable=too-many-public-methods
                     tools_module.__all__.append(tool_name)
                     appended_to_all = True
                 logger.info(
-                    f"Registered tool function '{tool_name}' "
-                    f"to tools module",
+                    f"Registered tool function '{tool_name}' " f"to tools module",
                 )
 
                 _bridge_to_runtime(
@@ -1548,8 +1538,7 @@ class PluginApi:  # pylint: disable=too-many-public-methods
             )
         except Exception as exc:
             logger.error(
-                f"Failed to install skills for plugin "
-                f"'{self.plugin_id}': {exc}",
+                f"Failed to install skills for plugin " f"'{self.plugin_id}': {exc}",
                 exc_info=True,
             )
 
@@ -1601,8 +1590,7 @@ class PluginApi:  # pylint: disable=too-many-public-methods
                                 shutil.rmtree(skill_dir)
                             except OSError as rmtree_exc:
                                 logger.warning(
-                                    "Failed to fully remove skill "
-                                    "directory %s: %s",
+                                    "Failed to fully remove skill " "directory %s: %s",
                                     skill_dir,
                                     rmtree_exc,
                                 )

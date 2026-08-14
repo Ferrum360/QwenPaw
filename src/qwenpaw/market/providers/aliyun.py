@@ -20,7 +20,6 @@ from urllib.parse import quote
 from ..schema import MarketResult
 from .base import MARKET_SEARCH_TIMEOUT_S
 
-
 logger = logging.getLogger(__name__)
 
 

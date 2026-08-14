@@ -326,9 +326,7 @@ class Provider(ProviderInfo, ABC):
         """Delete a model from the provider's model list."""
         model_id = model_id.strip()
         self.extra_models = [
-            model
-            for model in self.extra_models
-            if model.id.strip() != model_id
+            model for model in self.extra_models if model.id.strip() != model_id
         ]
         return True, ""
 
@@ -352,10 +350,7 @@ class Provider(ProviderInfo, ABC):
             self.chat_model = str(config["chat_model"])
         if "api_key_prefix" in config and config["api_key_prefix"] is not None:
             self.api_key_prefix = str(config["api_key_prefix"])
-        if (
-            "api_key_prefixes" in config
-            and config["api_key_prefixes"] is not None
-        ):
+        if "api_key_prefixes" in config and config["api_key_prefixes"] is not None:
             self.api_key_prefixes = [
                 str(p) for p in config["api_key_prefixes"] if p is not None
             ]
@@ -383,9 +378,7 @@ class Provider(ProviderInfo, ABC):
             # avoid class-identity issues from dual module loading.
             self.extra_models = [
                 ModelInfo.model_validate(
-                    model.model_dump()
-                    if isinstance(model, BaseModel)
-                    else model,
+                    model.model_dump() if isinstance(model, BaseModel) else model,
                 )
                 for model in config["extra_models"]
             ]
@@ -489,17 +482,13 @@ class Provider(ProviderInfo, ABC):
                     )
                 if "reasoning_effort" in config:
                     val = config["reasoning_effort"]
-                    model.reasoning_effort = (
-                        str(val) if val is not None else None
-                    )
+                    model.reasoning_effort = str(val) if val is not None else None
                 return True
         return False
 
     def has_model(self, model_id: str) -> bool:
         """Check if the provider has a model with the given ID."""
-        return any(
-            model.id == model_id for model in self.models + self.extra_models
-        )
+        return any(model.id == model_id for model in self.models + self.extra_models)
 
     def get_model_info(self, model_id: str) -> ModelInfo | None:
         """Return the ModelInfo for *model_id*, or None."""
@@ -620,11 +609,7 @@ class Provider(ProviderInfo, ABC):
             prefix_for_mask = self.api_key_prefix
             if self.api_key_prefixes:
                 prefix_for_mask = next(
-                    (
-                        p
-                        for p in self.api_key_prefixes
-                        if self.api_key.startswith(p)
-                    ),
+                    (p for p in self.api_key_prefixes if self.api_key.startswith(p)),
                     self.api_key_prefix,
                 )
             api_key = prefix_for_mask + "*" * 6

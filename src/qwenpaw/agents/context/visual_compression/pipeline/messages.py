@@ -73,9 +73,7 @@ def message_data_blocks(message: Msg) -> list[DataBlock]:
             block.output,
             list,
         ):
-            result.extend(
-                item for item in block.output if isinstance(item, DataBlock)
-            )
+            result.extend(item for item in block.output if isinstance(item, DataBlock))
     return result
 
 

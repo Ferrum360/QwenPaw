@@ -242,8 +242,7 @@ class RestoreService:
         """Restore conversation + MEMORY.md + memory/ to a checkpoint."""
         if not target:
             raise CheckpointError(
-                "Usage: /checkpoint restore <target> --include-memory "
-                "--confirm",
+                "Usage: /checkpoint restore <target> --include-memory " "--confirm",
             )
         return await self._run_restore(
             target=target,
@@ -268,8 +267,7 @@ class RestoreService:
         """Restore conversation and workspace files to a checkpoint tree."""
         if not target:
             raise CheckpointError(
-                "Usage: /checkpoint restore <target> --include-files "
-                "--confirm",
+                "Usage: /checkpoint restore <target> --include-files " "--confirm",
             )
         if not dry_run and selected_files is None:
             raise CheckpointError(
@@ -311,14 +309,8 @@ class RestoreService:
             user_id=user_id,
             session_id=session_id,
         )
-        memory = (
-            await run_sync_io(self._memory_restorer)
-            if include_memory
-            else None
-        )
-        mutation_guard = (
-            self._workspace_mutation_guard() if not dry_run else None
-        )
+        memory = await run_sync_io(self._memory_restorer) if include_memory else None
+        mutation_guard = self._workspace_mutation_guard() if not dry_run else None
         prepared: _PreparedRestore | None = None
         pre_ref: str | None = None
         resume_callbacks: list[Callable[[], None]] = []
@@ -405,9 +397,7 @@ class RestoreService:
                 None,
                 description,
                 None,
-                tree_override=(
-                    prepared.current_tree if include_files else None
-                ),
+                tree_override=(prepared.current_tree if include_files else None),
             )
             self.repository.restore_internal_paths(
                 {conversation_path: prepared.conversation_blob},
@@ -432,9 +422,7 @@ class RestoreService:
                     pre_commit=pre_snapshot.commit,
                     conversation_path=conversation_path,
                     file_paths=set(prepared.touched),
-                    include_memory=(
-                        memory is not None and memory.mutation_started
-                    ),
+                    include_memory=(memory is not None and memory.mutation_started),
                     session_key_str=session_key_str,
                     previous_head=prepared.previous_head,
                     memory=memory,

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """Built-in gate catalog for user-editable loop modes."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -259,8 +260,7 @@ def _entries() -> list[GateCatalogEntry]:
             type="completion_rubric",
             title="Completion signal check",
             description=(
-                "Check text responses without tool calls for a completion "
-                "signal."
+                "Check text responses without tool calls for a completion " "signal."
             ),
             category="quality",
             params_model=CompletionRubricParams,

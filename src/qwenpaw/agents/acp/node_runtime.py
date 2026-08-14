@@ -226,9 +226,7 @@ def _runtime_files_available(node: Path | None) -> bool:
 def _prepend_path(env: dict[str, str], path: Path) -> dict[str, str]:
     key = _path_env_key(env)
     existing = env.get(key, "")
-    env[key] = (
-        os.pathsep.join([str(path), existing]) if existing else str(path)
-    )
+    env[key] = os.pathsep.join([str(path), existing]) if existing else str(path)
     for other in list(env):
         if other != key and other.lower() == "path":
             env.pop(other)
@@ -270,8 +268,7 @@ def _append_unique(
     candidate: ACPNodeRuntimeCandidate,
 ) -> None:
     if candidate.node_path and any(
-        _same_path(candidate.node_path, existing.node_path)
-        for existing in candidates
+        _same_path(candidate.node_path, existing.node_path) for existing in candidates
     ):
         return
     candidates.append(candidate)

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """Assemble system prompt from host anchors and plugin sections."""
+
 from __future__ import annotations
 
 import logging
@@ -65,8 +66,7 @@ class PromptBuilder:
         return [
             s
             for s in self._registry.get_prompt_sections()
-            if s.after == anchor
-            and (s.agent_id is None or s.agent_id == agent_id)
+            if s.after == anchor and (s.agent_id is None or s.agent_id == agent_id)
         ]
 
     # SECURITY: plugin text is concatenated verbatim into the

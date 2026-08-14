@@ -131,9 +131,7 @@ class LocatorDomain:
         value = raw.get("value")
         if value is None:
             return None
-        return {
-            key: float(value[key]) for key in ("x", "y", "width", "height")
-        }
+        return {key: float(value[key]) for key in ("x", "y", "width", "height")}
 
     async def _locator_action(
         self,

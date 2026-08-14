@@ -108,12 +108,10 @@ class ScrollContextManager:
         # default), evicted turns are also written to ``dialog/{date}.jsonl``
         # for external consumers. ``history.db`` remains the source of truth.
         self._offloader = offloader
-        self._persisted_ids: set[
-            str
-        ] = set()  # msgs whose non-result row is stored
-        self._persisted_tcids: set[
-            str
-        ] = set()  # tool_call_ids whose result row is stored
+        self._persisted_ids: set[str] = set()  # msgs whose non-result row is stored
+        self._persisted_tcids: set[str] = (
+            set()
+        )  # tool_call_ids whose result row is stored
         # Tool results included in a model request that completed
         # successfully. This explicit acknowledgement lets hard-limit
         # recovery fold old results in the active turn without guessing from
@@ -175,20 +173,13 @@ class ScrollContextManager:
 
     def _tool_result_pointer_stub(self, block: Any) -> str:
         tcid = (
-            block.get("id")
-            if isinstance(block, dict)
-            else getattr(block, "id", None)
+            block.get("id") if isinstance(block, dict) else getattr(block, "id", None)
         )
         if tcid:
-            where = (
-                'recall_history(op="recall_tool", ' f"tool_call_id={tcid!r})"
-            )
+            where = 'recall_history(op="recall_tool", ' f"tool_call_id={tcid!r})"
         else:
             where = 'recall_history(op="search", query=...)'
-        return (
-            f"{_FOLD_MARK} old tool result content cleared; recover with "
-            f"{where}"
-        )
+        return f"{_FOLD_MARK} old tool result content cleared; recover with " f"{where}"
 
     @classmethod
     def _recall_page_stub(
@@ -197,9 +188,7 @@ class ScrollContextManager:
         call_input: dict[str, Any] | None,
     ) -> str:
         page = cls._block_metadata(block).get("qwenpaw_recall_page", {})
-        next_cursor = (
-            page.get("next_cursor") if isinstance(page, dict) else None
-        )
+        next_cursor = page.get("next_cursor") if isinstance(page, dict) else None
         if next_cursor and call_input:
             continuation = dict(call_input)
             continuation["cursor"] = next_cursor
@@ -277,9 +266,7 @@ class ScrollContextManager:
         tool_result_ids: set[str],
     ) -> None:
         """Mark a successfully submitted model input's results as seen."""
-        self._seen_tool_result_ids.update(
-            str(item) for item in tool_result_ids
-        )
+        self._seen_tool_result_ids.update(str(item) for item in tool_result_ids)
 
     def _persist_guarded(self, agent: Any) -> bool:
         """Write through, swallowing only disk/SQLite failures.
@@ -359,8 +346,7 @@ class ScrollContextManager:
 
         await self.compress(agent, forced_config)
         return bool(
-            self.last_compress.get("evicted")
-            or self.last_compress.get("folded"),
+            self.last_compress.get("evicted") or self.last_compress.get("folded"),
         )
 
     # pylint: disable-next=too-many-statements,too-many-branches
@@ -421,8 +407,7 @@ class ScrollContextManager:
         def log_timings(outcome: str) -> None:
             total = time.perf_counter() - t0
             parts = " ".join(
-                f"{name}={elapsed * 1000:.1f}ms"
-                for name, elapsed in timings.items()
+                f"{name}={elapsed * 1000:.1f}ms" for name, elapsed in timings.items()
             )
             logger.info(
                 "scroll: compact timing outcome=%s total=%.1fms %s",
@@ -619,8 +604,7 @@ class ScrollContextManager:
                 self.last_compress["active_folded"] = active_folded
                 self.last_compress["folded"] += active_folded
                 logger.info(
-                    "scroll: hard-limit-folded %d seen active-turn tool "
-                    "result(s)",
+                    "scroll: hard-limit-folded %d seen active-turn tool " "result(s)",
                     active_folded,
                 )
         # Once per overflow episode, not once per reasoning step — the stuck
@@ -713,10 +697,7 @@ class ScrollContextManager:
         except ValueError:
             return None
         if parsed.tzinfo is None:
-            return (
-                f"{parsed.isoformat(timespec='seconds')} "
-                "timezone=unspecified"
-            )
+            return f"{parsed.isoformat(timespec='seconds')} " "timezone=unspecified"
         utc_value = parsed.astimezone(timezone.utc)
         return utc_value.isoformat(timespec="seconds").replace(
             "+00:00",
@@ -770,7 +751,7 @@ class ScrollContextManager:
         middle: list[Msg],
         *,
         max_chars: int,
-        durable_contents: (dict[tuple[str, int], str | None] | None) = None,
+        durable_contents: dict[tuple[str, int], str | None] | None = None,
     ) -> str:
         """Render role-aware bounded evidence for the summary model.
 
@@ -953,9 +934,11 @@ class ScrollContextManager:
             if btype == "text":
                 parts.append(
                     str(
-                        block.get("text", "")
-                        if isinstance(block, dict)
-                        else getattr(block, "text", "") or "",
+                        (
+                            block.get("text", "")
+                            if isinstance(block, dict)
+                            else getattr(block, "text", "") or ""
+                        ),
                     ),
                 )
         return "".join(parts).strip()
@@ -1164,18 +1147,14 @@ class ScrollContextManager:
         the synthetic memory message without the unsupported summary.
         """
         previous = self._continuation_summary
-        if (
-            previous is None
-            or self._source_backed_previous_summary() is not None
-        ):
+        if previous is None or self._source_backed_previous_summary() is not None:
             return False
         tail: list[Msg] = []
         for msg in list(getattr(agent.state, "context", ()) or ()):
             metadata = getattr(msg, "metadata", None)
             is_memory = (
                 isinstance(metadata, dict)
-                and metadata.get(QWENPAW_MESSAGE_TAG_KEY)
-                == SCROLL_MEMORY_MESSAGE_TAG
+                and metadata.get(QWENPAW_MESSAGE_TAG_KEY) == SCROLL_MEMORY_MESSAGE_TAG
             )
             if is_memory:
                 self._synthetic_ids.discard(getattr(msg, "id", ""))
@@ -1221,9 +1200,7 @@ class ScrollContextManager:
                 "empty or malformed plain Markdown summary",
             )
         endpoints = {
-            endpoint
-            for lo, hi in candidate.seq_spans()
-            for endpoint in (lo, hi)
+            endpoint for lo, hi in candidate.seq_spans() for endpoint in (lo, hi)
         }
         existing_seqs = await asyncio.to_thread(
             self._history.existing_seqs,
@@ -1316,9 +1293,7 @@ class ScrollContextManager:
         failure: Exception | None = None
         deadline = time.monotonic() + _SUMMARY_UPDATE_TIMEOUT_SECONDS
         for attempt in range(2):
-            summary_mode: SummaryMode = (
-                "update" if previous is not None else "initial"
-            )
+            summary_mode: SummaryMode = "update" if previous is not None else "initial"
             try:
                 prompt, new_context = await self._fit_summary_prompt(
                     agent,
@@ -1371,12 +1346,14 @@ class ScrollContextManager:
                 "scroll: continuation summary update failed; "
                 "preserving the previous valid summary",
                 exc_info=(
-                    type(failure),
-                    failure,
-                    failure.__traceback__,
-                )
-                if failure is not None
-                else None,
+                    (
+                        type(failure),
+                        failure,
+                        failure.__traceback__,
+                    )
+                    if failure is not None
+                    else None
+                ),
             )
             return
         self._continuation_summary = updated
@@ -1624,8 +1601,7 @@ class ScrollContextManager:
                         if prev_seq is None:
                             continue
                         new_headline = (
-                            bool(entry.headline)
-                            and mid not in self._leaf_by_id
+                            bool(entry.headline) and mid not in self._leaf_by_id
                         )
                         if (
                             nblk <= self._model_turn_nblk.get(mid, 0)
@@ -1873,9 +1849,7 @@ class ScrollContextManager:
         self._seen_tool_result_ids.intersection_update(live_tool_ids)
         self._synthetic_ids.intersection_update(live_msg_ids)
         self._seq_by_id = {
-            key: value
-            for key, value in self._seq_by_id.items()
-            if key in live_msg_ids
+            key: value for key, value in self._seq_by_id.items() if key in live_msg_ids
         }
         self._model_turn_seq = {
             key: value
@@ -1888,9 +1862,7 @@ class ScrollContextManager:
             if key in live_msg_ids
         }
         self._leaf_by_id = {
-            key: value
-            for key, value in self._leaf_by_id.items()
-            if key in live_msg_ids
+            key: value for key, value in self._leaf_by_id.items() if key in live_msg_ids
         }
         self._seq_by_tcid = {
             key: value
@@ -1953,9 +1925,7 @@ class ScrollContextManager:
             "seen_tool_result_ids": sorted(self._seen_tool_result_ids),
             "seq_by_tcid": dict(self._seq_by_tcid),
             "synthetic_ids": sorted(self._synthetic_ids),
-            "seq_by_id": {
-                k: [lo, hi] for k, (lo, hi) in self._seq_by_id.items()
-            },
+            "seq_by_id": {k: [lo, hi] for k, (lo, hi) in self._seq_by_id.items()},
             "model_turn_seq": dict(self._model_turn_seq),
             "model_turn_nblk": dict(self._model_turn_nblk),
             "leaf_by_id": {
@@ -2017,9 +1987,7 @@ class ScrollContextManager:
     @staticmethod
     def _cutoff(retention_days: int) -> str:
         """ISO-8601 UTC instant ``retention_days`` ago — the purge boundary."""
-        return (
-            datetime.now(timezone.utc) - timedelta(days=retention_days)
-        ).isoformat()
+        return (datetime.now(timezone.utc) - timedelta(days=retention_days)).isoformat()
 
     def close(self) -> None:
         self._history.close()

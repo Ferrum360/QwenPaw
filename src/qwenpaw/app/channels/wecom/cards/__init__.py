@@ -16,6 +16,7 @@ Adding a new card kind:
    ``async handle(channel, frame)``.
 2. Register it in :meth:`.dispatcher.WecomCardHandler._register_kinds`.
 """
+
 from .dispatcher import CardKind, WecomCardHandler
 
 __all__ = ["WecomCardHandler", "CardKind"]

@@ -178,10 +178,7 @@ def dump_card(card: DriverCard, path: Path) -> None:
             sort_keys=False,
         )
         try:
-            if (
-                path.is_file()
-                and path.read_text(encoding="utf-8") == serialized
-            ):
+            if path.is_file() and path.read_text(encoding="utf-8") == serialized:
                 return
         except OSError:
             pass
@@ -349,9 +346,7 @@ def _card_to_mapping(card: DriverCard) -> dict[str, Any]:
         "name": card.name,
         "protocol": card.protocol,
         "endpoint": card.endpoint,
-        "credentials": {
-            alias: asdict(ref) for alias, ref in card.credentials.items()
-        },
+        "credentials": {alias: asdict(ref) for alias, ref in card.credentials.items()},
         "config": card.config,
         "enabled": card.enabled,
         "policy": asdict(card.policy),

@@ -20,7 +20,5 @@ def get_token_counter(
     Returns:
         An EstimatedTokenCounter instance with the configured divisor.
     """
-    divisor = (
-        agent_config.running.light_context_config.token_count_estimate_divisor
-    )
+    divisor = agent_config.running.light_context_config.token_count_estimate_divisor
     return EstimatedTokenCounter(estimate_divisor=divisor)

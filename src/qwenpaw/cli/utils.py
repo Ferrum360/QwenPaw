@@ -4,6 +4,7 @@
 All terminal interaction with *questionary* is centralised here so that
 the rest of the CLI code never imports questionary directly.
 """
+
 from __future__ import annotations
 from pathlib import Path
 from typing import Optional
@@ -127,9 +128,7 @@ def prompt_select(
     Returns:
         The selected *value*, or ``None`` on Ctrl+C.
     """
-    items = [
-        questionary.Choice(label, value=value) for label, value in options
-    ]
+    items = [questionary.Choice(label, value=value) for label, value in options]
 
     preselect = None
     if default is not None:
@@ -178,9 +177,7 @@ def prompt_checkbox(
     current_checked = set(checked or set()) & all_values
 
     while True:
-        all_currently_checked = (
-            current_checked == all_values and len(all_values) > 0
-        )
+        all_currently_checked = current_checked == all_values and len(all_values) > 0
 
         items: list[questionary.Choice] = []
         if select_all_option:

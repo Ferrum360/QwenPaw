@@ -58,9 +58,7 @@ class _StripApiKeyTransport(httpx.AsyncHTTPTransport):
         request: httpx.Request,
     ) -> httpx.Response:
         filtered = [
-            (k, v)
-            for k, v in request.headers.items()
-            if k.lower() != "x-api-key"
+            (k, v) for k, v in request.headers.items() if k.lower() != "x-api-key"
         ]
         new_request = httpx.Request(
             method=request.method,
@@ -622,17 +620,15 @@ class _AnthropicChatModelCompat:
                 if self._qp_default_headers:
                     client_kwargs["default_headers"] = self._qp_default_headers
                 if self._qp_auth_mode == "auth_token":
-                    client_kwargs[
-                        "auth_token"
-                    ] = self.credential.api_key.get_secret_value()
+                    client_kwargs["auth_token"] = (
+                        self.credential.api_key.get_secret_value()
+                    )
                     if self._qp_strip_http_client is not None:
-                        client_kwargs[
-                            "http_client"
-                        ] = self._qp_strip_http_client
+                        client_kwargs["http_client"] = self._qp_strip_http_client
                 else:
-                    client_kwargs[
-                        "api_key"
-                    ] = self.credential.api_key.get_secret_value()
+                    client_kwargs["api_key"] = (
+                        self.credential.api_key.get_secret_value()
+                    )
 
                 self._qp_cached_client = anthropic.AsyncAnthropic(
                     **client_kwargs,
@@ -662,9 +658,7 @@ class _AnthropicChatModelCompat:
                     **generate_kwargs,
                 }
                 if self.parameters.thinking_enable and "thinking" not in kw:
-                    budget = self.parameters.thinking_budget or (
-                        max_tokens // 2
-                    )
+                    budget = self.parameters.thinking_budget or (max_tokens // 2)
                     if budget >= max_tokens:
                         max_tokens = budget + 1024
                         kw["max_tokens"] = max_tokens

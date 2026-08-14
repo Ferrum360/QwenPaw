@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """STT streaming abstraction for the SIP channel."""
+
 from __future__ import annotations
 
 import asyncio
@@ -27,14 +28,11 @@ class STTStreamEngine(Protocol):
     on_transcript: Optional[TranscriptCallback]
     on_speech_start: Optional[SpeechStartCallback]
 
-    async def start(self) -> None:
-        ...
+    async def start(self) -> None: ...
 
-    async def feed_audio(self, chunk: bytes) -> None:
-        ...
+    async def feed_audio(self, chunk: bytes) -> None: ...
 
-    async def stop(self) -> None:
-        ...
+    async def stop(self) -> None: ...
 
 
 class AliyunSTTStream:

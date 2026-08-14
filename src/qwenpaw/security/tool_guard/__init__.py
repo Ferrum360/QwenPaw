@@ -31,6 +31,7 @@ Quick start::
     if not result.is_safe:
         print(f"WARN: {result.max_severity.value} findings")
 """
+
 from __future__ import annotations
 
 from .models import (

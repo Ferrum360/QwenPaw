@@ -12,6 +12,7 @@ State file layout follows the snarktank/ralph convention:
 The loop directory stores project-local Mission state. Workers operate
 in the fixed source project recorded in ``loop_config.json``.
 """
+
 from __future__ import annotations
 
 import asyncio
@@ -157,9 +158,7 @@ def ensure_mission_git_exclude(
         exclude_path = repo_root / ".git" / "info" / "exclude"
         exclude_path.parent.mkdir(parents=True, exist_ok=True)
         existing = (
-            exclude_path.read_text(encoding="utf-8")
-            if exclude_path.exists()
-            else ""
+            exclude_path.read_text(encoding="utf-8") if exclude_path.exists() else ""
         )
         if pattern not in existing.splitlines():
             prefix = "" if not existing or existing.endswith("\n") else "\n"
@@ -286,11 +285,7 @@ def get_active_loop_dir(
 
     # Get all mission dirs sorted by creation time (newest first)
     dirs = sorted(
-        (
-            d
-            for d in base.iterdir()
-            if d.is_dir() and d.name.startswith("mission-")
-        ),
+        (d for d in base.iterdir() if d.is_dir() and d.name.startswith("mission-")),
         key=lambda d: d.name,
         reverse=True,
     )

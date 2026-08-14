@@ -6,6 +6,7 @@ languages whose servers were discovered at toolkit-creation time
 (see PROPOSAL §3.2).  Unsupported languages return an error string
 that nudges the agent toward ``grep_search`` / ``ast_search``.
 """
+
 from __future__ import annotations
 
 import asyncio
@@ -237,8 +238,7 @@ def make_lsp_tool(  # noqa: C901  pylint: disable=too-many-statements
         if operation in _OPERATIONS_REQUIRING_POSITION:
             if line < 1 or character < 1:
                 return _make_response(
-                    "Error: `line` and `character` must be 1-based "
-                    "integers >= 1.",
+                    "Error: `line` and `character` must be 1-based " "integers >= 1.",
                 )
 
         argv = frozen_available[language_id]
@@ -250,9 +250,7 @@ def make_lsp_tool(  # noqa: C901  pylint: disable=too-many-statements
                 operation,
                 target_file,
                 line if operation in _OPERATIONS_REQUIRING_POSITION else None,
-                character
-                if operation in _OPERATIONS_REQUIRING_POSITION
-                else None,
+                character if operation in _OPERATIONS_REQUIRING_POSITION else None,
                 query,
             )
 
@@ -266,8 +264,7 @@ def make_lsp_tool(  # noqa: C901  pylint: disable=too-many-statements
             )
         except (asyncio.TimeoutError, asyncio.CancelledError):
             return _make_response(
-                f"Error: LSP {operation} timed out after "
-                f"{_REQUEST_TIMEOUT}s.",
+                f"Error: LSP {operation} timed out after " f"{_REQUEST_TIMEOUT}s.",
             )
         except lsp_client.LspError as exc:
             return _make_response(f"Error: LSP {operation} failed — {exc}")

@@ -42,9 +42,7 @@ async def get_current_time() -> ToolChunk:
         now = datetime.now(timezone.utc)
         user_tz = "UTC"
 
-    time_str = (
-        f"{now.strftime('%Y-%m-%d %H:%M:%S')} {user_tz} ({now.strftime('%A')})"
-    )
+    time_str = f"{now.strftime('%Y-%m-%d %H:%M:%S')} {user_tz} ({now.strftime('%A')})"
 
     return ToolChunk(
         is_last=True,
@@ -105,9 +103,7 @@ async def set_user_timezone(timezone_name: str) -> ToolChunk:
     config.user_timezone = tz_name
     save_config(config)
 
-    time_str = (
-        f"{now.strftime('%Y-%m-%d %H:%M:%S')} {tz_name} ({now.strftime('%A')})"
-    )
+    time_str = f"{now.strftime('%Y-%m-%d %H:%M:%S')} {tz_name} ({now.strftime('%A')})"
     return ToolChunk(
         is_last=True,
         state=ToolResultState.SUCCESS,

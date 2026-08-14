@@ -369,8 +369,7 @@ class SlackEventHandler:
                     ct = resp.headers.get("content-type", "")
                     if "text/html" in ct:
                         logger.warning(
-                            "slack handler: HTML response for %s "
-                            "(auth issue?)",
+                            "slack handler: HTML response for %s " "(auth issue?)",
                             filename,
                         )
                         return None
@@ -481,8 +480,7 @@ class SlackEventHandler:
             )
         except Exception:
             logger.debug(
-                "slack handler: conversations_replies failed "
-                "channel=%s thread=%s",
+                "slack handler: conversations_replies failed " "channel=%s thread=%s",
                 channel_id,
                 thread_ts,
             )
@@ -525,10 +523,7 @@ class SlackEventHandler:
         is not found.  Results are cached per user_id.
         """
         cached = self._user_name_cache.get(user_id)
-        if (
-            cached
-            and time.monotonic() - cached[1] < SLACK_USER_NAME_CACHE_TTL_S
-        ):
+        if cached and time.monotonic() - cached[1] < SLACK_USER_NAME_CACHE_TTL_S:
             self._user_name_cache.move_to_end(user_id)
             return cached[0]
         self._user_name_cache.pop(user_id, None)
@@ -779,9 +774,7 @@ def _append_unfurl_text(text: str, attachments: list) -> str:
         title = att.get("title", "").strip()
         title_link = att.get("title_link", "").strip()
         from_url = att.get("from_url", "").strip()
-        att_text = (
-            att.get("text", "").strip() or att.get("fallback", "").strip()
-        )
+        att_text = att.get("text", "").strip() or att.get("fallback", "").strip()
 
         if title:
             if title_link:

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """No-op memory manager – disables all memory functionality."""
+
 from collections.abc import Callable
 
 from agentscope.middleware import MiddlewareBase

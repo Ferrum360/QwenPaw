@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """Backup creation: sync and SSE streaming."""
+
 from __future__ import annotations
 
 import asyncio

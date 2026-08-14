@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """Telemetry collection for installation analytics."""
+
 from __future__ import annotations
 
 import json
@@ -14,9 +15,7 @@ from typing import Any, Callable
 
 logger = logging.getLogger(__name__)
 
-TELEMETRY_ENDPOINT = (
-    "https://qwenpawelemetry-sukzkbfzhc.ap-southeast-1.fcapp.run"
-)
+TELEMETRY_ENDPOINT = "https://qwenpawelemetry-sukzkbfzhc.ap-southeast-1.fcapp.run"
 TELEMETRY_MARKER_FILE = ".telemetry_collected"
 
 
@@ -60,9 +59,7 @@ def get_system_info() -> dict[str, Any]:
         "install_method": _safe_get(_detect_install_method, "unknown"),
         "os": _safe_get(platform.system, "unknown"),
         "os_version": _safe_get(platform.release, "unknown"),
-        "python_version": (
-            f"{sys.version_info.major}." f"{sys.version_info.minor}"
-        ),
+        "python_version": (f"{sys.version_info.major}." f"{sys.version_info.minor}"),
         "architecture": _safe_get(platform.machine, "unknown"),
         "has_gpu": _detect_gpu(),
     }
@@ -110,12 +107,8 @@ def _detect_gpu() -> bool | str:
                     output = str(result.stdout).upper()
                     gpu_vendors = ("AMD", "NVIDIA", "INTEL")
                     gpu_types = ("VGA", "GPU", "3D")
-                    has_vendor = any(
-                        vendor in output for vendor in gpu_vendors
-                    )
-                    has_type = any(
-                        gpu_type in output for gpu_type in gpu_types
-                    )
+                    has_vendor = any(vendor in output for vendor in gpu_vendors)
+                    has_type = any(gpu_type in output for gpu_type in gpu_types)
                     if has_vendor and has_type:
                         return True
             except (FileNotFoundError, subprocess.TimeoutExpired):

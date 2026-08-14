@@ -222,9 +222,7 @@ class MissionMode(AgentMode):
             agent_id=agent_id,
             session_id=session_id,
             verify_commands=parsed["verify_commands"],
-            verification_instructions=(
-                self._default_verification_instructions
-            ),
+            verification_instructions=(self._default_verification_instructions),
             max_iterations=parsed["max_iterations"],
             max_retries_per_story=self._max_retries_per_story,
         )

@@ -140,17 +140,14 @@ def _sanitize_schema_for_gemini(schema: Any) -> Any:
                         merged.setdefault(k, v)
                 return merged
             elif non_null:
-                schema["anyOf"] = [
-                    _sanitize_schema_for_gemini(v) for v in non_null
-                ]
+                schema["anyOf"] = [_sanitize_schema_for_gemini(v) for v in non_null]
             else:
                 del schema["anyOf"]
 
     for key in ["properties", "patternProperties", "$defs"]:
         if key in schema and isinstance(schema[key], dict):
             schema[key] = {
-                k: _sanitize_schema_for_gemini(v)
-                for k, v in schema[key].items()
+                k: _sanitize_schema_for_gemini(v) for k, v in schema[key].items()
             }
 
     for key in ["items", "not", "if", "then", "else"]:
@@ -235,8 +232,7 @@ class GeminiProvider(Provider):
         except genai_errors.APIError:
             return (
                 False,
-                "Failed to connect to Google Gemini API. "
-                "Check your API key.",
+                "Failed to connect to Google Gemini API. " "Check your API key.",
             )
         except Exception:
             return (
@@ -567,9 +563,7 @@ class _GeminiChatModelCompat:
                 )
                 merged = {**self._qp_extra_config_kwargs, **config_kwargs}
                 effective_thinking_enable = (
-                    False
-                    if disable_thinking
-                    else bool(self.parameters.thinking_enable)
+                    False if disable_thinking else bool(self.parameters.thinking_enable)
                 )
 
                 from datetime import datetime

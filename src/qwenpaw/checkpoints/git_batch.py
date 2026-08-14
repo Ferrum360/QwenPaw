@@ -214,8 +214,7 @@ class GitBlobBatch:
 
     def _timeout_error(self) -> CheckpointError:
         return CheckpointError(
-            "git cat-file --batch timed out after "
-            f"{self._timeout:g} seconds",
+            "git cat-file --batch timed out after " f"{self._timeout:g} seconds",
         )
 
     def _expire(self) -> None:

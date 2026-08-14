@@ -46,7 +46,6 @@ from ..base import (
 )
 from ..utils import file_url_to_local_path
 
-
 logger = logging.getLogger(__name__)
 
 # ANSI colour helpers (degrade gracefully if not a tty)
@@ -174,8 +173,7 @@ class ConsoleChannel(BaseChannel):
             enabled=config.enabled,
             bot_prefix=config.bot_prefix or "",
             on_reply_sent=on_reply_sent,
-            display_config=display_config
-            or ChannelDisplayConfig.from_config(config),
+            display_config=display_config or ChannelDisplayConfig.from_config(config),
             workspace_dir=workspace_dir,
             media_dir=config.media_dir or "",
         )
@@ -229,8 +227,7 @@ class ConsoleChannel(BaseChannel):
                 if url:
                     return FileContent(
                         type=ContentType.FILE,
-                        filename=getattr(part, "filename", None)
-                        or Path(url).name,
+                        filename=getattr(part, "filename", None) or Path(url).name,
                         file_url=url,
                     )
             elif content_type == ContentType.TEXT:
@@ -434,10 +431,7 @@ class ConsoleChannel(BaseChannel):
                     ev_type,
                 )
 
-                if (
-                    event.object == "response"
-                    and event.status == RunStatus.Completed
-                ):
+                if event.object == "response" and event.status == RunStatus.Completed:
                     event_output = event.output
                     event.output = []
                     if event_output is not None:
@@ -446,9 +440,7 @@ class ConsoleChannel(BaseChannel):
 
                 if obj == "message" and status == RunStatus.Completed:
                     msg_id = str(
-                        getattr(event, "msg_id", "")
-                        or getattr(event, "id", "")
-                        or "",
+                        getattr(event, "msg_id", "") or getattr(event, "id", "") or "",
                     )
                     for pending_data in self._flush_headline_stream_states(
                         headline_stream_states,
@@ -600,11 +592,7 @@ class ConsoleChannel(BaseChannel):
             elif t == ContentType.AUDIO and getattr(p, "data", None):
                 self._safe_print(f"{_YELLOW}🔊 [Audio]{_RESET}")
             elif t == ContentType.FILE:
-                url = (
-                    getattr(p, "file_url", None)
-                    or getattr(p, "file_id", None)
-                    or ""
-                )
+                url = getattr(p, "file_url", None) or getattr(p, "file_id", None) or ""
                 self._safe_print(f"{_YELLOW}📎 [File: {url}]{_RESET}")
         self._safe_print("")
 
@@ -685,11 +673,7 @@ class ConsoleChannel(BaseChannel):
             f"{prefix}{text}\n",
         )
         sid = (meta or {}).get("session_id")
-        if (
-            sid
-            and text.strip()
-            and not (meta or {}).get("suppress_console_push")
-        ):
+        if sid and text.strip() and not (meta or {}).get("suppress_console_push"):
             await push_store_append(sid, text.strip())
 
     async def send_content_parts(

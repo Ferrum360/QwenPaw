@@ -16,6 +16,7 @@ Telegram Bot API refs:
   https://core.telegram.org/bots/api#callbackquery
   https://core.telegram.org/bots/api#editmessagetext
 """
+
 from __future__ import annotations
 
 import logging
@@ -172,9 +173,7 @@ def build_resolved_text(
     # Compact (streaming) — MarkdownV2.
     by = _escape_mdv2(operator_display)
     by_text = f" by *{by}*" if operator_display else ""
-    return (
-        f"{icon} *{word}*{by_text}" f"  \\|  Tool: `{_escape_mdv2(tool_name)}`"
-    )
+    return f"{icon} *{word}*{by_text}" f"  \\|  Tool: `{_escape_mdv2(tool_name)}`"
 
 
 # MarkdownV2 special characters that must be escaped.

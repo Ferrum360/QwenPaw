@@ -154,10 +154,7 @@ def _build_tool_info(tool_config: Any, tool_name: str) -> ToolInfo:
         if tool_config.config:
             masked_config = dict(tool_config.config)
             for field in config_fields_data:
-                if (
-                    field.get("type") == "password"
-                    and field["name"] in masked_config
-                ):
+                if field.get("type") == "password" and field["name"] in masked_config:
                     if masked_config[field["name"]]:
                         masked_config[field["name"]] = "***"
             tool_info.config_values = masked_config
@@ -232,10 +229,7 @@ async def toggle_tool(
     workspace = await get_agent_for_request(request)
     agent_config = load_agent_config(workspace.agent_id)
 
-    if (
-        not agent_config.tools
-        or tool_name not in agent_config.tools.builtin_tools
-    ):
+    if not agent_config.tools or tool_name not in agent_config.tools.builtin_tools:
         raise HTTPException(
             status_code=404,
             detail=f"Tool '{tool_name}' not found",
@@ -279,10 +273,7 @@ async def update_tool_async_execution(
     workspace = await get_agent_for_request(request)
     agent_config = load_agent_config(workspace.agent_id)
 
-    if (
-        not agent_config.tools
-        or tool_name not in agent_config.tools.builtin_tools
-    ):
+    if not agent_config.tools or tool_name not in agent_config.tools.builtin_tools:
         raise HTTPException(
             status_code=404,
             detail=f"Tool '{tool_name}' not found",
@@ -336,10 +327,7 @@ async def get_tool_config(
             tools = meta.get("tools", [])
             if isinstance(tools, list):
                 for tool in tools:
-                    if (
-                        isinstance(tool, dict)
-                        and tool.get("name") == tool_name
-                    ):
+                    if isinstance(tool, dict) and tool.get("name") == tool_name:
                         config_fields = tool.get("config_fields", [])
                         break
 
@@ -349,10 +337,7 @@ async def get_tool_config(
 
             masked_config = dict(config)
             for field in config_fields:
-                if (
-                    field.get("type") == "password"
-                    and field["name"] in masked_config
-                ):
+                if field.get("type") == "password" and field["name"] in masked_config:
                     if masked_config[field["name"]]:
                         masked_config[field["name"]] = "***"
             return masked_config
@@ -399,10 +384,7 @@ async def update_tool_config(
             tools = meta.get("tools", [])
             if isinstance(tools, list):
                 for tool in tools:
-                    if (
-                        isinstance(tool, dict)
-                        and tool.get("name") == tool_name
-                    ):
+                    if isinstance(tool, dict) and tool.get("name") == tool_name:
                         config_fields = tool.get("config_fields", [])
                         break
 
@@ -427,9 +409,7 @@ async def update_tool_config(
 
                     # If value is "***" (masked), keep existing value
                     if new_value == "***" and field_name in existing_config:
-                        config_to_save[field_name] = existing_config[
-                            field_name
-                        ]
+                        config_to_save[field_name] = existing_config[field_name]
 
     # Save tool config for this agent
     try:

@@ -150,9 +150,7 @@ class HarnessSessionBridge:
     ) -> list[dict[str, Any]]:
         messages: list[dict[str, Any]] = []
         for item in history:
-            role = (
-                "user" if item.kind == HarnessHistoryKind.USER else "assistant"
-            )
+            role = "user" if item.kind == HarnessHistoryKind.USER else "assistant"
             if item.kind == HarnessHistoryKind.REASONING:
                 block = {"type": "thinking", "thinking": item.text}
             elif item.kind == HarnessHistoryKind.TOOL_CALL:
@@ -299,9 +297,7 @@ class HarnessSessionBridge:
             if "://" not in source_text and not source_text.startswith(
                 "data:",
             ):
-                source_text = (
-                    Path(source_text).expanduser().absolute().as_uri()
-                )
+                source_text = Path(source_text).expanduser().absolute().as_uri()
             default_media_types = {
                 "image": "image/png",
                 "audio": "audio/mpeg",

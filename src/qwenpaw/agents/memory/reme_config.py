@@ -112,8 +112,7 @@ def _base_config() -> dict[str, Any]:
                 "backend": "base",
                 "max_file_bytes": _MAX_FILE_BYTES,
                 "description": (
-                    "wipe the file store and rebuild it from the existing "
-                    "files"
+                    "wipe the file store and rebuild it from the existing " "files"
                 ),
                 "watch_dirs": watch_dirs,
                 "watch_suffixes": watch_suffixes,
@@ -130,9 +129,7 @@ def _base_config() -> dict[str, Any]:
             },
             "search": {
                 "backend": "base",
-                "description": (
-                    "Hybrid workspace search (vector + BM25, RRF-fused)."
-                ),
+                "description": ("Hybrid workspace search (vector + BM25, RRF-fused)."),
                 "parameters": {
                     "type": "object",
                     "properties": {
@@ -379,8 +376,7 @@ def _base_config() -> dict[str, Any]:
                         },
                         "session_id": {
                             "type": "string",
-                            "description": "source conversation session "
-                            "identifier",
+                            "description": "source conversation session " "identifier",
                         },
                         "content": {
                             "type": "string",
@@ -388,8 +384,7 @@ def _base_config() -> dict[str, Any]:
                         },
                         "metadata": {
                             "type": "object",
-                            "description": "Optional extra frontmatter "
-                            "fields.",
+                            "description": "Optional extra frontmatter " "fields.",
                         },
                     },
                     "required": [
@@ -474,8 +469,7 @@ def _base_config() -> dict[str, Any]:
             "auto_memory": {
                 "backend": "base",
                 "description": (
-                    "Auto-memory: record conversation facts into a daily "
-                    "note"
+                    "Auto-memory: record conversation facts into a daily " "note"
                 ),
                 "parameters": {
                     "type": "object",
