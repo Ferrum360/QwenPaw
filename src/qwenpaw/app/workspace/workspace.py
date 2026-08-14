@@ -399,7 +399,7 @@ class Workspace:
             ws: "Workspace",
             _service: Any,
         ) -> None:
-            ws._local_workspace  # pylint: disable=protected-access
+            return ws._local_workspace  # pylint: disable=protected-access
 
         sm.register(
             ServiceDescriptor(

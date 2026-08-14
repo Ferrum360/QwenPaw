@@ -6,9 +6,7 @@ This hook runs in POST_RESPONSE phase and checks every 5 turns.
 """
 
 import logging
-from pathlib import Path
-
-from .hooks import HookBase, HookContext, HookResult, HookAction
+from .hooks import HookBase, HookContext, HookResult
 from .phases import Phase
 
 logger = logging.getLogger(__name__)

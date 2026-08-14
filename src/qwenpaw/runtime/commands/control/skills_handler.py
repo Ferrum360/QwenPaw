@@ -11,6 +11,8 @@ from pathlib import Path
 
 import frontmatter as fm
 
+import logging
+
 from ....agents.skill_system import (
     detect_lazy_skill_trigger,
     get_workspace_skills_dir,
@@ -18,6 +20,8 @@ from ....agents.skill_system import (
     reconcile_workspace_manifest,
     resolve_core_and_lazy_skills,
 )
+
+logger = logging.getLogger(__name__)
 from ....agents.utils.file_handling import (
     read_text_file_with_encoding_fallback,
 )
@@ -105,7 +109,7 @@ class SkillsCommandHandler(BaseControlCommandHandler):
                     )
                     description = post.get("description", "") or ""
                 except Exception:
-                    description = entry.get("metadata", {}).get("description", "")
+                    description = ""
 
                 lines.append(f"✅ `{skill_name}` — {self._truncate_description(description, 50)}")
         else:
