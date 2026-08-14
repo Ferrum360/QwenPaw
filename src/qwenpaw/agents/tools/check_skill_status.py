@@ -5,8 +5,6 @@ Phase 2B: Agent self-management — view which skills are loaded/unloaded.
 Phase 2C: Auto-unload stale skills on check (idle timeout + threshold).
 """
 
-from pathlib import Path
-
 from agentscope.message import TextBlock
 from agentscope.tool import ToolChunk
 from agentscope.message import ToolResultState
@@ -17,7 +15,6 @@ from ..skill_system.skill_tools import (
     check_skill_status_tool,
     auto_unload_stale_skills,
     get_context_usage,
-    should_auto_unload,
 )
 
 

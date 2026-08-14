@@ -73,7 +73,7 @@ class SkillsCommandHandler(BaseControlCommandHandler):
 
     async def _handle_list_skills(
         self,
-        context: ControlContext,
+        _context: ControlContext,
         workspace_dir: Path,
         channel_id: str,
     ) -> str:
@@ -141,7 +141,7 @@ class SkillsCommandHandler(BaseControlCommandHandler):
 
     async def _handle_load_skill(
         self,
-        context: ControlContext,
+        _context: ControlContext,
         workspace_dir: Path,
         skill_name: str,
     ) -> str:
