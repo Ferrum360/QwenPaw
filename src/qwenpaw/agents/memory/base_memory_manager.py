@@ -111,7 +111,7 @@ class BaseMemoryManager(ABC):
             MemoryMiddleware(
                 memory_manager=self,
                 title_refresh_callback=self.title_refresh_callback,
-            )
+            ),
         ]
 
     def get_memory_config(self) -> Any:

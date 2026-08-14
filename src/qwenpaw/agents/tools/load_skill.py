@@ -39,9 +39,9 @@ def load_skill(
     """
     # Get workspace dir from environment or default
     workspace_dir = WORKING_DIR / "workspaces" / "default"
-    
+
     result = load_skill_tool(workspace_dir, skill_name)
-    
+
     if result.status == "success":
         return ToolChunk(
             is_last=True,

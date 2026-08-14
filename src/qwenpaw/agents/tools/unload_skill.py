@@ -38,9 +38,9 @@ def unload_skill(
         ToolChunk with unload status and estimated tokens freed.
     """
     workspace_dir = WORKING_DIR / "workspaces" / "default"
-    
+
     result = unload_skill_tool(workspace_dir, skill_name)
-    
+
     if result.status == "success":
         return ToolChunk(
             is_last=True,

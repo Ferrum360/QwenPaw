@@ -536,11 +536,11 @@ class MemoryMiddleware(MiddlewareBase):
                         agent,
                         messages,
                         session_id=self._agent_session_id(agent),
-                    )
+                    ),
                 )
             except Exception:
                 logger.exception(
-                    "MemoryMiddleware title refresh scheduling failed"
+                    "MemoryMiddleware title refresh scheduling failed",
                 )
 
     @staticmethod
