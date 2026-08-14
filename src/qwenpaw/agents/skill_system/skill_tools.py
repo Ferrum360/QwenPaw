@@ -21,7 +21,7 @@ import logging
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict
 
 logger = logging.getLogger(__name__)
 
@@ -543,6 +543,3 @@ def ensure_skill_tools_initialized(workspace_dir: Path) -> None:
     if not _skill_tools_initialized:
         _skill_tools_initialized = True
         logger.info("Skill tools initialized")
-
-
-
