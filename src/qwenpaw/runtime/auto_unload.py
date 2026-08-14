@@ -126,7 +126,7 @@ class AutoUnloadHook(HookBase):
         Args:
             ctx: Hook context with workspace_dir
         """
-from qwenpaw.agents.skill_system.skill_tools import (
+        from qwenpaw.agents.skill_system.skill_tools import (
             auto_unload_stale_skills,
             get_context_usage,
         )
@@ -167,5 +167,6 @@ from qwenpaw.agents.skill_system.skill_tools import (
 
 # Singleton instance for registration
 auto_unload_hook = AutoUnloadHook(turn_interval=5)
+
 
 
