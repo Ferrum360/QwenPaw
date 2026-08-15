@@ -20,6 +20,7 @@ disable=
     implicit-str-concat,
     no-name-in-module,
     astroid-error,
+    superfluous-parens,
 
 [FORMAT]
 # Match black's line length
