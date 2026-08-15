@@ -33,6 +33,10 @@ jobs:
         run: |
           pip install setuptools==68.2.2 wheel==0.41.2
 
+      - name: Upgrade astroid for Python 3.14 compatibility
+        run: |
+          pip install --upgrade astroid pylint
+
       - name: Install QwenPaw with dev dependencies
         run: |
           pip install -q -e ".[dev]"
