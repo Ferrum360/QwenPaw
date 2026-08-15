@@ -17,6 +17,9 @@ disable=
     broad-exception-caught,
     too-few-public-methods,
     not-callable,
+    implicit-str-concat,
+    no-name-in-module,
+    astroid-error,
 
 [FORMAT]
 # Match black's line length
