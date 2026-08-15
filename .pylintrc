@@ -1,6 +1,6 @@
 [MASTER]
-# Use parallel for speed
-jobs=4
+# Use single thread to avoid astroid crash on Python 3.14
+jobs=1
 load-plugins=
 
 [MESSAGES CONTROL]
