@@ -32,10 +32,60 @@ from ..task_tracker import TaskTracker
 from ..chats.session import SafeJSONSession
 from ..crons.manager import CronManager
 from ..crons.repo.json_repo import JsonJobRepository
-from ...config.config import load_agent_config
+from ...config.config import load_agent_config, AgentProfileConfig
 from ...utils.logging import sanitize_log_value
 
 logger = logging.getLogger(__name__)
+
+
+def make_auto_title_refresh_callback(workspace: "Workspace") -> Any:
+    """Build the auto-title-refresh callback for this workspace.
+
+    The callback is invoked by ``MemoryMiddleware`` after each successful
+    auto-memory flush. It asks the active LLM to re-title the session from
+    the recent conversation slice, then compare-and-set updates the chat
+    name so a user-chosen name is never clobbered.
+
+    Returns an async callable ``(agent, messages, session_id)`` or ``None``.
+    """
+    try:
+        cfg = load_agent_config(workspace.agent_id).running
+    except Exception:
+        return None
+    if not getattr(cfg.auto_title_config, "refresh_on_auto_memory", False):
+        return None
+
+    from ..chats.title_generator import refresh_title_after_auto_memory
+
+    async def _refresh(
+        agent: Any,
+        messages: list,
+        session_id: str,
+    ) -> None:
+        try:
+            # ``agent.state.session_id`` is an internal AgentScope hash that
+            # cannot be matched against chat records, which store the
+            # routing-layer (GUI) session id. Use the request-context id for
+            # the chat lookup, falling back to the passed-in id when the
+            # request context carries none.
+            request_context = getattr(agent, "_request_context", None) or {}
+            effective_session_id = session_id
+            if isinstance(request_context, dict):
+                gui_session_id = str(request_context.get("session_id") or "")
+                if gui_session_id:
+                    effective_session_id = gui_session_id
+            await refresh_title_after_auto_memory(
+                workspace,
+                session_id=effective_session_id,
+                recent_messages=messages or [],
+            )
+        except Exception:
+            logger.exception(
+                "Auto title refresh failed for session %s",
+                session_id,
+            )
+
+    return _refresh
 
 
 class Workspace:
@@ -77,7 +127,7 @@ class Workspace:
         self._service_manager = ServiceManager(self)
 
         # Non-service state
-        self._config = None  # Loaded before start()
+        self._config: Optional["AgentProfileConfig"] = None  # Loaded before start()
         self._config_mtime: float | None = None
         self._started = False
         self._manager = None  # Reference to MultiAgentManager
@@ -376,7 +426,7 @@ class Workspace:
         def _init_local_workspace(
             ws: "Workspace",
             _service: Any,
-        ) -> "QwenPawLocalWorkspace":
+        ):
             return ws._local_workspace  # pylint: disable=protected-access
 
         sm.register(
@@ -409,11 +459,14 @@ class Workspace:
             ServiceDescriptor(
                 name="memory_manager",
                 service_class=lambda ws: get_memory_manager_backend(
-                    ws._config.running.memory_manager_backend,
+                    ws._config.running.memory_manager_backend  # type: ignore[union-attr]
                 ),
                 init_args=lambda ws: {
                     "working_dir": str(ws.workspace_dir),
                     "agent_id": ws.agent_id,
+                    "title_refresh_callback": make_auto_title_refresh_callback(
+                        ws,
+                    ),
                 },
                 start_method="start",
                 stop_method="close",
@@ -713,3 +766,10 @@ class Workspace:
             f"workspace={self.workspace_dir}, "
             f"status={status})"
         )
+
+
+
+
+
+
+

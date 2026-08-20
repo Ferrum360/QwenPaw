@@ -19,7 +19,15 @@ import logging
 from copy import deepcopy
 from contextlib import contextmanager
 from contextvars import ContextVar
-from typing import TYPE_CHECKING, Any, AsyncGenerator, Callable, Iterator, Set
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    AsyncGenerator,
+    Awaitable,
+    Callable,
+    Iterator,
+    Set,
+)
 
 from agentscope.middleware import MiddlewareBase
 from agentscope.message import Msg
@@ -103,8 +111,14 @@ class MemoryMiddleware(MiddlewareBase):
     Tool registration remains part of toolkit construction.
     """
 
-    def __init__(self, *, memory_manager: Any) -> None:
+    def __init__(
+        self,
+        *,
+        memory_manager: Any,
+        title_refresh_callback: Callable[..., Awaitable[None]] | None = None,
+    ) -> None:
         self._memory_manager = memory_manager
+        self._title_refresh_callback = title_refresh_callback
 
     async def on_system_prompt(
         self,
@@ -350,6 +364,24 @@ class MemoryMiddleware(MiddlewareBase):
         snapshots = turn_state["snapshots"]
         for marker in submitted:
             snapshots.pop(marker, None)
+        # Best-effort chat title refresh: after a successful auto-memory
+        # flush the conversation has moved on, so regenerate the session
+        # title from this recent slice. Spawned as a background task so it
+        # can never block or break the reply path.
+        callback = self._title_refresh_callback
+        if callback is not None:
+            try:
+                asyncio.create_task(
+                    callback(
+                        agent,
+                        messages,
+                        session_id=self._agent_session_id(agent),
+                    ),
+                )
+            except Exception:
+                logger.exception(
+                    "MemoryMiddleware title refresh scheduling failed",
+                )
 
     def _discard_unresolved_pending_markers(
         self,
@@ -512,6 +544,8 @@ class MemoryMiddleware(MiddlewareBase):
                 insert_at = idx + 1
         messages[insert_at:insert_at] = injected
         return messages
+
+        
 
     @staticmethod
     def _agent_session_id(agent: "Agent") -> str:
