@@ -35,6 +35,7 @@ from .proactive_utils import (
     ensure_tz_aware,
     is_agent_busy,
 )
+from ....utils.io_utils import run_sync_io
 
 if TYPE_CHECKING:
     from ....app.workspace import Workspace
@@ -46,10 +47,13 @@ async def generate_proactive_response(
     workspace: "Workspace",
 ) -> Optional[Msg]:
     """Main function to generate proactive response based on memory."""
-    from ....app.agent_context import get_current_agent_id
+    from ....app.agent_context import set_current_agent_id
+    from ....config.context import set_current_workspace_dir
 
+    set_current_agent_id(workspace.agent_id)
+    set_current_workspace_dir(workspace.workspace_dir)
     baseline_timestamp = datetime.now(timezone.utc)  # Use UTC time directly
-    active_agent_id = get_current_agent_id()
+    active_agent_id = workspace.agent_id
 
     agent = await _initialize_single_proactive_agent(
         active_agent_id,
@@ -111,12 +115,15 @@ async def _initialize_single_proactive_agent(
     # as that would pollute the global cache and cause user settings to be
     # silently overwritten when save_agent_config() is later triggered.
     _PROACTIVE_MAX_ITERS = 50
-    agent_config = load_agent_config(agent_id)
+    agent_config = await run_sync_io(load_agent_config, agent_id)
 
     # Create model and formatter for the agent
-    from ...model_factory import create_model_and_formatter
+    from ...model_factory import create_model_and_formatter_async
 
-    model, formatter = create_model_and_formatter(agent_id=agent_config.id)
+    model, formatter = await create_model_and_formatter_async(
+        agent_id=agent_config.id,
+        agent_config=agent_config,
+    )
 
     tools = [
         FunctionTool(web_search),
@@ -264,7 +271,8 @@ async def _generate_final_message(
 
     gathered_info = f"Query: {result.query}\nResult: {result.data}\n\n"
 
-    agent_language = load_agent_config(active_agent_id).language
+    agent_config = await run_sync_io(load_agent_config, active_agent_id)
+    agent_language = agent_config.language
     proactive_content = PROACTIVE_USER_FACING_MESSAGE_PROMPT.format(
         gathered_info=gathered_info,
         language=agent_language,
