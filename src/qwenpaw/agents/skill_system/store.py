@@ -659,8 +659,8 @@ def safe_skill_dir(base_dir: Path, name: str) -> Path:
     Layered defense: ``normalize_skill_dir_name`` already rejects empty names,
     control characters, ``.``, ``..``, ``/`` and ``\\``; the resolve +
     ``is_relative_to`` check guards against future relaxations and
-<<<<<<< Updated upstream
-    platform-specific quirks.
+    platform-specific quirks (e.g. Windows reparse-point / mount-point
+    redirections that resolve parent and child paths differently).
 
     Symlink allowance (local patch): QwenPaw officially supports external
     skill roots via ``config.skill_paths``. Workspace skills may be symlinked
@@ -669,16 +669,11 @@ def safe_skill_dir(base_dir: Path, name: str) -> Path:
     legitimately end up outside ``base_dir``; we accept them when the resolved
     target lives under a configured ``skill_paths`` root. This keeps the
     workspace-directory jail while honoring the external-root contract.
-=======
-    platform-specific quirks (e.g. Windows reparse-point / mount-point
-    redirections that resolve parent and child paths differently).
->>>>>>> Stashed changes
     """
     normalized = normalize_skill_dir_name(name)
     candidate = (base_dir / normalized).resolve()
     base_resolved = base_dir.resolve()
     if not candidate.is_relative_to(base_resolved):
-<<<<<<< Updated upstream
         if not _is_trusted_external_symlink(
             base_dir,
             normalized,
@@ -687,16 +682,6 @@ def safe_skill_dir(base_dir: Path, name: str) -> Path:
             raise SkillsError(
                 message=f"Unsafe skill path outside root: {name}",
             )
-=======
-        # On some platforms (notably Windows with junctions/mount-points),
-        # resolving a child path may follow a redirect that the parent
-        # itself does not expose, causing is_relative_to to return False
-        # even though the candidate is logically under base_dir.  Since
-        # normalize_skill_dir_name already guarantees the name contains no
-        # path separators or "..", the candidate is guaranteed to be a
-        # direct child of base_dir — we treat this as still safe.
-        pass
->>>>>>> Stashed changes
     return candidate
 
 
