@@ -53,11 +53,9 @@ class BaseMemoryManager(ABC):
         self,
         working_dir: str,
         agent_id: str,
-        title_refresh_callback: Callable[..., Awaitable[None]] | None = None,
     ):
         self.working_dir: str = working_dir
         self.agent_id: str = agent_id
-        self.title_refresh_callback = title_refresh_callback
         self._summary_task_info: dict[str, dict[str, Any]] = {}
         self._task_counter: int = 0
         self._task_queue: asyncio.Queue[
@@ -110,7 +108,6 @@ class BaseMemoryManager(ABC):
         return [
             MemoryMiddleware(
                 memory_manager=self,
-                title_refresh_callback=self.title_refresh_callback,
             ),
         ]
 

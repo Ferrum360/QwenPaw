@@ -1268,6 +1268,37 @@ class AgentBuilder:
                     exc_info=True,
                 )
 
+        # Chat title refresh — observe conversation lifecycle and delegate
+        # title generation + compare-and-set persistence to the chat service.
+        # Registered here (runtime assembly layer) so both chat services and
+        # middleware composition are available.
+        try:
+            app_services = getattr(ctx, "app_services", None)
+            chat_manager = None
+            if app_services is not None:
+                chat_manager = getattr(app_services, "chat_manager", None)
+            if chat_manager is not None:
+                from ..app.chats.title_refresh_service import (
+                    ChatTitleRefreshService,
+                )
+                from ..agents.middlewares import ChatTitleRefreshMiddleware
+
+                title_svc = ChatTitleRefreshService(
+                    chat_manager=chat_manager,
+                    agent_id=agent_config.agent_id or "default",
+                )
+                mws.append(
+                    ChatTitleRefreshMiddleware(
+                        service=title_svc,
+                        agent_id=agent_config.agent_id or "default",
+                    ),
+                )
+        except Exception:
+            _logger.debug(
+                "ChatTitleRefreshMiddleware not created",
+                exc_info=True,
+            )
+
         # Visual compression is a request-boundary middleware. It reads the
         # validated per-agent config and does not mutate it.
         from ..agents.context.visual_compression.runtime.middleware import (
