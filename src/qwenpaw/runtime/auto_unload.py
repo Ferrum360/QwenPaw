@@ -76,12 +76,12 @@ class AutoUnloadHook(HookBase):
             ctx: Hook context
         """
         # Ensure mode_state exists
-        if not hasattr(ctx, 'mode_state') or ctx.mode_state is None:
+        if not hasattr(ctx, "mode_state") or ctx.mode_state is None:
             ctx.mode_state = {}
 
         # Increment turn count
-        current = ctx.mode_state.get('turn_count', 0)
-        ctx.mode_state['turn_count'] = current + 1
+        current = ctx.mode_state.get("turn_count", 0)
+        ctx.mode_state["turn_count"] = current + 1
 
         logger.debug(f"Turn count incremented to {current + 1}")
 
@@ -95,25 +95,26 @@ class AutoUnloadHook(HookBase):
             Current turn count (0 if not available)
         """
         # Try to get from mode_state first
-        mode_state = getattr(ctx, 'mode_state', None)
+        mode_state = getattr(ctx, "mode_state", None)
         if mode_state:
-            return mode_state.get('turn_count', 0)
+            return mode_state.get("turn_count", 0)
 
         # Fallback: try to get from request metadata
-        request = getattr(ctx, 'request', None)
+        request = getattr(ctx, "request", None)
         if request:
-            metadata = getattr(request, 'metadata', {})
-            turn_count = metadata.get('turn_count', 0)
+            metadata = getattr(request, "metadata", {})
+            turn_count = metadata.get("turn_count", 0)
             if turn_count:
                 return turn_count
 
         # Last resort: estimate from input_msgs length
-        input_msgs = getattr(ctx, 'input_msgs', [])
+        input_msgs = getattr(ctx, "input_msgs", [])
         if input_msgs:
             # Count user messages (rough estimate)
             user_msg_count = sum(
-                1 for msg in input_msgs
-                if hasattr(msg, 'role') and msg.role == 'user'
+                1
+                for msg in input_msgs
+                if hasattr(msg, "role") and msg.role == "user"  # noqa: E501
             )
             if user_msg_count:
                 return user_msg_count
@@ -148,11 +149,13 @@ class AutoUnloadHook(HookBase):
 
         # Trigger auto-unload
         try:
-            result = auto_unload_stale_skills(workspace_dir, max_idle_seconds=300)
+            result = auto_unload_stale_skills(
+                workspace_dir, max_idle_seconds=300
+            )  # noqa: E501
 
             if result.unloaded_skills:
                 logger.info(
-                    "Auto-unload hook: freed ~%d tokens by unloading %d skill(s)",
+                    "Auto-unload hook: freed ~%d tokens, unloaded %d skill(s)",
                     result.freed_tokens,
                     len(result.unloaded_skills),
                 )

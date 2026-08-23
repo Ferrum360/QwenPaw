@@ -25,6 +25,7 @@ from .service_factories import (
     create_chat_service,
     create_channel_service,
     create_agent_config_watcher,
+    create_mail_monitor_service,
 )
 from .local_workspace import QwenPawLocalWorkspace
 from ..task_tracker import TaskTracker
@@ -35,56 +36,6 @@ from ...config.config import load_agent_config
 from ...utils.logging import sanitize_log_value
 
 logger = logging.getLogger(__name__)
-
-
-def make_auto_title_refresh_callback(workspace: "Workspace") -> Any:
-    """Build the auto-title-refresh callback for this workspace.
-
-    The callback is invoked by ``MemoryMiddleware`` after each successful
-    auto-memory flush. It asks the active LLM to re-title the session from
-    the recent conversation slice, then compare-and-set updates the chat
-    name so a user-chosen name is never clobbered.
-
-    Returns an async callable ``(agent, messages, session_id)`` or ``None``.
-    """
-    try:
-        cfg = load_agent_config(workspace.agent_id).running
-    except Exception:
-        return None
-    if not getattr(cfg.auto_title_config, "refresh_on_auto_memory", False):
-        return None
-
-    from ..chats.title_generator import refresh_title_after_auto_memory
-
-    async def _refresh(
-        agent: Any,
-        messages: list,
-        session_id: str,
-    ) -> None:
-        try:
-            # ``agent.state.session_id`` is an internal AgentScope hash that
-            # cannot be matched against chat records, which store the
-            # routing-layer (GUI) session id. Use the request-context id for
-            # the chat lookup, falling back to the passed-in id when the
-            # request context carries none.
-            request_context = getattr(agent, "_request_context", None) or {}
-            effective_session_id = session_id
-            if isinstance(request_context, dict):
-                gui_session_id = str(request_context.get("session_id") or "")
-                if gui_session_id:
-                    effective_session_id = gui_session_id
-            await refresh_title_after_auto_memory(
-                workspace,
-                session_id=effective_session_id,
-                recent_messages=messages or [],
-            )
-        except Exception:
-            logger.exception(
-                "Auto title refresh failed for session %s",
-                session_id,
-            )
-
-    return _refresh
 
 
 class Workspace:
@@ -138,7 +89,8 @@ class Workspace:
         self._register_services()
 
         logger.debug(
-            f"Created Workspace: {agent_id} at {self.workspace_dir}",
+            f"Created Workspace: {sanitize_log_value(agent_id)} "
+            f"at {self.workspace_dir}",
         )
 
     # Service access via properties (delegates to ServiceManager)
@@ -172,6 +124,11 @@ class Workspace:
         """Get cron manager instance from ServiceManager."""
         return self._service_manager.services.get("cron_manager")
 
+    @property
+    def mail_monitor(self):
+        """Get mail push monitor instance from ServiceManager."""
+        return self._service_manager.services.get("mail_monitor")
+
     # Non-service state
     @property
     def task_tracker(self) -> TaskTracker:
@@ -189,9 +146,28 @@ class Workspace:
 
     @property
     def config(self):
-        """Get agent configuration."""
-        self._config = load_agent_config(self.agent_id)
+        """Agent configuration pinned to this workspace instance.
+
+        ``load_agent_config`` hands out detached copies to protect its
+        cache, but the ubiquitous write idiom -- mutate
+        ``workspace.config`` in place, then
+        ``save_agent_config(workspace.config)`` -- needs BOTH property
+        accesses to observe the same object, or the save silently
+        persists an unpatched fresh copy and the write is lost.  The
+        snapshot is therefore pinned per workspace and refreshed only
+        when agent.json's mtime moves (any save or external edit).
+        """
+        current_mtime = self._agent_config_file_mtime()
+        if self._config is None or current_mtime != self._config_mtime:
+            self._config = load_agent_config(self.agent_id)
+            self._config_mtime = current_mtime
         return self._config
+
+    def _agent_config_file_mtime(self) -> float | None:
+        try:
+            return (self.workspace_dir / "agent.json").stat().st_mtime
+        except OSError:
+            return None
 
     @property
     def local_workspace(self) -> QwenPawLocalWorkspace:
@@ -320,7 +296,7 @@ class Workspace:
         logger.info(
             "workspace %s: bootstrap_plugins complete "
             "(hooks=%d commands=%d modes=%d)",
-            self.agent_id,
+            sanitize_log_value(self.agent_id),
             n_hooks,
             n_cmds,
             len(self.plugins.modes),
@@ -400,8 +376,8 @@ class Workspace:
         def _init_local_workspace(
             ws: "Workspace",
             _service: Any,
-        ) -> None:
-            ws._local_workspace  # pylint: disable=protected-access
+        ) -> "QwenPawLocalWorkspace":
+            return ws._local_workspace  # pylint: disable=protected-access
 
         sm.register(
             ServiceDescriptor(
@@ -433,14 +409,11 @@ class Workspace:
             ServiceDescriptor(
                 name="memory_manager",
                 service_class=lambda ws: get_memory_manager_backend(
-                    ws._config.running.memory_manager_backend  # type: ignore[union-attr]
+                    ws._config.running.memory_manager_backend,
                 ),
                 init_args=lambda ws: {
                     "working_dir": str(ws.workspace_dir),
                     "agent_id": ws.agent_id,
-                    "title_refresh_callback": make_auto_title_refresh_callback(
-                        ws,
-                    ),
                 },
                 start_method="start",
                 stop_method="close",
@@ -516,6 +489,20 @@ class Workspace:
             ),
         )
 
+        # Priority 45: Mail push monitor (conditional: mail.push enabled)
+        sm.register(
+            ServiceDescriptor(
+                name="mail_monitor",
+                service_class=None,
+                post_init=create_mail_monitor_service,
+                start_method="start",
+                stop_method="stop",
+                priority=45,
+                concurrent_init=False,
+                require_clean_stop=True,
+            ),
+        )
+
         # Priority 50: Agent Config Watcher (conditional)
         sm.register(
             ServiceDescriptor(
@@ -577,10 +564,15 @@ class Workspace:
     async def start(self):
         """Start workspace and initialize all components."""
         if self._started:
-            logger.debug(f"Workspace already started: {self.agent_id}")
+            logger.debug(
+                "Workspace already started: "
+                f"{sanitize_log_value(self.agent_id)}",
+            )
             return
 
-        logger.info(f"Starting workspace: {self.agent_id}")
+        logger.info(
+            f"Starting workspace: {sanitize_log_value(self.agent_id)}",
+        )
 
         from ...agents.skill_system import (
             ensure_skill_pool_initialized,
@@ -596,7 +588,10 @@ class Workspace:
         try:
             # 1. Load agent configuration
             self._config = load_agent_config(self.agent_id)
-            logger.debug(f"Loaded config for agent: {self.agent_id}")
+            logger.debug(
+                "Loaded config for agent: "
+                f"{sanitize_log_value(self.agent_id)}",
+            )
 
             # 2. Run legacy weixin -> wechat data migrations BEFORE services
             # start so ChatManager / Runner see the canonical layout.
@@ -606,11 +601,16 @@ class Workspace:
             await self._service_manager.start_all()
 
             self._started = True
-            logger.info(f"Workspace started successfully: {self.agent_id}")
+            logger.info(
+                "Workspace started successfully: "
+                f"{sanitize_log_value(self.agent_id)}",
+            )
 
         except Exception as e:
             logger.error(
-                f"Failed to start agent instance {self.agent_id}: {e}",
+                "Failed to start agent instance "
+                f"{sanitize_log_value(self.agent_id)}: "
+                f"{sanitize_log_value(e)}",
             )
             # Clean up partially started components
             await self.stop()
@@ -637,8 +637,8 @@ class Workspace:
             logger.warning(
                 "weixin->wechat chats.json migration failed for "
                 "agent %s: %s",
-                self.agent_id,
-                exc,
+                sanitize_log_value(self.agent_id),
+                sanitize_log_value(exc),
             )
 
         try:
@@ -649,8 +649,8 @@ class Workspace:
             logger.warning(
                 "weixin->wechat jobs.json migration failed for "
                 "agent %s: %s",
-                self.agent_id,
-                exc,
+                sanitize_log_value(self.agent_id),
+                sanitize_log_value(exc),
             )
 
         try:
@@ -660,8 +660,8 @@ class Workspace:
         except Exception as exc:
             logger.warning(
                 "weixin->wechat sessions migration failed for agent %s: %s",
-                self.agent_id,
-                exc,
+                sanitize_log_value(self.agent_id),
+                sanitize_log_value(exc),
             )
 
         try:
@@ -671,8 +671,8 @@ class Workspace:
         except Exception as exc:
             logger.warning(
                 "final->stream jobs.json migration failed for agent %s: %s",
-                self.agent_id,
-                exc,
+                sanitize_log_value(self.agent_id),
+                sanitize_log_value(exc),
             )
 
     async def stop(self, final: bool = True):
@@ -683,11 +683,14 @@ class Workspace:
                    If False, skip reusable services (for reload scenario).
         """
         if not self._started:
-            logger.debug(f"Workspace not started: {self.agent_id}")
+            logger.debug(
+                f"Workspace not started: {sanitize_log_value(self.agent_id)}",
+            )
             return
 
         logger.info(
-            f"Stopping agent instance: {self.agent_id} (final={final})",
+            "Stopping agent instance: "
+            f"{sanitize_log_value(self.agent_id)} (final={final})",
         )
 
         # Stop all services via ServiceManager (handles reuse automatically)
@@ -698,7 +701,9 @@ class Workspace:
             self._harness_runtime = None
 
         self._started = False
-        logger.info(f"Workspace stopped: {self.agent_id}")
+        logger.info(
+            f"Workspace stopped: {sanitize_log_value(self.agent_id)}",
+        )
 
     def __repr__(self) -> str:
         """String representation of workspace."""
@@ -708,10 +713,3 @@ class Workspace:
             f"workspace={self.workspace_dir}, "
             f"status={status})"
         )
-
-
-
-
-
-
-

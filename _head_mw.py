@@ -19,7 +19,15 @@ import logging
 from copy import deepcopy
 from contextlib import contextmanager
 from contextvars import ContextVar
-from typing import TYPE_CHECKING, Any, AsyncGenerator, Callable, Iterator, Set
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    AsyncGenerator,
+    Awaitable,
+    Callable,
+    Iterator,
+    Set,
+)
 
 from agentscope.middleware import MiddlewareBase
 from agentscope.message import Msg
@@ -33,13 +41,20 @@ from ..constant import (
     EXTERNAL_USER_QUERY_MESSAGE_TAG,
     QWENPAW_MESSAGE_TAG_KEY,
 )
-from ..utils.io_utils import run_sync_io
 
 if TYPE_CHECKING:
     from agentscope.agent import Agent
 
 logger = logging.getLogger(__name__)
 MAX_AUTO_MEMORY_TURN_MARKERS = 1000
+
+# Set by MemoryMiddleware._flush_auto_memory() to signal that an auto-memory
+# flush just completed successfully.  ChatTitleRefreshMiddleware reads this
+# in its on_reply hook to decide whether a title refresh is warranted.
+_auto_memory_flushed_var: ContextVar[bool] = ContextVar(
+    "_auto_memory_flushed",
+    default=False,
+)
 AUTO_MEMORY_TURN_STATE_KEY = "qwenpaw_auto_memory_turn_state"
 _AUTOMATION_MEMORY_SKIP_SOURCES = frozenset({"cron", "heartbeat"})
 _TOOL_RESULT_METADATA_KEY = "qwenpaw_tool_result_metadata"
@@ -103,8 +118,14 @@ class MemoryMiddleware(MiddlewareBase):
     Tool registration remains part of toolkit construction.
     """
 
-    def __init__(self, *, memory_manager: Any) -> None:
+    def __init__(
+        self,
+        *,
+        memory_manager: Any,
+        title_refresh_callback: Callable[..., Awaitable[None]] | None = None,
+    ) -> None:
         self._memory_manager = memory_manager
+        self._title_refresh_callback = title_refresh_callback
 
     async def on_system_prompt(
         self,
@@ -112,9 +133,7 @@ class MemoryMiddleware(MiddlewareBase):
         agent: "Agent",
         current_prompt: str,
     ) -> str:
-        prompt = await run_sync_io(
-            self._memory_manager.get_memory_prompt,
-        )
+        prompt = self._memory_manager.get_memory_prompt()
         if not prompt or prompt in current_prompt:
             return current_prompt
         if current_prompt.strip():
@@ -199,7 +218,7 @@ class MemoryMiddleware(MiddlewareBase):
             seen_markers.pop(oldest_key)
         pending_markers.append(turn_marker)
 
-        interval = await self._auto_memory_interval()
+        interval = self._auto_memory_interval()
         if interval <= 0:
             pending_markers.clear()
             turn_state["snapshots"].clear()
@@ -350,6 +369,9 @@ class MemoryMiddleware(MiddlewareBase):
         snapshots = turn_state["snapshots"]
         for marker in submitted:
             snapshots.pop(marker, None)
+        # Signal ChatTitleRefreshMiddleware that a successful auto-memory
+        # flush just completed.
+        _auto_memory_flushed_var.set(True)
 
     def _discard_unresolved_pending_markers(
         self,
@@ -513,6 +535,25 @@ class MemoryMiddleware(MiddlewareBase):
         messages[insert_at:insert_at] = injected
         return messages
 
+        # Best-effort chat title refresh: after a successful auto-memory
+        # flush the conversation has moved on, so regenerate the session
+        # title from this recent slice. Spawned as a background task so it
+        # can never block or break the reply path.
+        callback = self._title_refresh_callback
+        if callback is not None:
+            try:
+                asyncio.create_task(
+                    callback(
+                        agent,
+                        messages,
+                        session_id=self._agent_session_id(agent),
+                    ),
+                )
+            except Exception:
+                logger.exception(
+                    "MemoryMiddleware title refresh scheduling failed",
+                )
+
     @staticmethod
     def _agent_session_id(agent: "Agent") -> str:
         session_id = str(getattr(agent.state, "session_id", "") or "")
@@ -593,11 +634,8 @@ class MemoryMiddleware(MiddlewareBase):
             )
         ]
 
-    async def _auto_memory_interval(self) -> int:
-        interval = await run_sync_io(
-            self._memory_manager.get_auto_memory_interval,
-        )
-        return int(interval)
+    def _auto_memory_interval(self) -> int:
+        return int(self._memory_manager.get_auto_memory_interval())
 
     def _auto_memory_turn_state(self, agent: "Agent") -> dict[str, Any]:
         return auto_memory_turn_state(agent.state)
@@ -987,3 +1025,73 @@ class LangfuseToolSpanMiddleware(MiddlewareBase):
                         ],
                     },
                 )
+
+
+class ChatTitleRefreshMiddleware(MiddlewareBase):
+    """Observe conversation lifecycle and refresh chat titles after auto-memory flush.
+
+    This middleware is the sole consumer of the ``_auto_memory_flushed``
+    context variable.  When :meth:`on_reply` detects that an auto-memory
+    flush just completed, it delegates title generation and persistence to
+    the injected :class:`~app.chats.title_refresh_service.ChatTitleRefreshService`.
+
+    Registered from the application/runtime assembly layer (see
+    ``runtime/builder.py``) so that both chat services and middleware
+    composition are available.
+    """
+
+    def __init__(
+        self,
+        *,
+        service: Any,
+        agent_id: str,
+    ) -> None:
+        self._service = service
+        self._agent_id = agent_id
+
+    async def on_reply(
+        self,
+        agent: "Agent",
+        request: Any,
+        next_handler: Any,
+    ) -> AsyncGenerator[Any, Any]:
+        """Wrap each assistant reply turn.
+
+        After the inner handler yields (i.e. the model has produced a full
+        response), check whether auto-memory was flushed this turn.  If so,
+        trigger a title refresh via the dedicated service.
+        """
+        # Run the inner handler to completion first.
+        events: list[Any] = []
+        async for event in next_handler():
+            events.append(event)
+
+        # Only proceed if auto-memory was flushed this turn.
+        if not _auto_memory_flushed_var.get():
+            for ev in events:
+                yield ev
+            return
+
+        # Reset the signal for subsequent turns.
+        _auto_memory_flushed_var.set(False)
+
+        # Gather recent messages from the conversation context.
+        try:
+            from agentscope.message import Msg
+
+            context = list(agent.state.context)
+            recent = [
+                m for m in context if isinstance(m, Msg) and getattr(m, "role", "") == "assistant"
+            ]
+            # Take the last few assistant messages as input for title generation.
+            recent = recent[-3:] if len(recent) >= 3 else recent
+            if recent:
+                await self._service.refresh(
+                    session_id=self._agent_session_id(agent),
+                    recent_messages=recent,
+                )
+        except Exception:
+            logger.exception("ChatTitleRefreshMiddleware.on_reply failed")
+
+        for ev in events:
+            yield ev

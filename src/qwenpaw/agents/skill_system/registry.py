@@ -44,7 +44,6 @@ from .store import (
     mutate_json,
     normalize_skill_manifest_entry,
     read_frontmatter_safe_from_path,
-    resolve_pool_skill_dir,
     read_json,
     read_skill_manifest,
     read_skill_pool_manifest,
@@ -53,80 +52,6 @@ from .store import (
 )
 
 logger = logging.getLogger(__name__)
-
-
-def _read_frontmatter_safe(skill_dir: Path, skill_name: str) -> dict:
-    """Read frontmatter from SKILL.md safely.
-
-    Extracts name, description, metadata, and triggers from SKILL.md frontmatter.
-
-    Args:
-        skill_dir: Path to the skill directory
-        skill_name: Name of the skill (for error messages)
-
-    Returns:
-        Dict with 'name', 'description', 'metadata', and 'triggers' keys
-    """
-    try:
-        import frontmatter as fm
-
-        skill_md_path = skill_dir / "SKILL.md"
-        if not skill_md_path.exists():
-            return {"name": skill_name, "description": ""}
-
-        content = read_text_file_with_encoding_fallback(skill_md_path)
-        post = fm.loads(content)
-
-        # Get frontmatter data - frontmatter library stores it in .metadata attribute
-        # or we can access it via post[key] for top-level keys like name, description
-        fm_dict = {}
-
-        # Try to get name from frontmatter (top-level key)
-        if hasattr(post, 'name'):
-            fm_dict["name"] = post.name
-        elif hasattr(post, 'metadata') and isinstance(post.metadata, dict):
-            # Fallback: check if name is in metadata dict
-            fm_dict["name"] = post.metadata.get("name", skill_name)
-        else:
-            fm_dict["name"] = skill_name
-
-        # Get description from frontmatter (top-level key)
-        if hasattr(post, 'description'):
-            fm_dict["description"] = str(post.description)
-        elif hasattr(post, 'metadata') and isinstance(post.metadata, dict):
-            fm_dict["description"] = str(post.metadata.get("description", ""))
-        else:
-            fm_dict["description"] = ""
-
-        # Get metadata dict (nested qwenpaw config etc.)
-        if hasattr(post, 'metadata') and isinstance(post.metadata, dict):
-            fm_dict["metadata"] = post.metadata
-        else:
-            fm_dict["metadata"] = {}
-
-        # Get triggers from metadata.qwenpaw.triggers or top-level triggers
-        triggers = []
-        if hasattr(post, 'metadata') and isinstance(post.metadata, dict):
-            qwenpaw_config = post.metadata.get("qwenpaw", {})
-            if isinstance(qwenpaw_config, dict):
-                triggers = qwenpaw_config.get("triggers", [])
-        if not triggers and hasattr(post, 'triggers'):
-            triggers = post.triggers
-        if isinstance(triggers, list):
-            fm_dict["triggers"] = triggers
-        else:
-            fm_dict["triggers"] = []
-
-        return fm_dict
-
-    except Exception as exc:
-        logger.debug(
-            "Failed to read frontmatter for skill '%s': %s",
-            skill_name,
-            exc,
-        )
-        return {"name": skill_name, "description": "", "metadata": {}, "triggers": []}
-
 
 BUILTIN_SKILL_LANGUAGES = ("en", "zh")
 _BUILTIN_SKILL_DIR_RE = re.compile(
@@ -1069,10 +994,6 @@ def _build_reconciled_pool_entry(
     existing_installed_from = existing.get("installed_from")
     if existing_installed_from:
         new_entry["installed_from"] = existing_installed_from
-    # Phase 2B/2C: Preserve dynamic field (lazy loading config)
-    existing_dynamic = existing.get("dynamic")
-    if existing_dynamic:
-        new_entry["dynamic"] = existing_dynamic
     for au_key in (
         "auto_update",
         "auto_update_targets",
@@ -1242,10 +1163,6 @@ def reconcile_workspace_manifest(workspace_dir: Path) -> dict[str, Any]:
                 existing_installed_from = existing.get("installed_from")
                 if existing_installed_from:
                     next_entry["installed_from"] = existing_installed_from
-                # Phase 2B/2C: Preserve dynamic field (lazy loading config)
-                existing_dynamic = existing.get("dynamic")
-                if existing_dynamic:
-                    next_entry["dynamic"] = existing_dynamic
                 skills[skill_name] = next_entry
                 skills[skill_name].pop("sync_to_hub", None)
                 skills[skill_name].pop("sync_to_pool", None)
@@ -1384,189 +1301,6 @@ def _remember_workspace_inventory(
         while len(_WORKSPACE_INVENTORIES) > _MAX_WORKSPACE_INVENTORIES:
             _WORKSPACE_INVENTORIES.popitem(last=False)
 
-
-def resolve_core_and_lazy_skills(
-    workspace_dir: Path,
-    channel_name: str,
-) -> tuple[list[str], dict[str, Any]]:
-    """Resolve workspace skills into core (eager) and lazy categories.
-
-    Returns:
-        tuple[core_skills, lazy_skills_meta]:
-            - core_skills: list of skill names (always loaded)
-            - lazy_skills_meta: dict mapping skill_name -> {mode, triggers, description}
-
-    New in Phase 1: Dynamic Skill Loading
-    Skills with "dynamic.mode" == "lazy" are separated from core skills.
-    Only their name + description are injected at startup; full SKILL.md
-    is loaded on-demand when a trigger keyword matches user input.
-    """
-    manifest = read_skill_manifest(workspace_dir)
-    core_skills = []
-    lazy_skills_meta = {}
-
-    for skill_name, entry in sorted(manifest.get("skills", {}).items()):
-        if not entry.get("enabled", False):
-            continue
-        channels = entry.get("channels") or ["all"]
-        if "all" not in channels and channel_name not in channels:
-            continue
-
-        skill_dir = get_workspace_skills_dir(workspace_dir) / skill_name
-        if not skill_dir.exists():
-            continue
-
-        # Check if this is a lazy skill
-        dynamic_config = entry.get("dynamic") or {}
-        mode = dynamic_config.get("mode", "eager")
-
-        if mode == "lazy":
-            # Lazy skill: store metadata only (name + description + triggers)
-            description = ""
-            try:
-                post = _read_frontmatter_safe(skill_dir, skill_name)
-                description = str(post.get("description", "") or "")
-            except Exception:
-                pass
-
-            lazy_skills_meta[skill_name] = {
-                "mode": "lazy",
-                "triggers": dynamic_config.get("triggers", []),
-                "description": description,
-                "skill_dir": skill_dir,
-            }
-        else:
-            # Core skill (eager): always load
-            core_skills.append(skill_name)
-
-    return core_skills, lazy_skills_meta
-
-
-def detect_lazy_skill_trigger(
-    user_input: str,
-    lazy_skills_meta: dict[str, Any],
-    use_semantic: bool = False,
-) -> str | None:
-    """Detect if user input matches any lazy skill's trigger keywords or semantic meaning.
-
-    Args:
-        user_input: The user's message/input text
-        lazy_skills_meta: Dict from resolve_core_and_lazy_skills()
-        use_semantic: If True, use IntentClassifier for semantic matching (Phase 2A)
-                     If False, use simple keyword matching (Phase 1)
-
-    Returns:
-        Skill name if a trigger matches, None otherwise.
-
-    Phase 1: Simple keyword matching
-    Phase 2A: Enhanced with semantic similarity using llama-server embedding model
-    """
-    if not user_input or not lazy_skills_meta:
-        return None
-
-    # Phase 1: Keyword matching (fast path)
-    for skill_name, meta in lazy_skills_meta.items():
-        triggers = meta.get("triggers", [])
-        for trigger in triggers:
-            if trigger in user_input:
-                logger.debug(
-                    "Lazy skill trigger matched (keyword): '%s' in '%s' -> skill '%s'",
-                    trigger,
-                    user_input[:50],
-                    skill_name,
-                )
-                return skill_name
-
-    # Phase 2A: Semantic matching (if enabled)
-    if use_semantic:
-        try:
-            from .intent_classifier import get_intent_classifier
-
-            classifier = get_intent_classifier()
-
-            # Register all lazy skills with their triggers
-            for skill_name, meta in lazy_skills_meta.items():
-                triggers = meta.get("triggers", [])
-                if triggers:  # Only register if has triggers
-                    # Get or create existing registration
-                    existing = getattr(classifier, '_skill_triggers', {})
-                    if skill_name not in existing:
-                        classifier.register_skill(skill_name, triggers)
-
-            # Classify user input
-            matched_skill, score = classifier.classify(user_input)
-
-            if matched_skill:
-                logger.info(
-                    "Lazy skill trigger matched (semantic): score=%.2f -> skill '%s'",
-                    score,
-                    matched_skill,
-                )
-                return matched_skill
-
-        except Exception as exc:
-            logger.debug(
-                "Semantic matching failed, falling back to keyword match: %s",
-                exc,
-            )
-
-    return None
-
-
-def load_skill_content(
-    workspace_dir: Path,
-    skill_name: str,
-) -> str:
-    """Load full SKILL.md content for a lazy skill on-demand.
-
-    Args:
-        workspace_dir: Workspace directory path
-        skill_name: Name of the skill to load
-
-    Returns:
-        Full SKILL.md content as string
-
-    Raises:
-        SkillsError: If skill directory or SKILL.md not found
-
-    New in Phase 1: Dynamic Skill Loading
-    This function is called when a lazy skill's trigger is detected,
-    or when the user explicitly requests to load a skill via /load command.
-    """
-    skill_dir = get_workspace_skills_dir(workspace_dir) / skill_name
-    if not skill_dir.exists():
-        # Fallback: check pool directories (including external skill_paths)
-        pool_dir = resolve_pool_skill_dir(skill_name)
-        if pool_dir is not None:
-            skill_dir = pool_dir
-        else:
-            raise SkillsError(
-                message=f"Skill directory not found: '{skill_name}' at {skill_dir}",
-            )
-
-    skill_md_path = skill_dir / "SKILL.md"
-    if not skill_md_path.exists():
-        raise SkillsError(
-            message=f"SKILL.md not found for skill '{skill_name}'",
-        )
-
-    try:
-        content = read_text_file_with_encoding_fallback(skill_md_path)
-        logger.info(
-            "Loaded lazy skill content: '%s' (%d bytes)",
-            skill_name,
-            len(content),
-        )
-        return content
-    except Exception as exc:
-        logger.error(
-            "Failed to load skill content for '%s': %s",
-            skill_name,
-            exc,
-        )
-        raise SkillsError(
-            message=f"Failed to read SKILL.md for skill '{skill_name}': {exc}",
-        )
 
 def ensure_skills_initialized(workspace_dir: Path) -> None:
     """Reconcile only when the manifest or on-disk Skill inventory changed."""
