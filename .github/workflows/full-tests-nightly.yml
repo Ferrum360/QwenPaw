@@ -336,26 +336,30 @@ jobs:
         shell: bash
         env:
           QWENPAW_INTEGRATION_COVERAGE: ${{ steps.cov_flag.outputs.enabled }}
-          # Windows runners are 2-core and IO-bound; under xdist parallel
+          # Windows/macOS runners are IO-bound; under xdist parallel
           # the default 15s HTTP timeout is too tight and intermittently
           # surfaces as ``httpx.ReadTimeout``. Lift the floor here.
-          QWENPAW_INTEGRATION_HTTP_TIMEOUT: ${{ matrix.os == 'windows-latest' && '120' || '' }}
+          QWENPAW_INTEGRATION_HTTP_TIMEOUT: ${{ (matrix.os == 'windows-latest' || matrix.os == 'macOS') && '120' || '' }}
+          # macOS runners have limited CPU/memory; cap xdist workers.
+          PYTEST_XDIST_AUTO_CPU_FRACTION: ${{ matrix.os == 'macOS' && '0.5' || '' }}
         run: |
+          # Determine xdist worker count per platform.
+          if [ -n "${{ env.PYTEST_XDIST_AUTO_CPU_FRACTION }}" ]; then
+            NCPUS=$(sysctl -n hw.ncpu 2>/dev/null || echo 2)
+            WORKERS=$((NCPUS / 2))
+            [ "$WORKERS" -lt 1 ] && WORKERS=1
+            XDIST="-n $WORKERS"
+          else
+            XDIST="-n auto"
+          fi
           # Nightly always runs the full -m integration sweep (p0 + p1 +
           # p2), unlike tests.yml which gates by GITHUB_EVENT_NAME.
           if [ -n "$QWENPAW_INTEGRATION_COVERAGE" ]; then
             # Subprocess coverage entry. Parent process must not carry
             # --cov, hence --no-cov here.
-            #
-            # Runtime coverage is collected by the app subprocesses
-            # regardless of pass/fail, so it must be exported even when
-            # tests fail. Under the default `bash -e`, a failing pytest
-            # aborts the script right here and the cp/xml steps below
-            # never run, silently dropping the artifact. Capture the
-            # exit code, export, then restore it so failures still fail.
             set +e
             pytest tests/integration -v --no-cov \
-              -n auto --dist=loadscope --timeout=300 -m integration
+              $XDIST --dist=loadscope --timeout=300 -m integration
             PYTEST_RC=$?
             set -e
             if [ -f .integration_coverage/integration_subproc ]; then
@@ -388,7 +392,7 @@ jobs:
             exit "$PYTEST_RC"
           else
             pytest tests/integration -v \
-              -n auto --dist=loadscope --timeout=300 -m integration
+              $XDIST --dist=loadscope --timeout=300 -m integration
           fi
 
       - name: Upload integration coverage data

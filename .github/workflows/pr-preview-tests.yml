@@ -171,12 +171,21 @@ jobs:
       # Upstream gates the integrated tier with `-m "integration and p0"` for
       # pull_request events (fast feedback). Fork pushes are not PR events, but
       # the intent here is the same pre-merge signal, so we hard-code p0.
-      # Windows runner gets the same lifted HTTP timeout upstream applies.
+      # Windows/macOS runners get the same lifted HTTP timeout upstream applies.
       - name: Run integrated tests
         shell: bash
         env:
-          QWENPAW_INTEGRATION_HTTP_TIMEOUT: ${{ matrix.os == 'windows-latest' && '120' || '' }}
+          QWENPAW_INTEGRATION_HTTP_TIMEOUT: ${{ (matrix.os == 'windows-latest' || matrix.os == 'macOS') && '120' || '' }}
         run: |
+          # macOS runners have limited CPU/memory; cap xdist workers.
+          if [ "${{ matrix.os }}" = "macOS" ]; then
+            NCPUS=$(sysctl -n hw.ncpu 2>/dev/null || echo 2)
+            WORKERS=$((NCPUS / 2))
+            [ "$WORKERS" -lt 1 ] && WORKERS=1
+            XDIST="-n $WORKERS"
+          else
+            XDIST="-n auto"
+          fi
           pytest tests/integration -v \
-            -n auto --dist=loadscope --timeout=300 \
+            $XDIST --dist=loadscope --timeout=300 \
             -m "integration and p0"

@@ -364,16 +364,31 @@ jobs:
           # not pay the tracer overhead. Multi-platform coverage is opt-in
           # via full-tests-nightly.yml dispatch (coverage_platforms input).
           QWENPAW_INTEGRATION_COVERAGE: ${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == '3.11') && '1' || '' }}
-          # Windows runners are 2-core and IO-bound; under xdist parallel
+          # Windows/macOS runners are IO-bound; under xdist parallel
           # the default 15s HTTP timeout is too tight and intermittently
           # surfaces as ``httpx.ReadTimeout``. Lift the floor here.
-          QWENPAW_INTEGRATION_HTTP_TIMEOUT: ${{ matrix.os == 'windows-latest' && '120' || '' }}
+          QWENPAW_INTEGRATION_HTTP_TIMEOUT: ${{ (matrix.os == 'windows-latest' || matrix.os == 'macOS') && '120' || '' }}
+          # macOS runners have limited CPU/memory; cap xdist workers to
+          # prevent resource exhaustion during parallel module launches.
+          # Each test module spawns a QwenPaw subprocess — too many at once
+          # causes OOM or port-binding timeouts on macOS CI images.
+          PYTEST_XDIST_AUTO_CPU_FRACTION: ${{ matrix.os == 'macOS' && '0.5' || '' }}
         run: |
+          # Determine xdist worker count per platform.
+          # Ubuntu/Windows: use all CPUs. macOS: half CPUs to avoid OOM.
+          if [ -n "$PYTEST_XDIST_AUTO_CPU_FRACTION" ]; then
+            NCPUS=$(sysctl -n hw.ncpu 2>/dev/null || echo 2)
+            WORKERS=$((NCPUS / 2))
+            [ "$WORKERS" -lt 1 ] && WORKERS=1
+            XDIST="-n $WORKERS"
+          else
+            XDIST="-n auto"
+          fi
           if [ -n "$QWENPAW_INTEGRATION_COVERAGE" ]; then
             # Subprocess coverage entry. Parent process must not carry
             # --cov, hence --no-cov here.
             pytest tests/integration -v --no-cov \
-              -n auto --dist=loadscope --timeout=300 \
+              $XDIST --dist=loadscope --timeout=300 \
               -m "${{ steps.marker.outputs.expr }}"
             cp .integration_coverage/integration_subproc \
               .coverage.integration
@@ -383,7 +398,7 @@ jobs:
               -o coverage.integration.xml || [ "$?" -eq 2 ]
           else
             pytest tests/integration -v \
-              -n auto --dist=loadscope --timeout=300 \
+              $XDIST --dist=loadscope --timeout=300 \
               -m "${{ steps.marker.outputs.expr }}"
           fi
 
