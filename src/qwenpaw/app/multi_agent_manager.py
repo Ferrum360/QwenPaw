@@ -6,6 +6,7 @@ including lazy loading, lifecycle management, and hot reloading.
 """
 
 import asyncio
+import inspect
 import logging
 import time
 from typing import Callable, Dict, Set
@@ -230,7 +231,7 @@ class MultiAgentManager:
         for hook in hooks:
             try:
                 callback = hook.callback
-                if asyncio.iscoroutinefunction(callback):
+                if inspect.iscoroutinefunction(callback):
                     await callback(workspace_info)
                 else:
                     result = await asyncio.to_thread(callback, workspace_info)

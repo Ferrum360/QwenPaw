@@ -491,6 +491,15 @@ class QwenPawACPAgent(Agent):
             self._app_services_started = False
         self._remove_runtime_provider()
 
+    async def stop(self) -> None:
+        """Stop the agent and all background tasks."""
+        # Cancel all pending prompt tasks
+        for session_id, task in list(self._prompt_tasks.items()):
+            task.cancel()
+        self._prompt_tasks.clear()
+        # Shutdown workspace and app services
+        await self._shutdown_workspace()
+
     # ------------------------------------------------------------------
     # ACP protocol methods
     # ------------------------------------------------------------------

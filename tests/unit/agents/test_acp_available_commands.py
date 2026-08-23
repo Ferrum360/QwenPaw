@@ -185,6 +185,8 @@ async def test_new_session_advertises_commands():
     # All advertised commands should have descriptions
     assert all(c.description for c in update.available_commands)
 
+    await agent.stop()
+
 
 async def test_load_session_advertises_commands():
     agent = QwenPawACPAgent(agent_id="default")
@@ -199,6 +201,8 @@ async def test_load_session_advertises_commands():
     assert session_id == "sess-123"
     assert update.session_update == "available_commands_update"
 
+    await agent.stop()
+
 
 async def test_new_session_reports_agent_id_in_meta():
     agent = QwenPawACPAgent(agent_id="my-agent")
@@ -207,6 +211,8 @@ async def test_new_session_reports_agent_id_in_meta():
 
     response = await agent.new_session(cwd="/tmp")
     assert response.field_meta == {ACP_AGENT_META_KEY: "my-agent"}
+
+    await agent.stop()
 
 
 async def test_prompt_passes_resolved_agent_id_to_runtime(monkeypatch):
@@ -236,6 +242,8 @@ async def test_prompt_passes_resolved_agent_id_to_runtime(monkeypatch):
 
     assert getattr(workspace.request, "agent_id", None) == "my-agent"
 
+    await agent.stop()
+
 
 async def test_report_prompt_error_is_sent_to_client():
     from qwenpaw.exceptions import AppBaseException
@@ -258,6 +266,8 @@ async def test_report_prompt_error_is_sent_to_client():
     # ...tagged via _meta so clients can render it as an error.
     assert update.field_meta == {ACP_ERROR_META_KEY: True}
 
+    await agent.stop()
+
 
 async def test_report_prompt_error_hides_unexpected_exception_details():
     agent = QwenPawACPAgent(agent_id="default")
@@ -278,6 +288,8 @@ async def test_report_prompt_error_hides_unexpected_exception_details():
     )
     assert update.field_meta == {ACP_ERROR_META_KEY: True}
 
+    await agent.stop()
+
 
 async def test_report_prompt_error_shows_details_for_local_diagnostics():
     agent = QwenPawACPAgent(agent_id="default", local_diagnostics=True)
@@ -292,6 +304,8 @@ async def test_report_prompt_error_shows_details_for_local_diagnostics():
     _, update = conn.updates[0]
     assert update.content.text == "Error: boom: invalid api key secret-token"
     assert update.field_meta == {ACP_ERROR_META_KEY: True}
+
+    await agent.stop()
 
 
 async def test_approval_bridge_resolves_pending_approval(monkeypatch):
@@ -385,6 +399,8 @@ async def test_approval_bridge_resolves_pending_approval(monkeypatch):
     assert pending.scope is ApprovalScope.EXACT
 
 
+    await agent.stop()
+
 async def test_approval_bridge_resolves_pattern_scope(monkeypatch):
     from qwenpaw.app.approvals.service import ApprovalService
     from qwenpaw.security.tool_guard.approval import (
@@ -472,6 +488,8 @@ async def test_approval_bridge_resolves_pattern_scope(monkeypatch):
     }
 
 
+    await agent.stop()
+
 async def test_approval_bridge_expires_when_pending_times_out(monkeypatch):
     from qwenpaw.app.approvals.service import ApprovalService
     from qwenpaw.security.tool_guard.approval import ApprovalDecision
@@ -540,6 +558,8 @@ async def test_approval_bridge_expires_when_pending_times_out(monkeypatch):
     assert conn.cancel_reason == "timeout"
     assert pending.status == ApprovalDecision.TIMEOUT.value
 
+
+    await agent.stop()
 
 async def test_approval_bridge_survives_wait_for_timeout(monkeypatch):
     """The real timeout path (``wait_for_approval`` → ``asyncio.wait_for``)
@@ -795,6 +815,8 @@ async def test_emit_usage_emits_usage_update_with_threshold(monkeypatch):
     assert ups[0].field_meta == {"compactRatio": 0.8}
 
 
+    await agent.stop()
+
 async def test_emit_usage_clears_bar_when_window_unknown(monkeypatch):
     # used/size == 0 must STILL emit a usage_update so the TUI hides a stale
     # bar (e.g. after switching to a model with an unknown window) instead of
@@ -825,3 +847,5 @@ async def test_emit_usage_clears_bar_when_window_unknown(monkeypatch):
     assert ups[0].used == 0
     assert ups[0].size == 0
     assert ups[0].field_meta is None
+
+    await agent.stop()

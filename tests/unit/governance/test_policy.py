@@ -957,10 +957,11 @@ class TestFileTargetResolution:
         assert os.path.isabs(resolved)
 
     def test_absolute_path_unchanged(self):
-        import os
+        from pathlib import PurePosixPath
 
         target = "/etc/passwd"
-        assert os.path.isabs(target)
+        # Use PurePosixPath for cross-platform absolute path detection
+        assert PurePosixPath(target).is_absolute()
 
     def test_empty_target_becomes_workspace(self, ws):
         target = ""

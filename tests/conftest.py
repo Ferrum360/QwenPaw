@@ -29,6 +29,43 @@ def capture_qwenpaw_logs(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(logging.getLogger("qwenpaw"), "propagate", True)
 
 
+@pytest.fixture(autouse=True)
+def ensure_utf8_encoding(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Ensure all subprocess/stdout decoding uses UTF-8 on every platform.
+
+    On Chinese Windows the system locale is GBK so ``subprocess.PIPE``
+    produces GBK-encoded text which breaks UTF-8 decoders in pytest /
+    Click's CliRunner.  Setting PYTHONIOENCODING forces UTF-8 everywhere.
+    """
+    monkeypatch.setenv("PYTHONIOENCODING", "utf-8")
+    monkeypatch.setenv("PYTHONUTF8", "1")
+
+
+# Patch Click's CliRunner to always pass UTF-8 env to spawned subproce
+def _patch_cli_runner():
+    """Monkey-patch click.testing.CliRunner to force UTF-8 encoding."""
+    try:
+        import os as _os
+        from click.testing import CliRunner as _CliRunner
+
+        original_invoke = getattr(_CliRunner, "invoke", None)
+        if original_invoke is not None:
+
+            def patched_invoke(self, *args, **kwargs):
+                env = kwargs.get("env") or dict(_os.environ)
+                env["PYTHONIOENCODING"] = "utf-8"
+                env["PYTHONUTF8"] = "1"
+                kwargs["env"] = env
+                return original_invoke(self, *args, **kwargs)
+
+            _CliRunner.invoke = patched_invoke
+    except Exception:
+        pass  # Non-critical; tests still work without patching
+
+
+_patch_cli_runner()
+
+
 # =============================================================================
 # Third-Party Library Mocks
 # =============================================================================

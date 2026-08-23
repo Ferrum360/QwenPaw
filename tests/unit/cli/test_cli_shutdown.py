@@ -33,7 +33,7 @@ def test_shutdown_command_stops_backend_and_frontend(monkeypatch) -> None:
         lambda _pid: True,
     )
 
-    result = CliRunner().invoke(cli, ["shutdown"])
+    result = CliRunner(env={"PYTHONIOENCODING": "utf-8", "PYTHONUTF8": "1"}).invoke(cli, ["shutdown"])
 
     assert result.exit_code == 0
     assert "1001" in result.output
@@ -62,7 +62,7 @@ def test_shutdown_command_reports_failure(monkeypatch) -> None:
         lambda _pid: False,
     )
 
-    result = CliRunner().invoke(cli, ["shutdown"])
+    result = CliRunner(env={"PYTHONIOENCODING": "utf-8", "PYTHONUTF8": "1"}).invoke(cli, ["shutdown"])
 
     assert result.exit_code != 0
     assert "Failed to shutdown process" in result.output
@@ -86,7 +86,7 @@ def test_shutdown_command_reports_nothing_found(monkeypatch) -> None:
         lambda _pids: set(),
     )
 
-    result = CliRunner().invoke(cli, ["shutdown"])
+    result = CliRunner(env={"PYTHONIOENCODING": "utf-8", "PYTHONUTF8": "1"}).invoke(cli, ["shutdown"])
 
     assert result.exit_code != 0
     assert "No running QwenPaw" in result.output
@@ -115,7 +115,7 @@ def test_shutdown_command_stops_windows_wrapper_ancestors(monkeypatch) -> None:
         lambda _pid: True,
     )
 
-    result = CliRunner().invoke(cli, ["shutdown"])
+    result = CliRunner(env={"PYTHONIOENCODING": "utf-8", "PYTHONUTF8": "1"}).invoke(cli, ["shutdown"])
 
     assert result.exit_code == 0
     assert "1052" in result.output

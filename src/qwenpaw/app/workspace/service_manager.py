@@ -7,6 +7,7 @@ for all workspace services (MemoryManager, ChatManager, etc.).
 from __future__ import annotations
 
 import asyncio
+import inspect
 import logging
 import time
 from dataclasses import dataclass, field
@@ -402,7 +403,7 @@ class ServiceManager:
             return
 
         start_fn = getattr(service, descriptor.start_method)
-        if asyncio.iscoroutinefunction(start_fn):
+        if inspect.iscoroutinefunction(start_fn):
             await start_fn()
         else:
             await asyncio.to_thread(start_fn)
@@ -501,7 +502,7 @@ class ServiceManager:
             if descriptor.stop_method:
                 stop_fn = getattr(service, descriptor.stop_method, None)
                 if stop_fn:
-                    if asyncio.iscoroutinefunction(stop_fn):
+                    if inspect.iscoroutinefunction(stop_fn):
                         await stop_fn()
                     else:
                         stop_fn()
