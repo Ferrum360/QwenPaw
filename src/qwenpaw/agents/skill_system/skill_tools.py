@@ -266,22 +266,14 @@ def auto_unload_stale_skills(
     return result
 
 
-<<<<<<< HEAD
 def smart_unload_recommendation() -> Dict[str, Any]:
-=======
-def smart_unload_recommendation() -> dict:
->>>>>>> af32aac3 (fix(registry.py): resolve merge conflict between upstream workspace inventory and local dynamic skill loading)
     """智能卸载建议（Phase 2C）
 
     Returns:
         dict with recommendation details
     """
     usage = get_context_usage()
-<<<<<<< HEAD
     recommendation: Dict[str, Any] = {
-=======
-    recommendation = {
->>>>>>> af32aac3 (fix(registry.py): resolve merge conflict between upstream workspace inventory and local dynamic skill loading)
         "context_usage": {
             "total_bytes": usage.total_bytes,
             "total_tokens_estimated": usage.total_tokens_estimated,
