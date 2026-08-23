@@ -79,11 +79,13 @@ class SafeWorkspaceFS:
         )
 
     @staticmethod
-    def _path_identity(path_stat: os.stat_result) -> tuple[int, int, int]:
+    def _path_identity(path_stat: os.stat_result) -> tuple[int, int]:
+        # Use (dev, ino) only — on Windows st_file_attributes changes
+        # when files are added/removed (e.g. ARCHIVE bit toggles), making
+        # it unreliable for revalidation of directory parents.
         return (
             path_stat.st_dev,
             path_stat.st_ino,
-            getattr(path_stat, "st_file_attributes", 0),
         )
 
     def _prepare_workspace_target(
@@ -117,7 +119,7 @@ class SafeWorkspaceFS:
     def _verify_workspace_parent(
         self,
         rel: str,
-        expected_identity: tuple[int, int, int],
+        expected_identity: tuple[int, int],
     ) -> Path:
         """Revalidate containment and parent identity before publication."""
         target = self.workspace_path(rel)
@@ -139,7 +141,7 @@ class SafeWorkspaceFS:
     def _remove_tree_without_reparse(
         self,
         target: Path,
-        expected_identity: tuple[int, int, int],
+        expected_identity: tuple[int, int],
     ) -> None:
         """Remove a real directory tree without traversing reparse points."""
         target_stat = os.lstat(target)
